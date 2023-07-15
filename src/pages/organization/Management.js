@@ -77,11 +77,53 @@ const BasicTreeViewDepth = styled.div`
     padding: 0 10px;
     line-height: 27px;
     height: 27px;
-    font-size: 12px;
+    font-size: 6px;
     letter-spacing: -.5px;
     border: 1px solid #d3d3d3;
     background: #fff;
     text-decoration: none;
+    display: inline-block;
+    width: auto;
+    position: relative;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: top;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: 0;
+  }
+  .editOrganizationSaveButton{
+    padding: 2px 8px 0;
+    margin-top: 5px;
+    margin-left: 5px;
+    height: 20px;
+    font-size: 11px;
+    font-family: 돋움,Dotum,Helvetica,Apple SD Gothic Neo,sans-serif!important;
+    letter-spacing: -.5px;
+    border: 1px solid #666;
+    background: #666;
+    color: #fff;
+    display: inline-block;
+    width: auto;
+    position: relative;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: top;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: 0;
+  }
+  .editOrganizationButton{
+    padding: 2px 8px 0;
+    margin-top: 5px;
+    margin-left: 5px;
+    height: 20px;
+    font-size: 11px;
+    font-family: 돋움,Dotum,Helvetica,Apple SD Gothic Neo,sans-serif!important;
+    letter-spacing: -.5px;
+    border: 1px solid #d3d3d3;
+    background: #fff;
+    color: #4a4a4a;
     display: inline-block;
     width: auto;
     position: relative;
@@ -207,7 +249,11 @@ function Management(){
           <div className="treeViewTit">
             <h2>조직도</h2>
             <div className="buttonBox">
-              <a><span>수정</span></a>
+              <button className="editOrganizationButton">추가</button>
+              <button className="editOrganizationButton">편집</button>
+              <button className="editOrganizationButton">삭제</button>
+              <button className="editOrganizationButton">취소</button>
+              <button className="editOrganizationSaveButton">저장</button>
             </div>
           </div>
           <div className="organizationChartBox">

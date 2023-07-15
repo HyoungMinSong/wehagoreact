@@ -1,5 +1,6 @@
 import { styled } from "styled-components";
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import BasicGridBox from "./BasicGridBox";
 
 const TreeViewList = styled.div`
   position: absolute;
@@ -16,6 +17,7 @@ const TreeViewList = styled.div`
     color: #000;
     vertical-align: top;
     font-weight: bold;
+    float: left;
   }
   .buttonBox{
     position: absolute;
@@ -105,9 +107,19 @@ const TreeViewList = styled.div`
     width: auto;
     margin-left: 4px;
   }
+  .tblGridBox{
+    border-bottom: 1px solid rgb(225, 225, 225);
+    position: absolute;
+    top: 32px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(100% - 32px);
+  }
 `;
 
 function BasicTreeViewList(){
+ 
 
   return(
     <TreeViewList>
@@ -128,7 +140,7 @@ function BasicTreeViewList(){
         </div>
       </div>
       <div className="tblGridBox">
-
+        <BasicGridBox />
       </div>
     </TreeViewList>
   );
