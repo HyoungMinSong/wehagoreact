@@ -2,12 +2,10 @@ import { styled, css } from "styled-components";
 import React, { useState } from 'react';
 import Img2 from "../images/img2.gif";
 
-const shouldForwardProp = (prop) =>
-  prop !== "isexpanded"; // isexpanded prop를 필터링합니다.
-
-const WrappingGridBox = styled.div.withConfig({
-  shouldForwardProp, // 위에서 정의한 shouldForwardProp를 적용합니다.
-})`
+const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
+  // isexpanded prop를 DOM 요소로 전달합니다.
+  isexpanded: $isexpanded,
+}))`
   height: 100%;
   .realMovingTable{
     height: calc(100% - 2px);
@@ -17,7 +15,7 @@ const WrappingGridBox = styled.div.withConfig({
     position: relative;
     display: block;
     height: 100%;
-    width: ${props => (props.isExpanded ? "50%" : "100%")};
+    width: ${props => (props.isexpanded=="true" ? "50%" : "100%")};
     transition: width 0.5s;
   }
   .WrappingTable{
@@ -68,7 +66,7 @@ const WrappingGridBox = styled.div.withConfig({
     right: 0;
     margin-left: 10px;
     background: #fff;
-    width: ${props => (props.isExpanded ? "50%" : "0%")};
+    width: ${props => (props.isexpanded=="true" ? "50%" : "0%")};
     transition: width 0.5s;
   }
 `;
@@ -349,18 +347,18 @@ function BasicGridBox(){
   ];
   
   const [selectedUser, setSelectedUser] = useState(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState("false");
 
   const handleRowClick = (user) => {
     setSelectedUser(user);
-    setIsExpanded(true);
+    setIsExpanded("true");
   };
   const handleXClick = () => {
-    setIsExpanded(false);
+    setIsExpanded("false");
   };
   
   return(
-    <WrappingGridBox isexpanded={isExpanded.toString()}>
+    <WrappingGridBox $isexpanded={isExpanded}>
       <div className="realMovingTable">
         <div className="WrappingTable">
           <div className="movingTable">
@@ -384,7 +382,7 @@ function BasicGridBox(){
                   onClick={() => handleRowClick(user)}
                   className={selectedUser === user ? 'selected' : ''}
                   >
-                    <td><input type="checkbox" /></td>
+                    <td onClick={(e) => e.stopPropagation()}><input type="checkbox" /></td>
                     <td>{user.id}</td>
                     <td>{user.name}</td>
                     <td>{user.email}</td>

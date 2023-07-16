@@ -4,7 +4,7 @@ import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import BasicTreeViewList from "./management/BasicTreeViewList";
 import BasicListTabs from "./management/BasicListTabs";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosApi from "../../AxiosApi";
 
 
 const CsContainer = styled.div`
@@ -239,13 +239,14 @@ const BasicTreeViewDepth = styled.div`
 
 function Management(){
 
+  // 토큰으로 회원번호
   const [tUserNo, setTUserNo] = useState("1");
+  // 회원번호로 회사이름
   const [myCompany, setMyCompany] = useState("위하고");
+  // 회원번호로 부서목록
   const [myOrganization, setMyOrganization] = useState([]);
 
-  const api = axios.create({
-    baseURL: 'http://localhost:8080', // 스프링 부트 서버의 baseURL로 변경
-  });
+
 
   useEffect(() => {
     fetchData();
@@ -253,13 +254,13 @@ function Management(){
 
   const fetchData = async () => {
     try {
-      const response = await api.get("/showMyCompany", {
+      const response = await axiosApi.get("/showMyCompany", {
         params: {
           t_user_no: tUserNo, // tUserNo를 쿼리 파라미터로 전달합니다.
         },
       }); // 데이터베이스로부터 데이터 가져오기
       setMyCompany(response.data); // 데이터 설정
-      const response1 = await api.get("/showMyOrganization", {
+      const response1 = await axiosApi.get("/showMyOrganization", {
         params: {
           t_user_no: tUserNo, // tUserNo를 쿼리 파라미터로 전달합니다.
         },
@@ -323,3 +324,4 @@ function Management(){
     </CsContainer>
   );
 }export default Management;
+
