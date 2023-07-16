@@ -2,84 +2,75 @@ import { styled, css } from "styled-components";
 import React, { useState } from 'react';
 import Img2 from "../images/img2.gif";
 
-const WrappingGridBox = styled.div`
+const shouldForwardProp = (prop) =>
+  prop !== "isexpanded"; // isexpanded prop를 필터링합니다.
+
+const WrappingGridBox = styled.div.withConfig({
+  shouldForwardProp, // 위에서 정의한 shouldForwardProp를 적용합니다.
+})`
   height: 100%;
   .realMovingTable{
     height: calc(100% - 2px);
     border-width: 2px 1px 1px;
-      border-style: solid;
-      border-color: rgb(0, 0, 0) rgb(225, 225, 225) rgb(225, 225, 225);
-      position: relative;
-      display: block;
-      width: 100%;
-      height: 100%;
-      transition: width 0.5s;
-      ${props =>
-        props.isExpanded &&
-        css`
-        width: 50%;
-        transition: width 0.5s;
-        `
-      }
-    }
-    .WrappingTable{
-      position: absolute;
-      left: 0px;
-      top: 0px;
-      background: rgb(255, 255, 255);
-      border-style: none;
-      border-width: 0px;
-      cursor: default;
-      width: 100%;
-      height: 100%;
-    }
-    .movingTable{
-      height: 100%;
-      overflow: auto;
-      display: flex;
-      word-break:break-all;
-      white-space:nowrap;
-    }
-    tr, td, th{
-      border-style: solid;
-      border-width: 1px;
-      height: 30px;
-      font-size: 13px;
-      word-break:break-all;
-    }
-    tr{
-      max-height: 30px;
-    }
-    th{
-      background-color: #EFEFFB;
-    }
-    caption{
-      border-top: black;
-      border-top-width: 1px;
-      border-top-style: solid;
-    }
-    table{
-      width: 100%;
-    }
-    .user-detail{
-      width: 50%;
-      height: 100%;
-      border: 1px solid #ccc;
-      overflow: auto;
-      position: absolute;
-      top: 0;
-      right: 0;
-      margin-left: 10px;
-      background: #fff;
-      transition: width 0.5s;
-      ${props =>
-       !props.isExpanded &&
-        css`
-          width: 0%;
-          transition: width 0.5s;
-        `
-      }
-    }
+    border-style: solid;
+    border-color: rgb(0, 0, 0) rgb(225, 225, 225) rgb(225, 225, 225);
+    position: relative;
+    display: block;
+    height: 100%;
+    width: ${props => (props.isExpanded ? "50%" : "100%")};
+    transition: width 0.5s;
+  }
+  .WrappingTable{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background: rgb(255, 255, 255);
+    border-style: none;
+    border-width: 0px;
+    cursor: default;
+    width: 100%;
+    height: 100%;
+  }
+  .movingTable{
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    word-break:break-all;
+    white-space:nowrap;
+  }
+  tr, td, th{
+    border-style: solid;
+    border-width: 1px;
+    height: 30px;
+    font-size: 13px;
+    word-break:break-all;
+  }
+  tr{
+    max-height: 30px;
+  }
+  th{
+    background-color: #EFEFFB;
+  }
+  caption{
+    border-top: black;
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
+  table{
+    width: 100%;
+  }
+  .user-detail{
+    height: 100%;
+    border: 1px solid #ccc;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-left: 10px;
+    background: #fff;
+    width: ${props => (props.isExpanded ? "50%" : "0%")};
+    transition: width 0.5s;
+  }
 `;
     
 const WrappingDetailBox = styled.div`
@@ -331,7 +322,6 @@ const WrappingDetailBox = styled.div`
 `;
 
 
-
 function BasicGridBox(){
       
   // 사용자 데이터 예시
@@ -340,22 +330,22 @@ function BasicGridBox(){
     { id: 'choijong0801', name: '최종원', email: 'janesmith@example.com' },
     { id: 'songhyungmin', name: '송형민', email: 'bobjohnson@example.com' },
     { id: 'leejuyong', name: '이주용', email: 'bobjohnson@example.com' },
-    { id: 'rlagptjd2002', name: '김혜성', email: 'rlagptjd2002@naver.com' },
-    { id: 'choijong0801', name: '최종원', email: 'janesmith@example.com' },
-    { id: 'songhyungmin', name: '송형민', email: 'bobjohnson@example.com' },
-    { id: 'leejuyong', name: '이주용', email: 'bobjohnson@example.com' },
-    { id: 'rlagptjd2002', name: '김혜성', email: 'rlagptjd2002@naver.com' },
-    { id: 'choijong0801', name: '최종원', email: 'janesmith@example.com' },
-    { id: 'songhyungmin', name: '송형민', email: 'bobjohnson@example.com' },
-    { id: 'leejuyong', name: '이주용', email: 'bobjohnson@example.com' },
-    { id: 'rlagptjd2002', name: '김혜성', email: 'rlagptjd2002@naver.com' },
-    { id: 'choijong0801', name: '최종원', email: 'janesmith@example.com' },
-    { id: 'songhyungmin', name: '송형민', email: 'bobjohnson@example.com' },
-    { id: 'leejuyong', name: '이주용', email: 'bobjohnson@example.com' },
-    { id: 'rlagptjd2002', name: '김혜성', email: 'rlagptjd2002@naver.com' },
-    { id: 'choijong0801', name: '최종원', email: 'janesmith@example.com' },
-    { id: 'songhyungmin', name: '송형민', email: 'bobjohnson@example.com' },
-    { id: 'leejuyong', name: '이주용', email: 'bobjohnson@example.com' }
+    { id: 'rlagptjd20021', name: '김혜성', email: 'rlagptjd2002@naver.com' },
+    { id: 'choijong08011', name: '최종원', email: 'janesmith@example.com' },
+    { id: 'songhyungmin1', name: '송형민', email: 'bobjohnson@example.com' },
+    { id: 'leejuyong1', name: '이주용', email: 'bobjohnson@example.com' },
+    { id: 'rlagptjd20022', name: '김혜성', email: 'rlagptjd2002@naver.com' },
+    { id: 'choijong08012', name: '최종원', email: 'janesmith@example.com' },
+    { id: 'songhyungmin2', name: '송형민', email: 'bobjohnson@example.com' },
+    { id: 'leejuyong2', name: '이주용', email: 'bobjohnson@example.com' },
+    { id: 'rlagptjd20023', name: '김혜성', email: 'rlagptjd2002@naver.com' },
+    { id: 'choijong08013', name: '최종원', email: 'janesmith@example.com' },
+    { id: 'songhyungmin3', name: '송형민', email: 'bobjohnson@example.com' },
+    { id: 'leejuyong3', name: '이주용', email: 'bobjohnson@example.com' },
+    { id: 'rlagptjd20024', name: '김혜성', email: 'rlagptjd2002@naver.com' },
+    { id: 'choijong08014', name: '최종원', email: 'janesmith@example.com' },
+    { id: 'songhyungmin4', name: '송형민', email: 'bobjohnson@example.com' },
+    { id: 'leejuyong4', name: '이주용', email: 'bobjohnson@example.com' }
   ];
   
   const [selectedUser, setSelectedUser] = useState(null);
@@ -370,7 +360,7 @@ function BasicGridBox(){
   };
   
   return(
-    <WrappingGridBox isExpanded={isExpanded}>
+    <WrappingGridBox isexpanded={isExpanded.toString()}>
       <div className="realMovingTable">
         <div className="WrappingTable">
           <div className="movingTable">

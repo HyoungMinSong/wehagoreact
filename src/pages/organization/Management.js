@@ -1,8 +1,11 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import BasicTreeViewList from "./management/BasicTreeViewList";
 import BasicListTabs from "./management/BasicListTabs";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 
 const CsContainer = styled.div`
   margin-bottom: 80px;
@@ -233,8 +236,39 @@ const BasicTreeViewDepth = styled.div`
     -webkit-margin-before: 1px;
 }
 `;
+
 function Management(){
 
+  const [tUserNo, setTUserNo] = useState("1");
+  const [myCompany, setMyCompany] = useState("위하고");
+  const [myOrganization, setMyOrganization] = useState([]);
+
+  const api = axios.create({
+    baseURL: 'http://localhost:8080', // 스프링 부트 서버의 baseURL로 변경
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await api.get("/showMyCompany", {
+        params: {
+          t_user_no: tUserNo, // tUserNo를 쿼리 파라미터로 전달합니다.
+        },
+      }); // 데이터베이스로부터 데이터 가져오기
+      setMyCompany(response.data); // 데이터 설정
+      const response1 = await api.get("/showMyOrganization", {
+        params: {
+          t_user_no: tUserNo, // tUserNo를 쿼리 파라미터로 전달합니다.
+        },
+      }); // 데이터베이스로부터 데이터 가져오기
+      setMyOrganization(response1.data); // 데이터 설정
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return(
     <CsContainer>
@@ -265,23 +299,18 @@ function Management(){
                       <span className="buildingIcon"><BusinessOutlinedIcon /></span>
                       <span className="txtNodeTitle">
                         <span className="num">10</span>
-                        WEHAGOUnit_멘토링
+                        {myCompany}
                       </span>
                     </div>
-                    <div className="nodeInnerGroup">
-                      <span className="buildingIcon"><FolderTwoToneIcon /></span>
-                      <span className="txtNodeTitle">
-                        <span className="num">4</span>
-                        3조
-                      </span>
-                    </div>
-                    <div className="nodeInnerGroup">
-                      <span className="buildingIcon"><FolderTwoToneIcon /></span>
-                      <span className="txtNodeTitle">
-                        <span className="num">4</span>
-                        4조
-                      </span>
-                    </div>
+                    {myOrganization && myOrganization.map((item, index) => (
+                      <div className="nodeInnerGroup" key={index}>
+                        <span className="buildingIcon"><FolderTwoToneIcon /></span>
+                        <span className="txtNodeTitle">
+                          <span className="num">4</span>
+                          {item ? item : ''}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
