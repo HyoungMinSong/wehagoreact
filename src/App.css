@@ -1,7 +1,34 @@
 .App {
   text-align: center;
 }
-
+.horizontal-line {
+  width: 85%;
+  border-top: 1px solid #BDBDBD;
+  margin-top: 45px;
+  margin-bottom: 20px;
+  
+}
+.horizontal-line2 {
+  justify-content: center;
+  width: 20%;
+  border-top: 1px solid #BDBDBD;
+  margin-top: 20px;
+  margin-left: 90px;
+  margin-bottom: 15px;
+  
+}
+.horizontal-line3 {
+  justify-content: center;
+  width: 20%;
+  border-top: 1px solid #BDBDBD;
+  margin-top: 20px;
+  margin-left: 70px;
+  margin-bottom: 15px;
+  
+}
+.small-text{
+  font-size: 11px; /* 작게 조절하고자 하는 폰트 크기 */
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
