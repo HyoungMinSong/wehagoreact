@@ -1,11 +1,11 @@
 import React from "react";
-import CounterContainers from "./Containers/CounterContainers";
+import Counter from "./components/Counter";
 import CounterContainer2 from "./Containers/CounterContainer2";
 
 const TestRedux = () => {
   return (
     <div>
-    <CounterContainers />
+    <Counter />
     <CounterContainer2 />
   </div>
   );
