@@ -3,8 +3,9 @@ import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import BasicTreeViewList from "./management/BasicTreeViewList";
 import BasicListTabs from "./management/BasicListTabs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosApi from "../../AxiosApi";
+import Swal from "sweetalert2";
 
 
 const CsContainer = styled.div`
@@ -196,7 +197,10 @@ const BasicTreeViewDepth = styled.div`
     background: 0 0;
     font-size: 14px;
     line-height: 18px;
-    padding: 1px 100px 0 0;
+    padding: 1px 10px 0 0;
+  }
+  .txtNodeTitleInput{
+    height:25px;
   }
   .buildingIcon{
     overflow: visible;
@@ -239,19 +243,27 @@ const BasicTreeViewDepth = styled.div`
 
 function Management(){
 
+  // redux로 조직도 편집시 그리드 비활성화 해야함
+
   // 토큰으로 회원번호
   const [tUserNo, setTUserNo] = useState("1");
   // 회원번호로 회사이름
   const [myCompany, setMyCompany] = useState("위하고");
   // 회원번호로 부서목록
   const [myOrganization, setMyOrganization] = useState([]);
+  // 수정 버튼 ON/OFF
+  const [editingOrganization, setEditingOrganization] = useState(false);
+  // 선택한 요소의 정보 저장
+  const [editingItem, setEditingItem] = useState(null);
+  // useRef를 통해 수정된 내용을 입력하는 input 요소에 접근
+  const inputRef = useRef(null);
 
-
-
+  // 2번째 파라미터로 빈 배열 배치시 렌더링하는 처음만 실행
   useEffect(() => {
     fetchData();
   }, []);
 
+  // 첫 렌더링에 가져올 값
   const fetchData = async () => {
     try {
       const response = await axiosApi.get("/showMyCompany", {
@@ -271,6 +283,55 @@ function Management(){
     }
   };
 
+  // 수정, 취소, 저장 버튼 클릭
+  const handleEditClick = (e) => {
+    if(e.target.name == "EditB"){
+      setEditingOrganization(true);
+    }else{
+      Swal.fire({
+        title: '정말로 그렇게 하시겠습니까?',
+        text: '다시 되돌릴 수 없습니다. 신중하세요.',
+        icon: 'warning',
+        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+        confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+        cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+        confirmButtonText: '승인', // confirm 버튼 텍스트 지정
+        cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+        // reverseButtons: true, // 버튼 순서 거꾸로
+      }).then(result => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
+            fetchData();
+            setEditingOrganization(false);
+        }
+      });
+    }
+  }
+
+  // 추가, 편집, 삭제 버튼 클릭
+  const handleCrudClick = (e) => {
+    if(e.target.name === "CreateB"){
+      setMyOrganization([...myOrganization, ""]);
+    }
+  }
+
+  // 커서 정보 저장
+  const handleItemClick = (item) => {
+    setEditingItem(item);
+  };
+
+  // 저장 버튼 클릭
+  const handleEditSave = () => {
+    if (editingItem && inputRef.current) {
+      // 수정된 내용을 저장
+      const editedOrganization = myOrganization.map((item) =>
+        item === editingItem ? inputRef.current.value : item
+      );
+      setMyOrganization(editedOrganization);
+      setEditingOrganization(false); // 편집 모드 비활성화
+    }
+  };
+
   return(
     <CsContainer>
       <CsSubTitle>
@@ -284,11 +345,19 @@ function Management(){
           <div className="treeViewTit">
             <h2>조직도</h2>
             <div className="buttonBox">
-              <button className="editOrganizationButton">추가</button>
-              <button className="editOrganizationButton">편집</button>
-              <button className="editOrganizationButton">삭제</button>
-              <button className="editOrganizationButton">취소</button>
-              <button className="editOrganizationSaveButton">저장</button>
+              {editingOrganization ? (
+                <>
+                  <button className="editOrganizationButton" name="CreateB" onClick={handleCrudClick}>추가</button>
+                  <button className="editOrganizationButton" name="UpdateB" onClick={handleCrudClick}>편집</button>
+                  <button className="editOrganizationButton" name="DeleteB" onClick={handleCrudClick}>삭제</button>
+                  <button className="editOrganizationButton" name="CancelB" onClick={handleEditClick}>취소</button>
+                  <button className="editOrganizationSaveButton" name="SaveB" onClick={handleEditClick}>저장</button>  
+                </>
+                ):(
+                  <>
+                  <button className="editOrganizationButton" name="EditB" onClick={handleEditClick}>수정</button>
+                </>
+              )}
             </div>
           </div>
           <div className="organizationChartBox">
@@ -308,7 +377,11 @@ function Management(){
                         <span className="buildingIcon"><FolderTwoToneIcon /></span>
                         <span className="txtNodeTitle">
                           <span className="num">4</span>
-                          {item ? item : ''}
+                          {item ? item : (
+                            <>
+                              <input type="text" className="txtNodeTitleInput"/>
+                            </>
+                          )}
                         </span>
                       </div>
                     ))}
