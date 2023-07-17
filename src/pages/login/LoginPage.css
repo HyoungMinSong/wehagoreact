@@ -13,24 +13,27 @@ body {
   font-weight: 300;
 }
 
-::-webkit-input-placeholder { /* WebKit browsers */
+::-webkit-input-placeholder {
   font-family: 'Source Sans Pro', sans-serif;
   color: white;
   font-weight: 300;
 }
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  font-family: 'Source Sans Pro', sans-serif;
-  color: white;
-  opacity: 1;
-  font-weight: 300;
-}
-::-moz-placeholder { /* Mozilla Firefox 19+ */
+
+:-moz-placeholder {
   font-family: 'Source Sans Pro', sans-serif;
   color: white;
   opacity: 1;
   font-weight: 300;
 }
-:-ms-input-placeholder { /* Internet Explorer 10+ */
+
+::-moz-placeholder {
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  opacity: 1;
+  font-weight: 300;
+}
+
+:-ms-input-placeholder {
   font-family: 'Source Sans Pro', sans-serif;
   color: white;
   font-weight: 300;
@@ -53,7 +56,16 @@ body {
 }
 
 .wrapper.form-success .container h1 {
-  transform: translateY(85px);
+  animation: moveUp 0.5s ease-in-out;
+}
+
+@keyframes moveUp {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .container {
@@ -212,15 +224,6 @@ form button:hover {
   width: 160px;
   height: 160px;
   animation-delay: 11s;
-}
-
-@-webkit-keyframes square {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-700px) rotate(600deg);
-  }
 }
 
 @keyframes square {
