@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import InputMask from 'react-input-mask';
 import axiosApi from "../../AxiosApi";
+import { useDispatch } from "react-redux";
+import { increase } from "../../store";
+import { useNavigate } from "react-router-dom";
 
 
 // className="border-danger"
@@ -49,9 +52,12 @@ function SignUp_infomation() {
 
 
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  let dispatch = useDispatch();
+
+  let navigate = useNavigate();
 
   return (
 
@@ -210,6 +216,10 @@ function SignUp_infomation() {
                         }).then((c) => {
                           if (c.data === id) {
                             handleShow();
+                          }else{
+                            dispatch(increase({name : name, phoneNumber : phoneNumber, id : id,
+                               password : password, confirmPassword : confirmPassword, email : email}))
+                               navigate('/signup/company')
                           }
                           console.log(c.data);
                         }).catch(() => {

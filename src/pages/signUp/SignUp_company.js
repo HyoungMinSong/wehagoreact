@@ -1,21 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import InputMask from 'react-input-mask';
+import { useSelector } from "react-redux";
 
 
 // className="border-danger"
 function SignUp_company() {
-  let [name, setName] = useState('');
-  let [nameError, setNameError] = useState(false);
-  let [phoneNumber, setPhoneNumber] = useState('');
-  let [phoneNumberError, setphoneNumberError] = useState(false);
-  let [id, setId] = useState('');
-  let [password, setPassword] = useState('');
-  let [confirmPassword, setConfirmPassword] = useState('');
-  let [email, setEmail] = useState('');
+  let [companyName, setCompanyName] = useState('');
+  let [companyNameError, setCompanyNameError] = useState(false);
+  let [businessType, setBusinessType] = useState('');
+  let [businessTypeError, setBusinessTypeError] = useState(false);
+  let [businessRegistrationNumber, setBusinessRegistrationNumber] = useState('');
+  let [businessRegistrationNumberError, setBusinessRegistrationNumberError] = useState(false);
+  let [businessStatus, setBusinessStatus] = useState('');
+  let [businessStatusError, setBusinessStatusError] = useState(false);
+  let [businessCategory, setBusinessCategory] = useState('');
+  let [businessCategoryError, setBusinessCategoryError] = useState(false);
+  let [representativeName, setRepresentativeName] = useState('');
+  let [representativeNameError, setRepresentativeNameError] = useState(false);
+  let [companyPhoneNumber, setCompanyPhoneNumber] = useState('');
+  let [companyPhoneNumberError, setCompanyPhoneNumberError] = useState(false);
 
-  let regex =  /^[가-힣a-zA-Z]+$/;
-  let numberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+  let companyNameRegex =  /^[가-힣!@#$%^&*()_+={}\[\]:;"'<>,.?/~\\]+$/; //단어한글과특수문자
+  let registrationNumberRegex = /^\d{3}-\d{2}-\d{5}$/; //숫자 10자리만
+  let statusRegex = /^[가-힣]{1,5}$/; //힌글단어 5자리까지
+  let categoryRegex = /^[가-힣]{1,5}$/; //힌글단어 5자리까지
+  let reNameRegex = /^[가-힣a-zA-Z]{1,20}$/; // 한글단어나 영문20자리까지 
+  let cpNumberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+
+  useEffect(() => {
+    if (companyName != '') {
+      companyNameRegex.test(companyName) ? setCompanyNameError(false) : setCompanyNameError(true);
+    }
+    if (businessRegistrationNumber != '') {
+      registrationNumberRegex.test(businessRegistrationNumber) ? setBusinessRegistrationNumberError(false) : setBusinessRegistrationNumberError(true);
+    }
+    if (businessStatus != '') {
+      statusRegex.test(businessStatus) ? setBusinessStatusError(false) : setBusinessStatusError(true);
+    }
+    if (businessCategory != '') {
+      categoryRegex.test(businessCategory) ? setBusinessCategoryError(false) : setBusinessCategoryError(true);
+    }
+    if (representativeName != '') {
+      reNameRegex.test(representativeName) ? setRepresentativeNameError(false) : setRepresentativeNameError(true);
+    }
+    if (companyPhoneNumber != '') {
+      cpNumberRegex.test(companyPhoneNumber) ? setCompanyPhoneNumberError(false) : setCompanyPhoneNumberError(true);
+    }
+  }, [companyName, businessRegistrationNumber, businessStatus, businessCategory, representativeName, companyPhoneNumber]);
+
+  let test = useSelector((state)=> { return state});
+  console.log(test);
     return (
         
 <Container style={{ backgroundColor: '#f5f5f5' }} className="pt-5 pb-3">
@@ -45,15 +80,17 @@ function SignUp_company() {
         <Form.Label style={{ fontWeight: 'bold' }}>회사 이름</Form.Label>
       
         <Form.Control type="text" placeholder="Enter company name"  onChange={(e)=>{
-          setName(e.target.value);
-          regex.test(name) ? setNameError(false) : setNameError(true);
-          }} className={ nameError ? "border-danger" : ""}/>
+          setCompanyName(e.target.value);
+          // regex.test(name) ? setNameError(false) : setNameError(true);
+          }} className={ companyNameError ? "border-danger" : ""}/>
         
       </Form.Group>
       <Form.Group className="my-2" controlId="formBasicName">
       
         <Form.Label style={{ fontWeight: 'bold' }}>구분</Form.Label>
-      <Form.Select aria-label="Default select example">
+      <Form.Select aria-label="Default select example" onChange={(e)=>{
+        setBusinessType(e.target.value);
+      }}>
       <option>Select business type</option>
       <option value="1">개인사업자</option>
       <option value="2">법인사업자</option>
@@ -68,9 +105,9 @@ function SignUp_company() {
                     // className=""
                     placeholder="Enter business registration number"
                     onChange={(e)=>{
-                      setPhoneNumber(e.target.value);
-                      numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
-                      }} className={ phoneNumberError ? "form-control border-danger" : "form-control"}
+                      setBusinessRegistrationNumber(e.target.value);
+                      // numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
+                      }} className={ businessRegistrationNumberError ? "form-control border-danger" : "form-control"}
                            
                     
                   />
@@ -83,7 +120,8 @@ function SignUp_company() {
                 <Form.Group className="my-2" controlId="formBasicEmail" >
         <Form.Label style={{ fontWeight: 'bold' }}>업태</Form.Label>
         <Form.Control type="text" placeholder="Enter business status"  onChange={(e)=>{
-                      setId(e.target.value);}}/>
+                      setBusinessStatus(e.target.value);}}
+                      className={ businessStatusError ? "border-danger" : ""}/>
       </Form.Group>
               
       <Form.Group className="my-2" controlId="formBasicPassword" >
@@ -91,13 +129,16 @@ function SignUp_company() {
         <Form.Label style={{ fontWeight: 'bold' }}>업종</Form.Label>
         
         <Form.Control type="text" placeholder="Enter business category" onChange={(e)=>{
-                      setPassword(e.target.value);}}/>
+                      setBusinessCategory(e.target.value);
+                    console.log(businessCategory)}}
+                      className={ businessCategoryError ? "border-danger" : ""}/>
       </Form.Group>
       
       <Form.Group className="my-2" controlId="formBasicPassword2" >
         <Form.Label style={{ fontWeight: 'bold' }}>대표자 이름</Form.Label>
         <Form.Control type="text" placeholder="Enter representative name" onChange={(e)=>{
-                      setConfirmPassword(e.target.value);}}/>
+                      setRepresentativeName(e.target.value);}}
+                      className={ representativeNameError ? "border-danger" : ""}/>
       </Form.Group>
       <Form.Group className="my-2 " controlId="formBasicPhone">
                   <Form.Label style={{ fontWeight: 'bold' }}>회사 전화번호</Form.Label>
@@ -105,11 +146,11 @@ function SignUp_company() {
                     mask="999-9999-9999"
                     maskChar="_"
                     // className=""
-                    placeholder="Enter company phone numberr"
+                    placeholder="Enter company phone number"
                     onChange={(e)=>{
-                      setPhoneNumber(e.target.value);
-                      numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
-                      }} className={ phoneNumberError ? "form-control border-danger" : "form-control"}
+                      setCompanyPhoneNumber(e.target.value);
+                      // numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
+                      }} className={ companyPhoneNumberError ? "form-control border-danger" : "form-control"}
                            
                     
                   />
@@ -128,7 +169,7 @@ function SignUp_company() {
       <Button variant="light" type="submit" className="mx-2">
       &lt; 이전 
       </Button>
-      <Button variant="primary"  className="mx-3" onClick={()=>{console.log(name, phoneNumber, id, password, confirmPassword, email)}}>
+      <Button variant="primary"  className="mx-3" onClick={()=>{console.log(companyName, businessType, businessRegistrationNumber, businessStatus, businessCategory, representativeName, companyPhoneNumber)}}>
         다음 &gt;
       </Button>
       </div>
