@@ -8,6 +8,7 @@ import Organization from './pages/organization/Organization';
 import Administrator from './pages/organization/Administrator';
 import Services from './pages/organization/Services';
 import Management from './pages/organization/Management';
+import LoginPage from './pages/login/LoginPage';
 
 function App() {
   return (
@@ -29,6 +30,11 @@ function App() {
           <Route path="services" element={<Services />} />
         </Route>
         <Route path="/about" element={ <div>라우트 테스트임2222</div> } />
+        <Route path="/login" element={ 
+          <div className="d-flex align-items-center py-4 bg-body-tertiary">
+        <LoginPage></LoginPage> 
+        </div>
+        } />
     </Routes>
     </div>
   );
