@@ -1,5 +1,5 @@
 import { styled, css } from "styled-components";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Img2 from "../images/img2.gif";
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
@@ -32,7 +32,7 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   .movingTable{
     height: 100%;
     overflow: auto;
-    display: flex;
+    // display: flex;
     word-break:break-all;
     white-space:nowrap;
   }
@@ -320,45 +320,34 @@ const WrappingDetailBox = styled.div`
 `;
 
 
-function BasicGridBox(){
+function BasicGridBox(props){
       
-  // 사용자 데이터 예시
-  const userData = [
-    { id: 'rlagptjd2002', name: '김혜성', email: 'rlagptjd2002@naver.com' },
-    { id: 'choijong0801', name: '최종원', email: 'janesmith@example.com' },
-    { id: 'songhyungmin', name: '송형민', email: 'bobjohnson@example.com' },
-    { id: 'leejuyong', name: '이주용', email: 'bobjohnson@example.com' },
-    { id: 'rlagptjd20021', name: '김혜성', email: 'rlagptjd2002@naver.com' },
-    { id: 'choijong08011', name: '최종원', email: 'janesmith@example.com' },
-    { id: 'songhyungmin1', name: '송형민', email: 'bobjohnson@example.com' },
-    { id: 'leejuyong1', name: '이주용', email: 'bobjohnson@example.com' },
-    { id: 'rlagptjd20022', name: '김혜성', email: 'rlagptjd2002@naver.com' },
-    { id: 'choijong08012', name: '최종원', email: 'janesmith@example.com' },
-    { id: 'songhyungmin2', name: '송형민', email: 'bobjohnson@example.com' },
-    { id: 'leejuyong2', name: '이주용', email: 'bobjohnson@example.com' },
-    { id: 'rlagptjd20023', name: '김혜성', email: 'rlagptjd2002@naver.com' },
-    { id: 'choijong08013', name: '최종원', email: 'janesmith@example.com' },
-    { id: 'songhyungmin3', name: '송형민', email: 'bobjohnson@example.com' },
-    { id: 'leejuyong3', name: '이주용', email: 'bobjohnson@example.com' },
-    { id: 'rlagptjd20024', name: '김혜성', email: 'rlagptjd2002@naver.com' },
-    { id: 'choijong08014', name: '최종원', email: 'janesmith@example.com' },
-    { id: 'songhyungmin4', name: '송형민', email: 'bobjohnson@example.com' },
-    { id: 'leejuyong4', name: '이주용', email: 'bobjohnson@example.com' }
-  ];
+  // 회사, 조직에 해당하는 유저들의 목록
+  const [showingMyEmployees, setShowingMyEmployees] = useState([]);
+  
+
+
+  useEffect(() => {
+    // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
+    if (Array.isArray(props.showingMyEmployees)) {
+      setShowingMyEmployees(props.showingMyEmployees);
+    } else {
+      setShowingMyEmployees([]);
+    }
+  }, [props.showingMyEmployees, props.isExpanded]);
   
   const [selectedUser, setSelectedUser] = useState(null);
-  const [isExpanded, setIsExpanded] = useState("false");
 
   const handleRowClick = (user) => {
     setSelectedUser(user);
-    setIsExpanded("true");
+    props.setIsExpanded("true");
   };
   const handleXClick = () => {
-    setIsExpanded("false");
+    props.setIsExpanded("false");
   };
   
   return(
-    <WrappingGridBox $isexpanded={isExpanded}>
+    <WrappingGridBox $isexpanded={props.isExpanded}>
       <div className="realMovingTable">
         <div className="WrappingTable">
           <div className="movingTable">
@@ -376,16 +365,16 @@ function BasicGridBox(){
                 </tr>
               </thead>
               <tbody>
-                {userData.map((user) => (
+                {showingMyEmployees.map((user) => (
                   <tr
-                  key={user.id}
+                  key={user.t_user_no}
                   onClick={() => handleRowClick(user)}
                   className={selectedUser === user ? 'selected' : ''}
                   >
                     <td onClick={(e) => e.stopPropagation()}><input type="checkbox" /></td>
-                    <td>{user.id}</td>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
+                    <td>{user.t_user_id}</td>
+                    <td>{user.t_user_name}</td>
+                    <td>{user.t_user_email}</td>
                     <td>010-9370-4871</td>
                     <td>3조</td>
                     <td>인턴</td>
@@ -418,8 +407,8 @@ function BasicGridBox(){
                   </div>
                   <div className="detailBoxProfBt">
                     <div className="detailBoxProfInfo">
-                      {selectedUser.name}
-                      <span className="detailBoxProfId">{selectedUser.id}</span>
+                      {selectedUser.t_user_name}
+                      <span className="detailBoxProfId">{selectedUser.t_user_id}</span>
                     </div>
                     <div>
                       <div className="detailBoxProfButton">
@@ -440,13 +429,13 @@ function BasicGridBox(){
                     <caption></caption>
                     <colgroup><col></col></colgroup>
                     <tbody>
-                      <tr><th>이름</th><td>{selectedUser.name}</td></tr>
+                      <tr><th>이름</th><td>{selectedUser.t_user_name}</td></tr>
                       <tr><th>소속</th><td>더존</td></tr>
                       <tr><th>직급</th><td>인턴</td></tr>
                       <tr><th>직책</th><td>팀원</td></tr>
                       <tr><th>유선전화번호</th><td>0212341234</td></tr>
                       <tr><th>입사일</th><td>2023.07.14</td></tr>
-                      <tr><th>이메일주소</th><td>{selectedUser.email}</td></tr>
+                      <tr><th>이메일주소</th><td>{selectedUser.t_user_email}</td></tr>
                       <tr><th>휴대전화번호</th><td>01011112222</td></tr>
                     </tbody>
                   </table>

@@ -118,8 +118,8 @@ const TreeViewList = styled.div`
   }
 `;
 
-function BasicTreeViewList(){
- 
+function BasicTreeViewList(props){
+
 
   return(
     <TreeViewList>
@@ -140,7 +140,7 @@ function BasicTreeViewList(){
         </div>
       </div>
       <div className="tblGridBox">
-        <BasicGridBox />
+        <BasicGridBox showingMyEmployees={props.showingMyEmployees} isExpanded={props.isExpanded} setIsExpanded={props.setIsExpanded}/>
       </div>
     </TreeViewList>
   );
