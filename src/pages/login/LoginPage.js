@@ -56,9 +56,10 @@ const LoginPage = () => {
   };
 
   return (
+    <div className="jongwonscss">
     <div className={`wrapper${formSuccess ? ' form-success' : ''}`}>
       <div className="container">
-        <h1 className={`${formSuccess ? 'form-success' : ''}`}>Welcome</h1>
+        <h1 className={`${formSuccess ? 'form-success text-white' : 'text-white'}`}>Welcome</h1>
 
         {!loggedIn ? (
           <form onSubmit={handleLogin}>
@@ -69,10 +70,10 @@ const LoginPage = () => {
             </button>
           </form>
         ) : (
-          <div>로그인 성공!</div>
+          <div className="text-white">로그인 성공!</div>
         )}
 
-        {loginError && <div className="error">{loginError}</div>}
+        {loginError && <div className="error text-white">{loginError}</div>}
       </div>
 
       <ul className="bg-bubbles">
@@ -87,6 +88,7 @@ const LoginPage = () => {
         <li></li>
         <li></li>
       </ul>
+    </div>
     </div>
   );
 };
