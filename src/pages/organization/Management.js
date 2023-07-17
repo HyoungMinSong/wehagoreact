@@ -1,8 +1,12 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import BasicTreeViewList from "./management/BasicTreeViewList";
 import BasicListTabs from "./management/BasicListTabs";
+import { useEffect, useRef, useState } from "react";
+import axiosApi from "../../AxiosApi";
+import Swal from "sweetalert2";
+
 
 const CsContainer = styled.div`
   margin-bottom: 80px;
@@ -77,11 +81,53 @@ const BasicTreeViewDepth = styled.div`
     padding: 0 10px;
     line-height: 27px;
     height: 27px;
-    font-size: 12px;
+    font-size: 6px;
     letter-spacing: -.5px;
     border: 1px solid #d3d3d3;
     background: #fff;
     text-decoration: none;
+    display: inline-block;
+    width: auto;
+    position: relative;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: top;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: 0;
+  }
+  .editOrganizationSaveButton{
+    padding: 2px 8px 0;
+    margin-top: 5px;
+    margin-left: 5px;
+    height: 20px;
+    font-size: 11px;
+    font-family: 돋움,Dotum,Helvetica,Apple SD Gothic Neo,sans-serif!important;
+    letter-spacing: -.5px;
+    border: 1px solid #666;
+    background: #666;
+    color: #fff;
+    display: inline-block;
+    width: auto;
+    position: relative;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: top;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: 0;
+  }
+  .editOrganizationButton{
+    padding: 2px 8px 0;
+    margin-top: 5px;
+    margin-left: 5px;
+    height: 20px;
+    font-size: 11px;
+    font-family: 돋움,Dotum,Helvetica,Apple SD Gothic Neo,sans-serif!important;
+    letter-spacing: -.5px;
+    border: 1px solid #d3d3d3;
+    background: #fff;
+    color: #4a4a4a;
     display: inline-block;
     width: auto;
     position: relative;
@@ -151,7 +197,10 @@ const BasicTreeViewDepth = styled.div`
     background: 0 0;
     font-size: 14px;
     line-height: 18px;
-    padding: 1px 100px 0 0;
+    padding: 1px 10px 0 0;
+  }
+  .txtNodeTitleInput{
+    height:25px;
   }
   .buildingIcon{
     overflow: visible;
@@ -191,8 +240,97 @@ const BasicTreeViewDepth = styled.div`
     -webkit-margin-before: 1px;
 }
 `;
+
 function Management(){
 
+  // redux로 조직도 편집시 그리드 비활성화 해야함
+
+  // 토큰으로 회원번호
+  const [tUserNo, setTUserNo] = useState("1");
+  // 회원번호로 회사이름
+  const [myCompany, setMyCompany] = useState("위하고");
+  // 회원번호로 부서목록
+  const [myOrganization, setMyOrganization] = useState([]);
+  // 수정 버튼 ON/OFF
+  const [editingOrganization, setEditingOrganization] = useState(false);
+  // 선택한 요소의 정보 저장
+  const [editingItem, setEditingItem] = useState(null);
+  // useRef를 통해 수정된 내용을 입력하는 input 요소에 접근
+  const inputRef = useRef(null);
+
+  // 2번째 파라미터로 빈 배열 배치시 렌더링하는 처음만 실행
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // 첫 렌더링에 가져올 값
+  const fetchData = async () => {
+    try {
+      const response = await axiosApi.get("/showMyCompany", {
+        params: {
+          t_user_no: tUserNo, // tUserNo를 쿼리 파라미터로 전달합니다.
+        },
+      }); // 데이터베이스로부터 데이터 가져오기
+      setMyCompany(response.data); // 데이터 설정
+      const response1 = await axiosApi.get("/showMyOrganization", {
+        params: {
+          t_user_no: tUserNo, // tUserNo를 쿼리 파라미터로 전달합니다.
+        },
+      }); // 데이터베이스로부터 데이터 가져오기
+      setMyOrganization(response1.data); // 데이터 설정
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 수정, 취소, 저장 버튼 클릭
+  const handleEditClick = (e) => {
+    if(e.target.name == "EditB"){
+      setEditingOrganization(true);
+    }else{
+      Swal.fire({
+        title: '정말로 그렇게 하시겠습니까?',
+        text: '다시 되돌릴 수 없습니다. 신중하세요.',
+        icon: 'warning',
+        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+        confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+        cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+        confirmButtonText: '승인', // confirm 버튼 텍스트 지정
+        cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+        // reverseButtons: true, // 버튼 순서 거꾸로
+      }).then(result => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
+            fetchData();
+            setEditingOrganization(false);
+        }
+      });
+    }
+  }
+
+  // 추가, 편집, 삭제 버튼 클릭
+  const handleCrudClick = (e) => {
+    if(e.target.name === "CreateB"){
+      setMyOrganization([...myOrganization, ""]);
+    }
+  }
+
+  // 커서 정보 저장
+  const handleItemClick = (item) => {
+    setEditingItem(item);
+  };
+
+  // 저장 버튼 클릭
+  const handleEditSave = () => {
+    if (editingItem && inputRef.current) {
+      // 수정된 내용을 저장
+      const editedOrganization = myOrganization.map((item) =>
+        item === editingItem ? inputRef.current.value : item
+      );
+      setMyOrganization(editedOrganization);
+      setEditingOrganization(false); // 편집 모드 비활성화
+    }
+  };
 
   return(
     <CsContainer>
@@ -207,7 +345,19 @@ function Management(){
           <div className="treeViewTit">
             <h2>조직도</h2>
             <div className="buttonBox">
-              <a><span>수정</span></a>
+              {editingOrganization ? (
+                <>
+                  <button className="editOrganizationButton" name="CreateB" onClick={handleCrudClick}>추가</button>
+                  <button className="editOrganizationButton" name="UpdateB" onClick={handleCrudClick}>편집</button>
+                  <button className="editOrganizationButton" name="DeleteB" onClick={handleCrudClick}>삭제</button>
+                  <button className="editOrganizationButton" name="CancelB" onClick={handleEditClick}>취소</button>
+                  <button className="editOrganizationSaveButton" name="SaveB" onClick={handleEditClick}>저장</button>  
+                </>
+                ):(
+                  <>
+                  <button className="editOrganizationButton" name="EditB" onClick={handleEditClick}>수정</button>
+                </>
+              )}
             </div>
           </div>
           <div className="organizationChartBox">
@@ -219,23 +369,22 @@ function Management(){
                       <span className="buildingIcon"><BusinessOutlinedIcon /></span>
                       <span className="txtNodeTitle">
                         <span className="num">10</span>
-                        WEHAGOUnit_멘토링
+                        {myCompany}
                       </span>
                     </div>
-                    <div className="nodeInnerGroup">
-                      <span className="buildingIcon"><FolderTwoToneIcon /></span>
-                      <span className="txtNodeTitle">
-                        <span className="num">4</span>
-                        3조
-                      </span>
-                    </div>
-                    <div className="nodeInnerGroup">
-                      <span className="buildingIcon"><FolderTwoToneIcon /></span>
-                      <span className="txtNodeTitle">
-                        <span className="num">4</span>
-                        4조
-                      </span>
-                    </div>
+                    {myOrganization && myOrganization.map((item, index) => (
+                      <div className="nodeInnerGroup" key={index}>
+                        <span className="buildingIcon"><FolderTwoToneIcon /></span>
+                        <span className="txtNodeTitle">
+                          <span className="num">4</span>
+                          {item ? item : (
+                            <>
+                              <input type="text" className="txtNodeTitleInput"/>
+                            </>
+                          )}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -248,3 +397,4 @@ function Management(){
     </CsContainer>
   );
 }export default Management;
+
