@@ -5,9 +5,9 @@ import CounterContainer2 from "./Containers/CounterContainer2";
 const TestRedux = () => {
   return (
     <div>
-    <Counter />
-    <CounterContainer2 />
-  </div>
+      <Counter />
+      <CounterContainer2 />
+    </div>
   );
 };
 
