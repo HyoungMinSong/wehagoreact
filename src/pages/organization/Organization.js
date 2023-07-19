@@ -5,6 +5,7 @@ const SectionTag = styled.div`
     display:block;
     margin: 0px auto;
     background-color: white;
+    text-align: center;
     position: absolute;
     top: 0;
     bottom: 0;

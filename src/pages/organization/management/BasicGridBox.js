@@ -7,6 +7,15 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   isexpanded: $isexpanded,
 }))`
   height: 100%;
+  .unrealGridBox {
+    height:100%;
+    background-color: gray;
+  }
+  .unrealGridBoxText {
+    line-height: 50vh;
+    color: white;
+    font-weight: bold;
+  }
   .realMovingTable {
     height: calc(100% - 2px);
     border-width: 2px 1px 1px;
@@ -17,6 +26,9 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
     height: 100%;
     width: ${(props) => (props.isexpanded == "true" ? "50%" : "100%")};
     transition: width 0.5s;
+  }
+  .unrealTable {
+    display: none;
   }
   .WrappingTable {
     position: absolute;
@@ -353,7 +365,12 @@ function BasicGridBox(props) {
     <WrappingGridBox $isexpanded={props.isExpanded}>
       <div className="realMovingTable">
         <div className="WrappingTable">
-          <div className="movingTable">
+          <div className={`unrealGridBox ${props.editingOrganization ? "" : "unrealTable"}`}>
+            <span className="unrealGridBoxText">
+              조직도 수정 시 직원리스트 조회가 불가합니다.
+            </span>
+          </div>
+          <div className={`movingTable ${props.editingOrganization ? "unrealTable" : ""}`}>
             <table>
               <thead>
                 <tr>

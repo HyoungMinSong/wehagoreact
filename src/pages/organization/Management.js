@@ -300,17 +300,16 @@ function Management() {
   });
   // Detail 오프너
   const [isExpanded, setIsExpanded] = useState("false");
-
   // 아코디언 오프너
   const [selectedCompanyIndex, setSelectedCompanyIndex] = useState([]);
-
+  
   // 아코디언 오프너 버튼
   const handleCompanyClick = (companyIndex) => {
     setSelectedCompanyIndex(
       companyIndex === selectedCompanyIndex ? -1 : companyIndex
-    );
-  };
-
+      );
+    };
+    
   // 2번째 파라미터로 빈 배열 배치시 렌더링하는 처음만 실행
   useEffect(() => {
     fetchData();
@@ -322,8 +321,10 @@ function Management() {
       editingItem != null &&
       selectedNodePk != null &&
       selectedNodeIndex != null &&
-      selectedListTab != null
+      selectedListTab != null &&
+      editingOrganization === false
     ) {
+      console.log("이펙트 : ",editingItem, selectedNodePk, selectedNodeIndex, selectedListTab);
       showMyEmployees(editingItem, selectedNodePk, selectedNodeIndex, selectedListTab);
     }
   }, [editingItem, selectedNodePk, selectedNodeIndex, selectedListTab]);
@@ -336,10 +337,11 @@ function Management() {
           t_user_no: tUserNo,
         },
       });
-      console.log(response.data);
+      console.log("렌더링 ",response.data);
       setMyWorkPlace(response.data);
       setSelectedCompanyIndex(0);
       setEditingItem(response.data[0].t_company_name);
+      setSelectedNodeIndex(-1);
       setSelectedNodePk(response.data[0].t_company_no);
     } catch (error) {
       console.error(error);
@@ -350,6 +352,9 @@ function Management() {
   const handleEditClick = (e) => {
     if (e.target.name == "EditB") {
       setEditingOrganization(true);
+      if(isExpanded === "true"){
+        setIsExpanded("false");
+      }
     } else {
       Swal.fire({
         title: "정말로 그렇게 하시겠습니까?",
@@ -384,11 +389,13 @@ function Management() {
     if (isExpanded === "true") {
       setIsExpanded("false");
     }
-    console.log(name, index, listTab);
-    setSelectedNodeIndex(listTab);
-    setEditingItem(name);
-    setSelectedNodeIndex(index);
-    setSelectedNodePk(pk);
+    if (editingOrganization === false){
+      console.log(name, pk, index, listTab);
+      setSelectedNodeIndex(listTab);
+      setEditingItem(name);
+      setSelectedNodeIndex(index);
+      setSelectedNodePk(pk);
+    }
   };
 
   // 직원 리스트 Select
@@ -409,7 +416,7 @@ function Management() {
         .catch((error) => {
           console.error(error);
         });
-      console.log(response);
+      console.log("리스트 : ",response);
     } catch (error) {
       console.error(error);
     }
@@ -434,7 +441,8 @@ function Management() {
     const company = myWorkPlace.find((c) => c.t_company_name === companyName);
     return {
       t_company_name: company.t_company_name,
-      t_company_no: company.t_company_no
+      t_company_no: company.t_company_no,
+      company_employee_count: company.company_employee_count
     };
   });
 
@@ -510,7 +518,6 @@ function Management() {
                     const departments = myWorkPlace.filter(
                       (company) => company.t_company_name === companyName.t_company_name
                     );
-                    console.log(departments);
                     return (
                       <div className="mNode" key={companyIndex}>
                         <div
@@ -527,7 +534,10 @@ function Management() {
                           <span className="buildingIcon">
                             <BusinessOutlinedIcon />
                           </span>
-                          <span className="txtNodeTitle">{companyName.t_company_name}</span>
+                          <span className="txtNodeTitle">
+                            <span className="num">{companyName.company_employee_count}</span>
+                            {companyName.t_company_name}
+                            </span>
                         </div>
                         <div
                           className={`nodeInnerGroup ${
@@ -544,6 +554,7 @@ function Management() {
                                 <FolderTwoToneIcon />
                               </span>
                               <span className="txtNodeTitle">
+                                <span className="num">{department.organization_employee_count}</span>
                                 {department.t_organization_name}
                               </span>
                             </div>
@@ -568,6 +579,7 @@ function Management() {
           showingMyEmployees={showingMyEmployees}
           isExpanded={isExpanded}
           setIsExpanded={setIsExpanded}
+          editingOrganization={editingOrganization}
         />
       </WrappedTreeView>
     </CsContainer>
