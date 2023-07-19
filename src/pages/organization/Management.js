@@ -3,9 +3,10 @@ import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import FolderTwoToneIcon from '@mui/icons-material/FolderTwoTone';
 import BasicTreeViewList from "./management/BasicTreeViewList";
 import BasicListTabs from "./management/BasicListTabs";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axiosApi from "../../AxiosApi";
 import Swal from "sweetalert2";
+import { async } from "q";
 
 
 const CsContainer = styled.div`
@@ -166,6 +167,9 @@ const BasicTreeViewDepth = styled.div`
     box-sizing: border-box;
     user-select: none !important;
   }
+  .mNode > * > .selected{
+    background-color: #c2e2fc;
+  }
   .chartTree{
     margin-bottom: 0px;
     overflow: visible;
@@ -257,6 +261,27 @@ function Management(){
   const [editingItem, setEditingItem] = useState(null);
   // useRef를 통해 수정된 내용을 입력하는 input 요소에 접근
   const inputRef = useRef(null);
+  // 선택한 노드 인덱스를 저장할 state
+  const [selectedNodeIndex, setSelectedNodeIndex] = useState(-1);
+  // 선택한 리스트 탭의 인덱스를 저장할 state
+  const [selectedListTab, setSelectedListTab] = useState(-1);
+  // 회사, 조직에 해당하는 유저들의 목록
+  const [showingMyEmployees, setShowingMyEmployees] = useState({
+    t_user_no: '',
+    t_user_id: '',
+    t_user_password: '',
+    t_user_name: '', 
+    t_user_phone: '', 
+    t_user_email: '',
+    t_user_photo_name: '',
+    t_user_photo_path: '', 
+    t_user_sign_date: '', 
+    t_user_delete_date: '', 
+    t_user_state: '', 
+    t_user_update_date: ''
+  });
+  // Detail 오프너
+  const [isExpanded, setIsExpanded] = useState("false");
 
   // 2번째 파라미터로 빈 배열 배치시 렌더링하는 처음만 실행
   useEffect(() => {
@@ -278,6 +303,7 @@ function Management(){
         },
       }); // 데이터베이스로부터 데이터 가져오기
       setMyOrganization(response1.data); // 데이터 설정
+      handleItemClick(response.data, -1);
     } catch (error) {
       console.error(error);
     }
@@ -316,9 +342,38 @@ function Management(){
   }
 
   // 커서 정보 저장
-  const handleItemClick = (item) => {
+  const handleItemClick = (item, index) => {
+    if(isExpanded==="true"){
+      setIsExpanded("false");
+    }
+    console.log(item, index);
+    setSelectedNodeIndex(index);
     setEditingItem(item);
+    if(editingOrganization === false){
+      showMyEmployees(item, index, selectedListTab);
+    }
   };
+
+  const showMyEmployees = (item, index, list) => {
+    try {
+      const response = axiosApi.get("/showMyEmployees", {
+        params: {
+          nodeName: item, 
+          index: index,
+          t_employee_state: list,
+        },
+      }).then((res) => {
+        setShowingMyEmployees(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+      });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   // 저장 버튼 클릭
   const handleEditSave = () => {
@@ -331,6 +386,8 @@ function Management(){
       setEditingOrganization(false); // 편집 모드 비활성화
     }
   };
+
+  
 
   return(
     <CsContainer>
@@ -365,17 +422,25 @@ function Management(){
               <div className="chartTree">
                 <div className="mTree">
                   <div className="mNode">
-                    <div className="nodeInnerCompany">
+                    <div 
+                      className="nodeInnerCompany" 
+                      key="-1"
+                      onClick={() => handleItemClick({myCompany}.myCompany, -1)}
+                    >
                       <span className="buildingIcon"><BusinessOutlinedIcon /></span>
-                      <span className="txtNodeTitle">
+                      <span className={`txtNodeTitle ${-1 === selectedNodeIndex ? "selected" : ""}`}>
                         <span className="num">10</span>
                         {myCompany}
                       </span>
                     </div>
                     {myOrganization && myOrganization.map((item, index) => (
-                      <div className="nodeInnerGroup" key={index}>
+                      <div
+                        className="nodeInnerGroup" 
+                        key={index}
+                        onClick={() => handleItemClick(item,index)}
+                      >
                         <span className="buildingIcon"><FolderTwoToneIcon /></span>
-                        <span className="txtNodeTitle">
+                        <span className={`txtNodeTitle ${index === selectedNodeIndex ? "selected" : ""}`}>
                           <span className="num">4</span>
                           {item ? item : (
                             <>
@@ -391,8 +456,10 @@ function Management(){
             </div>
           </div>
         </BasicTreeViewDepth>
-        <BasicListTabs />
-        <BasicTreeViewList />
+        <BasicListTabs selectedListTab={selectedListTab} setSelectedListTab={setSelectedListTab} isExpanded={isExpanded} setIsExpanded={setIsExpanded} 
+          selectedNodeIndex={selectedNodeIndex} editingItem={editingItem} setShowingMyEmployees={setShowingMyEmployees}
+        />
+        <BasicTreeViewList showingMyEmployees={showingMyEmployees} isExpanded={isExpanded} setIsExpanded={setIsExpanded}/>
       </WrappedTreeView>
     </CsContainer>
   );

@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
+import axiosApi from "../../../AxiosApi";
 
 const ListTabs = styled.div`
   position: absolute;
@@ -45,38 +47,87 @@ const ListTabs = styled.div`
 }
 `;
 
-function BasicListTabs() {
+function BasicListTabs(props) {
+  // 선택한 리스트 탭의 인덱스를 저장할 state
+  const [selectedListTab, setSelectedListTab] = useState(-1);
+
+  useEffect(() => {
+      setSelectedListTab(props.selectedListTab);
+  }, [props.selectedListTab]);
+
+  // 커서 정보 저장
+  const handleListTabClick = (index) => {
+    setSelectedListTab(index);
+    if(props.isExpanded==="true"){
+      props.setIsExpanded("false");
+    }
+    showMyEmployees(props.editingItem, props.selectedNodeIndex, index);
+  };
+  const showMyEmployees = (node, dex, state) => {
+    try {
+      const response = axiosApi.get("/showMyEmployees", {
+        params: {
+          nodeName: node, 
+          index: dex,
+          t_employee_state: state,
+        },
+      }).then((res) => {
+        props.setShowingMyEmployees(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+      });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return(
     <div>
       <ListTabs>
         <div className="basicTabsIn">
           <ul className="basicTabsUl">
-            <li className="basicTabsLiSelected">
+          <li 
+              className={`${selectedListTab === -1 ? "basicTabsLiSelected" : "basicTabsLiNot"}`}
+              onClick={() => handleListTabClick(-1)}
+              >
               <span>
                 전체
                 <span className="num">10</span>
               </span>
             </li>
-            <li className="basicTabsLiNot">
+            <li 
+              className={`${selectedListTab === 0 ? "basicTabsLiSelected" : "basicTabsLiNot"}`}
+              onClick={() => handleListTabClick(0)}
+              >
               <span>
                 미가입
                 <span className="num">0</span>
               </span>
             </li>
-            <li className="basicTabsLiNot">
+            <li 
+              className={`${selectedListTab === 1 ? "basicTabsLiSelected" : "basicTabsLiNot"}`}
+              onClick={() => handleListTabClick(1)}
+              >
               <span>
                 가입대기
                 <span className="num">0</span>
               </span>
             </li>
-            <li className="basicTabsLiNot">
+            <li 
+              className={`${selectedListTab === 2 ? "basicTabsLiSelected" : "basicTabsLiNot"}`}
+              onClick={() => handleListTabClick(2)}
+              >
               <span>
                 사용중
                 <span className="num">10</span>
               </span>
             </li>
-            <li className="basicTabsLiNot">
+            <li 
+              className={`${selectedListTab === 3 ? "basicTabsLiSelected" : "basicTabsLiNot"}`}
+              onClick={() => handleListTabClick(3)}
+              >
               <span>
                 사용중지
                 <span className="num">0</span>
