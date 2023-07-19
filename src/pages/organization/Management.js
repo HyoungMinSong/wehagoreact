@@ -3,10 +3,9 @@ import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 import FolderTwoToneIcon from "@mui/icons-material/FolderTwoTone";
 import BasicTreeViewList from "./management/BasicTreeViewList";
 import BasicListTabs from "./management/BasicListTabs";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axiosApi from "../../AxiosApi";
 import Swal from "sweetalert2";
-import { async } from "q";
 
 const CsContainer = styled.div`
   margin-bottom: 80px;
@@ -220,6 +219,29 @@ const BasicTreeViewDepth = styled.div`
   .MuiSvgIcon-root {
     color: #1c90fb;
   }
+  .accordionButton {
+    display: flex;
+    // align-items: center;
+    cursor: pointer;
+    padding-left: 10px;
+  }
+
+  .accordionIcon {
+    margin-right: 5px;
+  }
+
+  .accordionButton.open .accordionIcon {
+    transform: rotate(90deg);
+  }
+  .nodeInnerGroup {
+    display: none;
+    padding-left: 25px;
+  }
+
+  .nodeInnerGroup.open {
+    display: block;
+  }
+
   .txtNodeTitle {
     cursor: pointer;
     color: rgb(0, 0, 0);
@@ -247,43 +269,16 @@ const BasicTreeViewDepth = styled.div`
 function Management() {
   // 편집중엔 그리드 비활성화할 state
 
-const myCompanies = [
-  {
-    name: '회사1',
-    num: 10,
-    departments: [
-      { name: '부서1', num: 4 },
-      { name: '부서2', num: 2 },
-      // ...
-    ],
-  },
-  {
-    name: '회사2',
-    num: 5,
-    departments: [
-      { name: '부서A', num: 3 },
-      { name: '부서B', num: 1 },
-      // ...
-    ],
-  },
-  // ...
-];
-
-const jsonData = JSON.stringify(myCompanies);
-
-
   // 토큰으로 회원번호
   const [tUserNo, setTUserNo] = useState("1");
-  // 회원번호로 회사이름
-  const [myCompany, setMyCompany] = useState("위하고");
-  // 회원번호로 부서목록
-  const [myOrganization, setMyOrganization] = useState([]);
+  // 회원번호로 회사, 부서 목록
+  const [myWorkPlace, setMyWorkPlace] = useState([]);
   // 수정 버튼 ON/OFF
   const [editingOrganization, setEditingOrganization] = useState(false);
-  // 선택한 요소의 정보 저장
+  // 선택한 요소의 이름 저장
   const [editingItem, setEditingItem] = useState(null);
-  // useRef를 통해 수정된 내용을 입력하는 input 요소에 접근
-  const inputRef = useRef(null);
+  // 선택한 회사 또는 부서의 PK
+  const [selectedNodePk, setSelectedNodePk] = useState(null);
   // 선택한 노드 인덱스를 저장할 state
   const [selectedNodeIndex, setSelectedNodeIndex] = useState(-1);
   // 선택한 리스트 탭의 인덱스를 저장할 state
@@ -306,6 +301,16 @@ const jsonData = JSON.stringify(myCompanies);
   // Detail 오프너
   const [isExpanded, setIsExpanded] = useState("false");
 
+  // 아코디언 오프너
+  const [selectedCompanyIndex, setSelectedCompanyIndex] = useState([]);
+
+  // 아코디언 오프너 버튼
+  const handleCompanyClick = (companyIndex) => {
+    setSelectedCompanyIndex(
+      companyIndex === selectedCompanyIndex ? -1 : companyIndex
+    );
+  };
+
   // 2번째 파라미터로 빈 배열 배치시 렌더링하는 처음만 실행
   useEffect(() => {
     fetchData();
@@ -315,34 +320,27 @@ const jsonData = JSON.stringify(myCompanies);
   useEffect(() => {
     if (
       editingItem != null &&
+      selectedNodePk != null &&
       selectedNodeIndex != null &&
       selectedListTab != null
     ) {
-      showMyEmployees(editingItem, selectedNodeIndex, selectedListTab);
+      showMyEmployees(editingItem, selectedNodePk, selectedNodeIndex, selectedListTab);
     }
-  }, [editingItem, selectedNodeIndex, selectedListTab]);
+  }, [editingItem, selectedNodePk, selectedNodeIndex, selectedListTab]);
 
   // 첫 렌더링에 가져올 값
   const fetchData = async () => {
     try {
-      // 회사 정보 갱신
-      const response = await axiosApi.get("/showMyCompany", {
+      const response = await axiosApi.get("/showMyWorkPlace", {
         params: {
           t_user_no: tUserNo,
         },
       });
-      setMyCompany(response.data);
-      // 부서 정보 갱신
-      const response1 = await axiosApi.get("/showMyOrganization", {
-        params: {
-          t_user_no: tUserNo,
-        },
-      });
-      setMyOrganization(response1.data);
-      // 전체탭선택(기본값)으로 초기화
-      setSelectedListTab(-1);
-      // 회사선택(기본값)으로 초기화
-      handleItemClick(response.data, -1);
+      console.log(response.data);
+      setMyWorkPlace(response.data);
+      setSelectedCompanyIndex(0);
+      setEditingItem(response.data[0].t_company_name);
+      setSelectedNodePk(response.data[0].t_company_no);
     } catch (error) {
       console.error(error);
     }
@@ -376,27 +374,31 @@ const jsonData = JSON.stringify(myCompanies);
 
   // 추가, 편집, 삭제 버튼 클릭
   const handleCrudClick = (e) => {
-    if (e.target.name === "CreateB") {
-      setMyOrganization([...myOrganization, ""]);
-    }
+    // if (e.target.name === "CreateB") {
+    //   setMyOrganization([...myOrganization, ""]);
+    // }
   };
 
-  // 커서 정보 저장
-  const handleItemClick = (item, index) => {
+  // 조직도 클릭 이벤트
+  const handleItemClick = (name, pk, index, listTab) => {
     if (isExpanded === "true") {
       setIsExpanded("false");
     }
-    console.log(item, index);
+    console.log(name, index, listTab);
+    setSelectedNodeIndex(listTab);
+    setEditingItem(name);
     setSelectedNodeIndex(index);
-    setEditingItem(item);
+    setSelectedNodePk(pk);
   };
 
-  const showMyEmployees = (item, index, list) => {
+  // 직원 리스트 Select
+  const showMyEmployees = (item, pk, index, list) => {
     try {
       const response = axiosApi
         .get("/showMyEmployees", {
           params: {
             nodeName: item,
+            pk: pk,
             index: index,
             t_employee_state: list,
           },
@@ -415,15 +417,26 @@ const jsonData = JSON.stringify(myCompanies);
 
   // 저장 버튼 클릭
   const handleEditSave = () => {
-    if (editingItem && inputRef.current) {
-      // 수정된 내용을 저장
-      const editedOrganization = myOrganization.map((item) =>
-        item === editingItem ? inputRef.current.value : item
-      );
-      setMyOrganization(editedOrganization);
-      setEditingOrganization(false); // 편집 모드 비활성화
-    }
+    // if (editingItem && inputRef.current) {
+    //   // 수정된 내용을 저장
+    //   const editedOrganization = myOrganization.map((item) =>
+    //     item === editingItem ? inputRef.current.value : item
+    //   );
+    //   setMyOrganization(editedOrganization);
+    //   setEditingOrganization(false); // 편집 모드 비활성화
+    // }
   };
+
+  // select 한 배열에서 회사의 중복된 열 없도록 회사 목록만 추출
+  const uniqueCompanies = Array.from(
+    new Set(myWorkPlace.map((company) => company.t_company_name))
+  ).map((companyName) => {
+    const company = myWorkPlace.find((c) => c.t_company_name === companyName);
+    return {
+      t_company_name: company.t_company_name,
+      t_company_no: company.t_company_no
+    };
+  });
 
   return (
     <CsContainer>
@@ -493,56 +506,52 @@ const jsonData = JSON.stringify(myCompanies);
             <div className="organizationList">
               <div className="chartTree">
                 <div className="mTree">
-                  <div className="mNode">
-                    <div
-                      className="nodeInnerCompany"
-                      key="-1"
-                      onClick={() =>
-                        handleItemClick({ myCompany }.myCompany, -1)
-                      }
-                    >
-                      <span className="buildingIcon">
-                        <BusinessOutlinedIcon />
-                      </span>
-                      <span
-                        className={`txtNodeTitle ${
-                          -1 === selectedNodeIndex ? "selected" : ""
-                        }`}
-                      >
-                        <span className="num">10</span>
-                        {myCompany}
-                      </span>
-                    </div>
-                    {myOrganization &&
-                      myOrganization.map((item, index) => (
+                  {uniqueCompanies.map((companyName, companyIndex) => {
+                    const departments = myWorkPlace.filter(
+                      (company) => company.t_company_name === companyName.t_company_name
+                    );
+                    console.log(departments);
+                    return (
+                      <div className="mNode" key={companyIndex}>
                         <div
-                          className="nodeInnerGroup"
-                          key={index}
-                          onClick={() => handleItemClick(item, index)}
+                          className={`accordionButton ${
+                            selectedCompanyIndex === companyIndex ? "open" : ""
+                          }`}
+                          onClick={() => handleItemClick(companyName.t_company_name, companyName.t_company_no, -1, selectedListTab)}
                         >
+                          <span className="accordionIcon" onClick={() => handleCompanyClick(companyIndex)}>
+                            {selectedCompanyIndex === companyIndex
+                              ? "＞"
+                              : "＞"}
+                          </span>
                           <span className="buildingIcon">
-                            <FolderTwoToneIcon />
+                            <BusinessOutlinedIcon />
                           </span>
-                          <span
-                            className={`txtNodeTitle ${
-                              index === selectedNodeIndex ? "selected" : ""
-                            }`}
-                          >
-                            <span className="num">4</span>
-                            {item ? (
-                              item
-                            ) : (
-                              <>
-                                <input
-                                  type="text"
-                                  className="txtNodeTitleInput"
-                                />
-                              </>
-                            )}
-                          </span>
+                          <span className="txtNodeTitle">{companyName.t_company_name}</span>
                         </div>
-                      ))}
-                  </div>
+                        <div
+                          className={`nodeInnerGroup ${
+                            selectedCompanyIndex === companyIndex ? "open" : ""
+                          }`}
+                        >
+                          {departments.map((department, departmentIndex) => (
+                            <div
+                              className="departmentItem"
+                              key={departmentIndex}
+                              onClick={() => handleItemClick(department.t_organization_name, department.t_organization_no, 0, selectedListTab)}
+                            >
+                              <span className="buildingIcon">
+                                <FolderTwoToneIcon />
+                              </span>
+                              <span className="txtNodeTitle">
+                                {department.t_organization_name}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -553,9 +562,7 @@ const jsonData = JSON.stringify(myCompanies);
           setSelectedListTab={setSelectedListTab}
           isExpanded={isExpanded}
           setIsExpanded={setIsExpanded}
-          selectedNodeIndex={selectedNodeIndex}
           editingItem={editingItem}
-          setShowingMyEmployees={setShowingMyEmployees}
         />
         <BasicTreeViewList
           showingMyEmployees={showingMyEmployees}

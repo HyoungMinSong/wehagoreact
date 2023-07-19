@@ -327,8 +327,8 @@ function BasicGridBox(props) {
   // 회사, 조직에 해당하는 유저들의 목록
   const [showingMyEmployees, setShowingMyEmployees] = useState([]);
 
+  // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
   useEffect(() => {
-    // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
     if (Array.isArray(props.showingMyEmployees)) {
       setShowingMyEmployees(props.showingMyEmployees);
     } else {
@@ -336,12 +336,15 @@ function BasicGridBox(props) {
     }
   }, [props.showingMyEmployees, props.isExpanded]);
 
+  // 선택한 직원 정보
   const [selectedUser, setSelectedUser] = useState(null);
 
+  // 직원 행 클릭 이벤트
   const handleRowClick = (user) => {
     setSelectedUser(user);
     props.setIsExpanded("true");
   };
+  // Detail X버튼 클릭 이벤트
   const handleXClick = () => {
     props.setIsExpanded("false");
   };

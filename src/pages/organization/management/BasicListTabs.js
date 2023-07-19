@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
-import axiosApi from "../../../AxiosApi";
 
 const ListTabs = styled.div`
   position: absolute;
@@ -51,6 +50,7 @@ function BasicListTabs(props) {
   // 선택한 리스트 탭의 인덱스를 저장할 state
   const [selectedListTab, setSelectedListTab] = useState(props.selectedListTab);
 
+  // 리스트 탭 상태 전송
   useEffect(() => {
     props.setSelectedListTab(selectedListTab);
   }, [selectedListTab]);
