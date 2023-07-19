@@ -1,4 +1,5 @@
 import './App.css';
+
 import { Link } from 'react-router-dom';
 
 
@@ -15,6 +16,7 @@ function App() {
       <Link to={'/login'}>로그인으로 가기</Link>
       <br />
       <Link to={'/organization/management'}>조직도로 가기</Link>
+
     </div>
   );
 }
