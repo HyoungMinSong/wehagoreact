@@ -218,7 +218,7 @@ function SignUp_infomation() {
                             handleShow();
                           }else{
                             dispatch(increase({name : name, phoneNumber : phoneNumber, id : id,
-                               password : password, confirmPassword : confirmPassword, email : email}))
+                               password : password, email : email}))
                                navigate('/signup/company')
                           }
                           console.log(c.data);

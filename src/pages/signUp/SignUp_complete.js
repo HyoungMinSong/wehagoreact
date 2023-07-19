@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Card, Col, Container, Form, Image, Row } from "react-bootstrap";
 import InputMask from 'react-input-mask';
+import { useSelector } from "react-redux";
 
 
 // className="border-danger"
@@ -16,6 +17,10 @@ function SignUp_complete() {
 
   let regex =  /^[가-힣a-zA-Z]+$/;
   let numberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+
+  let test = useSelector((state) => { return state.user });
+  console.log(test);
+  
     return (
         
 <Container style={{ backgroundColor: '#f5f5f5' }} className="pt-5 pb-3">

@@ -11,6 +11,7 @@ let user = createSlice({
     }
   })
 
+
   // 조직도 조건문
 let organizatoinManagement = createSlice({
   name : 'organizatoinManagement',
@@ -21,6 +22,7 @@ let organizatoinManagement = createSlice({
       }
   }
 })
+
   
   // 함수명 추출
   export let { increase } = user.actions 
