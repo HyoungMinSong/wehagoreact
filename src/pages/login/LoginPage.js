@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
+import { Link } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
 
 const LoginForm = ({ handleLogin }) => {
@@ -34,9 +35,9 @@ const LoginPage = () => {
         setLoggedIn(true);
         setLoginError(null);
       } else if (response.status === 401) {
-        console.error('비밀번호가 잘못되었습니다!');
+        console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
         setLoggedIn(false);
-        setLoginError('비밀번호가 잘못되었습니다.');
+        setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
       } else {
         console.error('로그인 실패!');
         setLoggedIn(false);
@@ -44,9 +45,9 @@ const LoginPage = () => {
       }
     } catch (error) {
       if (error.response && error.response.status === 500) {
-        console.error('비밀번호가 잘못되었습니다!');
+        console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
         setLoggedIn(false);
-        setLoginError('비밀번호가 잘못되었습니다.');
+        setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
       } else if (!error.response) {
         console.error('로그인 요청 중 오류 발생:', error);
         setLoggedIn(false);
@@ -57,24 +58,31 @@ const LoginPage = () => {
 
   return (
     <div className="jongwonscss">
-    <div className={`wrapper${formSuccess ? ' form-success' : ''}`}>
-      <div className="container">
-        <h1 className={`${formSuccess ? 'form-success text-white' : 'text-white'}`}>Welcome</h1>
+      <div className={`wrapper${formSuccess ? ' form-success' : ''}`}>
+        <div className="container">
+          <h1 className={`${formSuccess ? 'form-success text-white' : 'text-white'}`}>Welcome</h1>
 
-        {!loggedIn ? (
-          <form onSubmit={handleLogin}>
-            <input type="text" placeholder="아이디" name="username" />
-            <input type="password" placeholder="비밀번호" name="password" />
-            <button type="submit" id="login-button">
-              로그인
-            </button>
-          </form>
-        ) : (
-          <div className="text-white">로그인 성공!</div>
-        )}
+          {!loggedIn ? (
+            <form onSubmit={handleLogin}>
+              <input type="text" placeholder="아이디" name="username" />
+              <input type="password" placeholder="비밀번호" name="password" />
+              <button type="submit" id="login-button">
+                로그인
+              </button>
+              <div className="login-links pt-3">
+                <Link to="/findId" className='px-3'>아이디 찾기</Link> {/* 아이디 찾기 페이지로 이동하는 링크 추가 */}
+                <Link to="/findpw">비밀번호 찾기</Link> {/* 비밀번호 찾기 페이지로 이동하는 링크 추가 */}
+              </div>
+              <div className="register-link">
+                <Link to="/signup">회원가입</Link> {/* 회원가입 페이지로 이동하는 링크 추가 */}
+              </div>
+            </form>
+          ) : (
+            <div className="text-white">로그인 성공!</div>
+          )}
 
-        {loginError && <div className="error text-white">{loginError}</div>}
-      </div>
+          {loginError && <div className="error text-white">{loginError}</div>}
+        </div>
 
       <ul className="bg-bubbles">
         <li></li>

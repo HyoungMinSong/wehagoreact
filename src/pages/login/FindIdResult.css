@@ -1,0 +1,87 @@
+/* FindIdResult.css */
+
+.find-id-result-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.find-id-result-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold; /* 글씨체를 굵게 */
+  margin-bottom: 10px;
+}
+
+.find-id-result-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 30px; /* 여백 추가 */
+}
+
+.find-id-result-id {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px; /* 여백 추가 */
+}
+
+.find-id-result-login-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #37cfee; /* 파란색 배경색 */
+  color: #ffffff; /* 흰색 글자색 */
+  border: none;
+  border-radius: 4px;
+  text-decoration: none; /* 링크 밑줄 제거 */
+}
+
+.find-id-result-login-button:hover {
+  background-color: #010a0c; /* 마우스 호버시 배경색 변경 */
+}
+
+/* FindIdResult.css */
+
+.find-id-result-note {
+  font-size: 14px;
+  text-align: center;
+  color: #888888;
+  margin-top: 70px; /* 여백 크기 조정 */
+}
+
+/* FindIdResult.css */
+
+.find-id-result-note {
+  font-size: 14px;
+  text-align: center;
+  color: #888888;
+  margin-bottom: 20px; /* 여백 크기 조정 */
+}
+
+/* FindIdResult.css */
+
+.find-id-result-title2 {
+  margin-bottom: 60px; /* 여백 크기 조정 */
+}
+
+.find-id-result-password-recovery-link {
+  text-decoration: none;
+  color: black;
+  margin-bottom: 1px;
+}
+
+.find-id-result-login-button {
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
