@@ -19,7 +19,7 @@ return (
 <p className="find-pw-result-message">회원님의 비밀번호는</p>
 <p className="find-pw-result-pw">{foundPw}</p>
 <div className="find-pw-result-note">
-<p>보안을 위해 로그인 후 비밀번호를 변경해주세요.</p>
+<p>가입 시 입력하신 정보는 로그인 후 [개인설정]에서 확인하실 수 있습니다.</p>
 </div>
 <Link to="/login" className="find-pw-result-login-button">
 로그인

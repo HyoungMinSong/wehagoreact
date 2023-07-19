@@ -18,11 +18,7 @@ function App() {
   return (
     <div className="App">
       
-      <Link to={'/signup'}>회원가입으로 가기</Link>
-      <br/>
-      <Link to={'/signup/company'}>회원가입/회사정보입력으로 가기</Link>
-      <br/>
-      <Link to={'/signup/complete'}>회원가입/회원가입완료로 가기</Link>
+    
       <Routes>
         <Route path='/signup' element={<SignUp_infomation/>}/>
         <Route path='/signup/company' element={<SignUp_company/>}/>
