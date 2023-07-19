@@ -140,7 +140,12 @@ function BasicTreeViewList(props){
         </div>
       </div>
       <div className="tblGridBox">
-        <BasicGridBox showingMyEmployees={props.showingMyEmployees} isExpanded={props.isExpanded} setIsExpanded={props.setIsExpanded}/>
+        <BasicGridBox 
+          showingMyEmployees={props.showingMyEmployees} 
+          isExpanded={props.isExpanded} 
+          setIsExpanded={props.setIsExpanded}
+          editingOrganization={props.editingOrganization}
+          />
       </div>
     </TreeViewList>
   );
