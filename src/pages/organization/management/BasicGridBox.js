@@ -1,5 +1,5 @@
 import { styled, css } from "styled-components";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import Img2 from "../images/img2.gif";
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
@@ -7,7 +7,7 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   isexpanded: $isexpanded,
 }))`
   height: 100%;
-  .realMovingTable{
+  .realMovingTable {
     height: calc(100% - 2px);
     border-width: 2px 1px 1px;
     border-style: solid;
@@ -15,10 +15,10 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
     position: relative;
     display: block;
     height: 100%;
-    width: ${props => (props.isexpanded=="true" ? "50%" : "100%")};
+    width: ${(props) => (props.isexpanded == "true" ? "50%" : "100%")};
     transition: width 0.5s;
   }
-  .WrappingTable{
+  .WrappingTable {
     position: absolute;
     left: 0px;
     top: 0px;
@@ -29,35 +29,37 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
     width: 100%;
     height: 100%;
   }
-  .movingTable{
+  .movingTable {
     height: 100%;
     overflow: auto;
     // display: flex;
-    word-break:break-all;
-    white-space:nowrap;
+    word-break: break-all;
+    white-space: nowrap;
   }
-  tr, td, th{
+  tr,
+  td,
+  th {
     border-style: solid;
     border-width: 1px;
     height: 30px;
     font-size: 13px;
-    word-break:break-all;
+    word-break: break-all;
   }
-  tr{
+  tr {
     max-height: 30px;
   }
-  th{
-    background-color: #EFEFFB;
+  th {
+    background-color: #efeffb;
   }
-  caption{
+  caption {
     border-top: black;
     border-top-width: 1px;
     border-top-style: solid;
   }
-  table{
+  table {
     width: 100%;
   }
-  .user-detail{
+  .user-detail {
     height: 100%;
     border: 1px solid #ccc;
     overflow: auto;
@@ -66,266 +68,264 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
     right: 0;
     margin-left: 10px;
     background: #fff;
-    width: ${props => (props.isexpanded=="true" ? "50%" : "0%")};
+    width: ${(props) => (props.isexpanded == "true" ? "50%" : "0%")};
     transition: width 0.5s;
   }
 `;
-    
+
 const WrappingDetailBox = styled.div`
-    .detailBoxTit{
-      margin: 5px 10px 0px;
-      position: relative;
-      min-height: 22px;
-      padding: 5px 0;
-    }
-    h2{
-      font-weight: 400;
-      font-size: 15px;
-      line-height: 22px;
-      color: #000;
-      vertical-align: top;
-    }
-    .detailBoxButtonBox{
-      position: absolute;
-      top: 2px;
-      right: 0;
-    }
-    .detailBoxBB{
-      box-sizing: border-box;
-      cursor: pointer;
-      display: inline-block;
-      outline: none;
-      position: relative;
-      text-align: center;
-      vertical-align: top;
-      border-radius: 0px;
-      border: 1px solid rgb(211, 211, 211);
-      background: rgb(255, 255, 255);
-      color: rgb(74, 74, 74);
-      text-decoration: none;
-      font-family: "Malgun Gothic", Helvetica, "Apple SD Gothic Neo", sans-serif;
-      font-size: 12px;
-      height: 27px;
-      letter-spacing: -0.5px;
-      line-height: initial;
-      padding: 1px 10px 0px;
-      width: auto;
-      margin-left: 4px;
-    }
-    .detailBoxBX{
-      margin-left: 4px;
-      width: 27px;
-      height: 27px;
-      padding: 0;
-      display: inline-block;
-      position: relative;
-      border: 0;
-      background: 0 0;
-      font-weight: 400;
-      text-align: center;
-      vertical-align: top;
-      box-sizing: border-box;
-      cursor: pointer;
-      outline: 0;
-    }
-    .detailBoxInBox{
-      padding: 10px 0 0 10px;
-      position: relative;
-    }
-    .detailBoxStaffInfo{
-      text-align: left;
-      position: relative;
-      padding: 22px;
-      background: #12a4f7;
-    }
-    .detailBoxStaffFace{
-      overflow: hidden;
-      position: absolute;
-      top: 50%;
-      left: 20px;
-      width: 65px;
-      height: 65px;
-      margin-top: -32px;
-      border-radius: 65px;
-    }
-    .hiddingInput{
-      display: none;
-    }
-    .detailBoxStaffPhoto{
-      border-radius: 65px;
-      width: 100%;
-      border: 0;
-      vertical-align: top;
-    }
-    .detailBoxStaffBt{
-      margin-left: 80px;
-    }
-    .detailBoxProfInfo{
-      text-align: left;
-      margin-left: 100px;
-      font-size: 18px;
-      color: #fff;
-    }
-    .detailBoxProfId{
-      display: inline-block;
-      margin: 2px 0 0 10px;
-      padding-left: 7px;
-      border-left: 1px solid #89d2fb;
-      font-size: 13px;
-      color: #b5daff;
-      vertical-align: top;
-    }
-    .detailBoxProfButton{
-      display: inline-block;      
-      margin-left: 100px;
-    }
-    .profPhotoInButton{
-      box-sizing: border-box;
-      cursor: pointer;
-      outline: none;
-      position: relative;
-      text-align: center;
-      vertical-align: top;
-      border-radius: 0px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      background: none;
-      color: rgb(255, 255, 255);
-      text-decoration: none;
-      font-family: "Malgun Gothic", Helvetica, "Apple SD Gothic Neo", sans-serif;
-      font-size: 13px;
-      height: 27px;
-      letter-spacing: -0.5px;
-      line-height: initial;
-      padding: 5px 15px;
-      width: auto;
-      margin-left: 7px;
-      margin-top: 7px;
-    }
-    .profPhotoInInput{
-      cursor: pointer;
-      position: absolute;
-      inset: 0px;
-      width: 100%;
-      opacity: 0;
-      display: none;
-    }
-    .profPhotoOutButton{
-      box-sizing: border-box;
-      cursor: pointer;
-      display: inline-block;
-      outline: none;
-      position: relative;
-      text-align: center;
-      vertical-align: top;
-      border-radius: 0px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      background: none;
-      color: rgb(255, 255, 255);
-      text-decoration: none;
-      font-family: "Malgun Gothic", Helvetica, "Apple SD Gothic Neo", sans-serif;
-      font-size: 13px;
-      height: 27px;
-      letter-spacing: -0.5px;
-      line-height: initial;
-      padding: 5px 15px;
-      width: auto;
-      margin: 7px;
-    }
-    .profPhotoGuideText{
-      margin-top: 8px;
-      font-size: 12px;
-      color: #d2e9ff;
-      margin-left: 100px;
-      margin-bottom:0;
-    }
-    .profPhotoGuideText1{
-      font-size: 12px;
-      color: #d2e9ff;
-      margin-left: 100px;
-      margin-bottom:0;
-    }
-    .detailBoxFormButton{
-      padding: 10px 0 20px;
-      text-align: center;
-    }
-    .detailBoxFormCancelButton{
-      box-sizing: border-box;
-      cursor: pointer;
-      display: inline-block;
-      outline: none;
-      position: relative;
-      text-align: center;
-      vertical-align: top;
-      border-radius: 0px;
-      border: 1px solid rgb(211, 211, 211);
-      background: rgb(255, 255, 255);
-      color: rgb(74, 74, 74);
-      text-decoration: none;
-      font-size: 16px;
-      font-family: "Nanum Square", "Malgun Gothic", Helvetica, "Apple SD Gothic Neo", sans-serif;
-      height: 37px;
-      line-height: initial;
-      padding: 1px 20px 0px;
-      width: auto;
-      margin-top: 8px;
-    }
-    .detailBoxFormSaveButton{
-      box-sizing: border-box;
-      cursor: pointer;
-      display: inline-block;
-      outline: none;
-      position: relative;
-      text-align: center;
-      vertical-align: top;
-      border-radius: 0px;
-      border: 1px solid rgb(28, 144, 251);
-      background: rgb(28, 144, 251);
-      color: rgb(255, 255, 255);
-      text-decoration: none;
-      font-size: 16px;
-      font-family: "Nanum Square", "Malgun Gothic", Helvetica, "Apple SD Gothic Neo", sans-serif;
-      height: 37px;
-      line-height: initial;
-      padding: 1px 20px 0px;
-      width: auto;
-      margin-top: 8px;
-      margin-left: 5px;
-    }
-    .detailBoxInputForm{
-      width: auto;
-      position: static;
-      min-width: 140px;
-      margin-top: 20px;
-    }
-    .detailBoxInputFormTit{
-      position: relative;
-      min-height: 22px;
-      padding: 5px 0;
-    }
-    .detailBoxInputFormTit > h2{
-      font-size: 15px;
-      line-height: 22px;
-      color: #000;
-      vertical-align: top;
-    }
-    .detailBoxInputArea{
-      width: 100%;
-      border: 0;
-      border-collapse: separate;
-      border-top: 2px solid #646464;
-      border-bottom: 1px solid #e5e5e5;
-      table-layout: fixed;
-      border-spacing: 0;
-    }
+  .detailBoxTit {
+    margin: 5px 10px 0px;
+    position: relative;
+    min-height: 22px;
+    padding: 5px 0;
+  }
+  h2 {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 22px;
+    color: #000;
+    vertical-align: top;
+  }
+  .detailBoxButtonBox {
+    position: absolute;
+    top: 2px;
+    right: 0;
+  }
+  .detailBoxBB {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    position: relative;
+    text-align: center;
+    vertical-align: top;
+    border-radius: 0px;
+    border: 1px solid rgb(211, 211, 211);
+    background: rgb(255, 255, 255);
+    color: rgb(74, 74, 74);
+    text-decoration: none;
+    font-family: "Malgun Gothic", Helvetica, "Apple SD Gothic Neo", sans-serif;
+    font-size: 12px;
+    height: 27px;
+    letter-spacing: -0.5px;
+    line-height: initial;
+    padding: 1px 10px 0px;
+    width: auto;
+    margin-left: 4px;
+  }
+  .detailBoxBX {
+    margin-left: 4px;
+    width: 27px;
+    height: 27px;
+    padding: 0;
+    display: inline-block;
+    position: relative;
+    border: 0;
+    background: 0 0;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: top;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: 0;
+  }
+  .detailBoxInBox {
+    padding: 10px 0 0 10px;
+    position: relative;
+  }
+  .detailBoxStaffInfo {
+    text-align: left;
+    position: relative;
+    padding: 22px;
+    background: #12a4f7;
+  }
+  .detailBoxStaffFace {
+    overflow: hidden;
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    width: 65px;
+    height: 65px;
+    margin-top: -32px;
+    border-radius: 65px;
+  }
+  .hiddingInput {
+    display: none;
+  }
+  .detailBoxStaffPhoto {
+    border-radius: 65px;
+    width: 100%;
+    border: 0;
+    vertical-align: top;
+  }
+  .detailBoxStaffBt {
+    margin-left: 80px;
+  }
+  .detailBoxProfInfo {
+    text-align: left;
+    margin-left: 100px;
+    font-size: 18px;
+    color: #fff;
+  }
+  .detailBoxProfId {
+    display: inline-block;
+    margin: 2px 0 0 10px;
+    padding-left: 7px;
+    border-left: 1px solid #89d2fb;
+    font-size: 13px;
+    color: #b5daff;
+    vertical-align: top;
+  }
+  .detailBoxProfButton {
+    display: inline-block;
+    margin-left: 100px;
+  }
+  .profPhotoInButton {
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    text-align: center;
+    vertical-align: top;
+    border-radius: 0px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: none;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-family: "Malgun Gothic", Helvetica, "Apple SD Gothic Neo", sans-serif;
+    font-size: 13px;
+    height: 27px;
+    letter-spacing: -0.5px;
+    line-height: initial;
+    padding: 5px 15px;
+    width: auto;
+    margin-left: 7px;
+    margin-top: 7px;
+  }
+  .profPhotoInInput {
+    cursor: pointer;
+    position: absolute;
+    inset: 0px;
+    width: 100%;
+    opacity: 0;
+    display: none;
+  }
+  .profPhotoOutButton {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    position: relative;
+    text-align: center;
+    vertical-align: top;
+    border-radius: 0px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: none;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-family: "Malgun Gothic", Helvetica, "Apple SD Gothic Neo", sans-serif;
+    font-size: 13px;
+    height: 27px;
+    letter-spacing: -0.5px;
+    line-height: initial;
+    padding: 5px 15px;
+    width: auto;
+    margin: 7px;
+  }
+  .profPhotoGuideText {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #d2e9ff;
+    margin-left: 100px;
+    margin-bottom: 0;
+  }
+  .profPhotoGuideText1 {
+    font-size: 12px;
+    color: #d2e9ff;
+    margin-left: 100px;
+    margin-bottom: 0;
+  }
+  .detailBoxFormButton {
+    padding: 10px 0 20px;
+    text-align: center;
+  }
+  .detailBoxFormCancelButton {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    position: relative;
+    text-align: center;
+    vertical-align: top;
+    border-radius: 0px;
+    border: 1px solid rgb(211, 211, 211);
+    background: rgb(255, 255, 255);
+    color: rgb(74, 74, 74);
+    text-decoration: none;
+    font-size: 16px;
+    font-family: "Nanum Square", "Malgun Gothic", Helvetica,
+      "Apple SD Gothic Neo", sans-serif;
+    height: 37px;
+    line-height: initial;
+    padding: 1px 20px 0px;
+    width: auto;
+    margin-top: 8px;
+  }
+  .detailBoxFormSaveButton {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    position: relative;
+    text-align: center;
+    vertical-align: top;
+    border-radius: 0px;
+    border: 1px solid rgb(28, 144, 251);
+    background: rgb(28, 144, 251);
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-size: 16px;
+    font-family: "Nanum Square", "Malgun Gothic", Helvetica,
+      "Apple SD Gothic Neo", sans-serif;
+    height: 37px;
+    line-height: initial;
+    padding: 1px 20px 0px;
+    width: auto;
+    margin-top: 8px;
+    margin-left: 5px;
+  }
+  .detailBoxInputForm {
+    width: auto;
+    position: static;
+    min-width: 140px;
+    margin-top: 20px;
+  }
+  .detailBoxInputFormTit {
+    position: relative;
+    min-height: 22px;
+    padding: 5px 0;
+  }
+  .detailBoxInputFormTit > h2 {
+    font-size: 15px;
+    line-height: 22px;
+    color: #000;
+    vertical-align: top;
+  }
+  .detailBoxInputArea {
+    width: 100%;
+    border: 0;
+    border-collapse: separate;
+    border-top: 2px solid #646464;
+    border-bottom: 1px solid #e5e5e5;
+    table-layout: fixed;
+    border-spacing: 0;
+  }
 `;
 
-
-function BasicGridBox(props){
-      
+function BasicGridBox(props) {
   // 회사, 조직에 해당하는 유저들의 목록
   const [showingMyEmployees, setShowingMyEmployees] = useState([]);
-  
-
 
   useEffect(() => {
     // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
@@ -335,7 +335,7 @@ function BasicGridBox(props){
       setShowingMyEmployees([]);
     }
   }, [props.showingMyEmployees, props.isExpanded]);
-  
+
   const [selectedUser, setSelectedUser] = useState(null);
 
   const handleRowClick = (user) => {
@@ -345,8 +345,8 @@ function BasicGridBox(props){
   const handleXClick = () => {
     props.setIsExpanded("false");
   };
-  
-  return(
+
+  return (
     <WrappingGridBox $isexpanded={props.isExpanded}>
       <div className="realMovingTable">
         <div className="WrappingTable">
@@ -367,11 +367,13 @@ function BasicGridBox(props){
               <tbody>
                 {showingMyEmployees.map((user) => (
                   <tr
-                  key={user.t_user_no}
-                  onClick={() => handleRowClick(user)}
-                  className={selectedUser === user ? 'selected' : ''}
+                    key={user.t_user_no}
+                    onClick={() => handleRowClick(user)}
+                    className={selectedUser === user ? "selected" : ""}
                   >
-                    <td onClick={(e) => e.stopPropagation()}><input type="checkbox" /></td>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <input type="checkbox" />
+                    </td>
                     <td>{user.t_user_id}</td>
                     <td>{user.t_user_name}</td>
                     <td>{user.t_user_email}</td>
@@ -379,75 +381,135 @@ function BasicGridBox(props){
                     <td>3조</td>
                     <td>인턴</td>
                     <td>사용중</td>
-                  </tr>   
+                  </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-        {selectedUser && (
-          <div className="user-detail">
-            <WrappingDetailBox>
-              <div className="detailBoxTit">
-                <h2>직원정보</h2>
-                <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB">사용중지</button>
-                  <button type="button" className="detailBoxBB">퇴사</button>
-                  <button type="button" className="detailBoxBX" onClick={handleXClick}>X</button>
+      {selectedUser && (
+        <div className="user-detail">
+          <WrappingDetailBox>
+            <div className="detailBoxTit">
+              <h2>직원정보</h2>
+              <div className="detailBoxButtonBox">
+                <button type="button" className="detailBoxBB">
+                  사용중지
+                </button>
+                <button type="button" className="detailBoxBB">
+                  퇴사
+                </button>
+                <button
+                  type="button"
+                  className="detailBoxBX"
+                  onClick={handleXClick}
+                >
+                  X
+                </button>
+              </div>
+            </div>
+            <div className="detailBoxInBox">
+              <div className="detailBoxStaffInfo">
+                <div className="detailBoxStaffFace">
+                  <div>
+                    <input type="file" className="hiddingInput" />
+                  </div>
+                  <img
+                    src={Img2}
+                    alt="프로필사진"
+                    className="detailBoxStaffPhoto"
+                  />
+                </div>
+                <div className="detailBoxProfBt">
+                  <div className="detailBoxProfInfo">
+                    {selectedUser.t_user_name}
+                    <span className="detailBoxProfId">
+                      {selectedUser.t_user_id}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="detailBoxProfButton">
+                      <button
+                        type="button"
+                        id="fileupload"
+                        className="profPhotoInButton"
+                      >
+                        등록
+                      </button>
+                      <input type="file" className="profPhotoInInput" />
+                    </div>
+                    <button type="button" className="profPhotoOutButton">
+                      삭제
+                    </button>
+                    <p className="profPhotoGuideText">
+                      프로필 사진을 등록 또는 삭제한 후 저장 버튼을
+                      클릭해주세요.
+                    </p>
+                    <p className="profPhotoGuideText1">
+                      이미지 최대사이즈 50*50px, 용량 500KB 미만
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="detailBoxInBox">
-                <div className="detailBoxStaffInfo">
-                  <div className="detailBoxStaffFace">
-                    <div>
-                      <input type="file" className="hiddingInput" />
-                    </div>
-                    <img src={Img2} alt="프로필사진" className="detailBoxStaffPhoto" />
-                  </div>
-                  <div className="detailBoxProfBt">
-                    <div className="detailBoxProfInfo">
-                      {selectedUser.t_user_name}
-                      <span className="detailBoxProfId">{selectedUser.t_user_id}</span>
-                    </div>
-                    <div>
-                      <div className="detailBoxProfButton">
-                        <button type="button" id="fileupload" className="profPhotoInButton">등록</button>
-                        <input type="file" className="profPhotoInInput" />
-                      </div>
-                      <button type="button" className="profPhotoOutButton">삭제</button>
-                      <p className="profPhotoGuideText">프로필 사진을 등록 또는 삭제한 후 저장 버튼을 클릭해주세요.</p>
-                      <p className="profPhotoGuideText1">이미지 최대사이즈 50*50px, 용량 500KB 미만</p>
-                    </div>
-                  </div>
+              <div className="detailBoxInputForm">
+                <div className="detailBoxInputTit">
+                  <h2>기본정보</h2>
                 </div>
-                <div className="detailBoxInputForm">
-                  <div className="detailBoxInputTit">
-                    <h2>기본정보</h2>
-                  </div>
-                  <table className="detailBoxInputArea">
-                    <caption></caption>
-                    <colgroup><col></col></colgroup>
-                    <tbody>
-                      <tr><th>이름</th><td>{selectedUser.t_user_name}</td></tr>
-                      <tr><th>소속</th><td>더존</td></tr>
-                      <tr><th>직급</th><td>인턴</td></tr>
-                      <tr><th>직책</th><td>팀원</td></tr>
-                      <tr><th>유선전화번호</th><td>0212341234</td></tr>
-                      <tr><th>입사일</th><td>2023.07.14</td></tr>
-                      <tr><th>이메일주소</th><td>{selectedUser.t_user_email}</td></tr>
-                      <tr><th>휴대전화번호</th><td>01011112222</td></tr>
-                    </tbody>
-                  </table>
-                </div>
+                <table className="detailBoxInputArea">
+                  <caption></caption>
+                  <colgroup>
+                    <col></col>
+                  </colgroup>
+                  <tbody>
+                    <tr>
+                      <th>이름</th>
+                      <td>{selectedUser.t_user_name}</td>
+                    </tr>
+                    <tr>
+                      <th>소속</th>
+                      <td>더존</td>
+                    </tr>
+                    <tr>
+                      <th>직급</th>
+                      <td>인턴</td>
+                    </tr>
+                    <tr>
+                      <th>직책</th>
+                      <td>팀원</td>
+                    </tr>
+                    <tr>
+                      <th>유선전화번호</th>
+                      <td>0212341234</td>
+                    </tr>
+                    <tr>
+                      <th>입사일</th>
+                      <td>2023.07.14</td>
+                    </tr>
+                    <tr>
+                      <th>이메일주소</th>
+                      <td>{selectedUser.t_user_email}</td>
+                    </tr>
+                    <tr>
+                      <th>휴대전화번호</th>
+                      <td>01011112222</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <div className="detailBoxFormButton">
-                <button type="button" className="detailBoxFormCancelButton">취소</button>
-                <button type="button" className="detailBoxFormSaveButton">저장</button>
-              </div>
-            </WrappingDetailBox>
-          </div>
-        )}
+            </div>
+            <div className="detailBoxFormButton">
+              <button type="button" className="detailBoxFormCancelButton">
+                취소
+              </button>
+              <button type="button" className="detailBoxFormSaveButton">
+                저장
+              </button>
+            </div>
+          </WrappingDetailBox>
+        </div>
+      )}
     </WrappingGridBox>
   );
-}export default BasicGridBox;
+}
+export default BasicGridBox;
