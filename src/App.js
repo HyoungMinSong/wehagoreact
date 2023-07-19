@@ -9,6 +9,7 @@ import Administrator from './pages/organization/Administrator';
 import Services from './pages/organization/Services';
 import Management from './pages/organization/Management';
 import LoginPage from './pages/login/LoginPage';
+import SignUp_package from './pages/signUp/SignUp_package';
 
 function App() {
   return (
@@ -19,10 +20,13 @@ function App() {
       <Link to={'/signup/company'}>회원가입/회사정보입력으로 가기</Link>
       <br/>
       <Link to={'/signup/complete'}>회원가입/회원가입완료로 가기</Link>
+      <br/>
+      <Link to={'/signup/package'}>회원가입/패키지로 가기</Link>
       <Routes>
         <Route path='/signup' element={<SignUp_infomation/>}/>
         <Route path='/signup/company' element={<SignUp_company/>}/>
         <Route path='/signup/complete' element={<SignUp_complete/>}/>
+        <Route path='/signup/package' element={<SignUp_package/>}/>
         <Route path="/detail" element={ <div>라우트 테스트임</div> } />
         <Route path='/organization/*' element={ <Organization /> } >
           <Route path="management" element={<Management />} />
