@@ -1,0 +1,82 @@
+/* FindPwResult.css */
+
+.find-pw-result-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff; 
+    border: 1px solid #dddddd; 
+    border-radius: 4px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1); 
+    }
+    
+    .find-pw-result-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold; /* 글씨체를 굵게 */
+    margin-bottom: 10px;
+    }
+    
+    .find-pw-result-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 30px; /* 여백 추가 */
+    }
+    
+    .find-pw-result-pw {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px; /* 여백 추가 */
+    }
+    
+    .find-pw-result-login-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #37cfee; 
+    color: #ffffff; 
+    border: none;
+    border-radius: 4px;
+    text-decoration: none; 
+    }
+    
+    .find-pw-result-login-button:hover {
+    background-color: #010a0c; /* 마우스 호버시 배경색 변경 */
+    }
+    
+    .find-pw-result-note {
+    font-size: 14px;
+    text-align: center;
+    color: #888888;
+    margin-top: 70px; /* 여백 크기 조정 */
+    }
+    
+    .find-pw-result-title2 {
+    margin-bottom: 60px; /* 여백 크기 조정 */
+    }
+    
+    .find-pw-result-find-id-link {
+    text-decoration: none;
+    color: black;
+    margin-bottom: 1px;
+    }
+    
+    .find-pw-result-login-button {
+    margin-top: 10px;
+    margin-bottom: 30px;
+    }
+    
+    /* 바깥 테두리 스타일 추가 */
+    .find-pw-result-container::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    pointer-events: none;
+    }

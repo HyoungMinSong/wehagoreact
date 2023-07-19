@@ -9,11 +9,15 @@ import TestRedux from './redux/TestRedux';
 import Services from './pages/organization/Services';
 import Management from './pages/organization/Management';
 import LoginPage from './pages/login/LoginPage';
+import FindIdForm from './pages/login/FindIdForm';
+import FindPwForm from './pages/login/FindpwForm';
+import FindIdResult from './pages/login/FindIdResult';
+import FindpwResult from './pages/login/FindpwResult';
 
 function App() {
   return (
     <div className="App">
-      <p>하이~~</p>
+      
       <Link to={'/signup'}>회원가입으로 가기</Link>
       <br/>
       <Link to={'/signup/company'}>회원가입/회사정보입력으로 가기</Link>
@@ -30,12 +34,14 @@ function App() {
           <Route path="services" element={<Services />} />
         </Route>
         <Route path="/about" element={ <div>라우트 테스트임2222</div> } />
-        <Route path="/login" element={ 
-          <div className="d-flex align-items-center py-4 bg-body-tertiary">
-        <LoginPage></LoginPage> 
-        </div>
-        } />
-    </Routes>
+        
+        <Route path="/login" element={ <div className="d-flex align-items-center py-4 bg-body-tertiary">
+        <LoginPage></LoginPage></div>} />
+<Route path="/findId" element={ <FindIdForm></FindIdForm> } />
+<Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
+<Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
+<Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
+</Routes>   
     </div>
   );
 }
