@@ -19,6 +19,7 @@ import FindPwForm from './pages/login/FindpwForm';
 import FindIdResult from './pages/login/FindIdResult';
 import FindpwResult from './pages/login/FindpwResult';
 import SignUp_package from './pages/signUp/SignUp_package';
+import Main from './pages/main/Main';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -43,6 +44,7 @@ root.render(
 <Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
 <Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
 <Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
+<Route path='/main' element={<Main/>}/>
       </Routes>
   </BrowserRouter>
   </Provider>
