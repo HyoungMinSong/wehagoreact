@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
 const ListTabs = styled.div`
@@ -7,10 +8,10 @@ const ListTabs = styled.div`
   right: 34px;
   border-bottom: 1px solid #9e9e9e;
   text-align: center;
-  .basicTabsIn{
+  .basicTabsIn {
     vertical-align: top;
   }
-  .basicTabsUl{
+  .basicTabsUl {
     font-size: 13px;
     vertical-align: top;
     zoom: 1;
@@ -18,7 +19,7 @@ const ListTabs = styled.div`
     margin: 0;
     padding: 0;
   }
-  .basicTabsLiSelected{
+  .basicTabsLiSelected {
     font-size: 15px;
     line-height: 32px;
     border-bottom: 3px solid rgb(0, 162, 255);
@@ -27,7 +28,7 @@ const ListTabs = styled.div`
     width: 20%;
     float: left;
   }
-  .basicTabsLiNot{
+  .basicTabsLiNot {
     font-size: 15px;
     line-height: 32px;
     border-bottom: 3px solid transparent;
@@ -36,47 +37,92 @@ const ListTabs = styled.div`
     width: 20%;
     float: left;
   }
-  .num{
+  .num {
     color: rgb(28, 144, 251);
     margin-left: 10px;
     font-size: 15px;
     line-height: 18px;
     -webkit-margin-before: 1px;
-}
+  }
 `;
 
-function BasicListTabs() {
+function BasicListTabs(props) {
+  // 선택한 리스트 탭의 인덱스를 저장할 state
+  const [selectedListTab, setSelectedListTab] = useState(props.selectedListTab);
 
-  return(
+  // 리스트 탭 상태 전송
+  useEffect(() => {
+    props.setSelectedListTab(selectedListTab);
+  }, [selectedListTab]);
+  useEffect(() =>{
+    setSelectedListTab(props.selectedListTab);
+  }, [props.selectedListTab])
+
+  // 커서 정보 저장
+  const handleListTabClick = (index) => {
+    setSelectedListTab(index);
+    if (props.isExpanded === "true") {
+      props.setIsExpanded("false");
+    }
+  };
+
+  return (
     <div>
       <ListTabs>
         <div className="basicTabsIn">
           <ul className="basicTabsUl">
-            <li className="basicTabsLiSelected">
+            <li
+              className={`${
+                selectedListTab === -1
+                  ? "basicTabsLiSelected"
+                  : "basicTabsLiNot"
+              }`}
+              onClick={() => handleListTabClick(-1)}
+            >
               <span>
                 전체
                 <span className="num">10</span>
               </span>
             </li>
-            <li className="basicTabsLiNot">
+            <li
+              className={`${
+                selectedListTab === 0 ? "basicTabsLiSelected" : "basicTabsLiNot"
+              }`}
+              onClick={() => handleListTabClick(0)}
+            >
               <span>
                 미가입
                 <span className="num">0</span>
               </span>
             </li>
-            <li className="basicTabsLiNot">
+            <li
+              className={`${
+                selectedListTab === 1 ? "basicTabsLiSelected" : "basicTabsLiNot"
+              }`}
+              onClick={() => handleListTabClick(1)}
+            >
               <span>
                 가입대기
                 <span className="num">0</span>
               </span>
             </li>
-            <li className="basicTabsLiNot">
+            <li
+              className={`${
+                selectedListTab === 2 ? "basicTabsLiSelected" : "basicTabsLiNot"
+              }`}
+              onClick={() => handleListTabClick(2)}
+            >
               <span>
                 사용중
                 <span className="num">10</span>
               </span>
             </li>
-            <li className="basicTabsLiNot">
+            <li
+              className={`${
+                selectedListTab === 3 ? "basicTabsLiSelected" : "basicTabsLiNot"
+              }`}
+              onClick={() => handleListTabClick(3)}
+            >
               <span>
                 사용중지
                 <span className="num">0</span>
@@ -87,4 +133,5 @@ function BasicListTabs() {
       </ListTabs>
     </div>
   );
-}export default BasicListTabs;
+}
+export default BasicListTabs;
