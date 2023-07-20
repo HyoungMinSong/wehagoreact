@@ -1,12 +1,12 @@
 // FindPwForm.js
 
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosApi from "../../AxiosApi";
 import './FindpwForm.css'; // Import the CSS file
 import { Link } from 'react-router-dom';
 
 const FindPwForm = () => {
-  const [searchOption, setSearchOption] = useState('phone');
+  const [searchOption, setSearchOption] = useState();
   const [id, setId] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -23,7 +23,7 @@ const FindPwForm = () => {
         params = { id, email };
       }
 
-      const response = await axios.get('/api/resetPassword', { params });
+      const response = await axiosApi.get('/api/resetPassword', { params });
 
       // Assuming the response data contains the success status
       const resetSuccess = response.data.success;

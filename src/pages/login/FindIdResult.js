@@ -1,5 +1,3 @@
-// FindIdResult.js
-
 import React from 'react';
 import './FindIdResult.css';
 import PortraitIcon from '@mui/icons-material/Portrait';

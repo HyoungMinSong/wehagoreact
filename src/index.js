@@ -43,6 +43,7 @@ root.render(
 <Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
 <Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
 <Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
+
       </Routes>
   </BrowserRouter>
   </Provider>
