@@ -302,7 +302,15 @@ function Management() {
   const [isExpanded, setIsExpanded] = useState("false");
   // 아코디언 오프너
   const [selectedCompanyIndex, setSelectedCompanyIndex] = useState([]);
-  
+  // 선택한 개체의 회사고유번호
+  const [selectedCompanyPk, setSelectedCompanyPk] = useState(null);
+  // 선택한 개체의 회사의 직원 상태
+  const [selectedEmployeeState, setSelectedEmployeeState] = useState([]);
+
+  useEffect(() => {
+    console.log('ddddd',selectedEmployeeState);
+  }, [selectedEmployeeState]);
+
   // 아코디언 오프너 버튼
   const handleCompanyClick = (companyIndex) => {
     setSelectedCompanyIndex(
@@ -329,6 +337,14 @@ function Management() {
     }
   }, [editingItem, selectedNodePk, selectedNodeIndex, selectedListTab]);
 
+  // 선택 개체에 따라 직원 상태 갱신
+  useEffect(() => {
+    // if(selectedCompanyPk != null){
+      showMyEmployeeState(selectedCompanyPk);
+
+    // }
+  }, [selectedCompanyPk]);
+
   // 첫 렌더링에 가져올 값
   const fetchData = async () => {
     try {
@@ -343,6 +359,7 @@ function Management() {
       setEditingItem(response.data[0].t_company_name);
       setSelectedNodeIndex(-1);
       setSelectedNodePk(response.data[0].t_company_no);
+      setSelectedCompanyPk(response.data[0].t_company_no);
     } catch (error) {
       console.error(error);
     }
@@ -385,16 +402,17 @@ function Management() {
   };
 
   // 조직도 클릭 이벤트
-  const handleItemClick = (name, pk, index, listTab) => {
+  const handleItemClick = (name, pk, index, listTab, compk) => {
     if (isExpanded === "true") {
       setIsExpanded("false");
     }
     if (editingOrganization === false){
-      console.log(name, pk, index, listTab);
+      console.log(name, pk, index, listTab, compk);
       setSelectedNodeIndex(listTab);
       setEditingItem(name);
       setSelectedNodeIndex(index);
       setSelectedNodePk(pk);
+      setSelectedCompanyPk(compk);
     }
   };
 
@@ -412,6 +430,29 @@ function Management() {
         })
         .then((res) => {
           setShowingMyEmployees(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 직원 상태 Select
+  const showMyEmployeeState = (pk) => {
+    try {
+      console.log("pk가 뭐였을까 ",pk);
+      const response = axiosApi
+        .get("/showMyEmployeeState", {
+          params: {
+            t_company_no: pk,
+          },
+        })
+        .then((res) => {
+          // setShowingMyEmployees(res.data);
+          setSelectedEmployeeState(res.data);
         })
         .catch((error) => {
           console.error(error);
@@ -524,7 +565,7 @@ function Management() {
                           className={`accordionButton ${
                             selectedCompanyIndex === companyIndex ? "open" : ""
                           }`}
-                          onClick={() => handleItemClick(companyName.t_company_name, companyName.t_company_no, -1, selectedListTab)}
+                          onClick={() => handleItemClick(companyName.t_company_name, companyName.t_company_no, -1, selectedListTab, companyName.t_company_no)}
                         >
                           <span className="accordionIcon" onClick={() => handleCompanyClick(companyIndex)}>
                             {selectedCompanyIndex === companyIndex
@@ -548,7 +589,7 @@ function Management() {
                             <div
                               className="departmentItem"
                               key={departmentIndex}
-                              onClick={() => handleItemClick(department.t_organization_name, department.t_organization_no, 0, selectedListTab)}
+                              onClick={() => handleItemClick(department.t_organization_name, department.t_organization_no, 0, selectedListTab, department.t_company_no)}
                             >
                               <span className="buildingIcon">
                                 <FolderTwoToneIcon />
@@ -574,6 +615,7 @@ function Management() {
           isExpanded={isExpanded}
           setIsExpanded={setIsExpanded}
           editingItem={editingItem}
+          selectedEmployeeState={selectedEmployeeState}
         />
         <BasicTreeViewList
           showingMyEmployees={showingMyEmployees}
