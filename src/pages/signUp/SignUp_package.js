@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Badge, Button, ButtonGroup, Card, CardGroup, Col, Container, Form, Image, ListGroup, Row } from "react-bootstrap";
+import { Badge, Button, ButtonGroup, Card, CardGroup, Col, Container, Form, Image, ListGroup, Row, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import InputMask from 'react-input-mask';
 import { useSelector } from "react-redux";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -15,6 +15,7 @@ import PreviewIcon from '@mui/icons-material/Preview';
 import EmailIcon from '@mui/icons-material/Email';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
+import PaymentIcon from '@mui/icons-material/Payment';
 
 
 // className="border-danger"
@@ -59,9 +60,9 @@ function SignUp_package() {
         </div>
       </div>
 
-      <Container style={{ background: 'linear-gradient(90deg, #e6f5ff, #d5eeff)' }} className="pt-5 pb-3 ">
+      <Container style={{ background: 'linear-gradient(90deg, #e6f5ff, #d5eeff)' }} className="pt-5 pb-5 ">
 
-        <h1 className="mt-5" style={{ color: '#133662', fontWeight: 800 }}>우리 회사에 꼭 맞는 플랜을 만나보세요!</h1>
+        <h1 className="mt-4" style={{ color: '#133662', fontWeight: 800 }}>우리 회사에 꼭 맞는 플랜을 만나보세요!</h1>
         <p className="mt-4">사용목적, 규모 등에 따라 WEHAGO의 서비스를 다양한 패키지로 만나보실 수 있습니다.</p>
         <div className="mt-5">
           <Badge pill bg="primary" style={{ fontSize: '30px' }}>
@@ -82,7 +83,7 @@ function SignUp_package() {
               <Card.Header className="border-0" style={{
                 height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
                 background: 'linear-gradient(90deg, #e6f5ff, #d5eeff)', paddingLeft: '80px', paddingRight: '30px', paddingBottom: '30px'
-              }}><div className='mt-3' style={{ fontSize: '14px', textAlign: 'left' }}>기업에서 자주 사용하는 서비스들을 모아서 제공하는 플랜입니다.<br></br>
+              }}><div className='mt-3' style={{ fontSize: '14px', textAlign: 'left', color: '#133662'}}>기업에서 자주 사용하는 서비스들을 모아서 제공하는 플랜입니다.<br></br>
                   저장공간, 사용시간 등의 제약을 줄이고<br></br>
                   <b>합리적인 가격에 효율적인 업무환경</b>을 만나보세요.</div>
                 <ButtonGroup size="sm">
@@ -269,6 +270,85 @@ function SignUp_package() {
             {/* </CardGroup> */}
           </Col>
         </Row>
+      </Container>
+      <Container className="my-4">
+        <h4 className="text-start"><PaymentIcon style={{ fontSize: '40px' }} className="mb-1 me-1"></PaymentIcon>주문/결제</h4>
+        <hr />
+        <div>
+          <Row className="justify-content-center">
+            <Col md={5} className=" me-4" style={{ border: '1px dotted #000', background: '#f2f6fc' }}>
+              <div className="m-3">
+                <div className="text-start "><b>프로모션 코드 입력</b></div>
+                <div className="my-2">
+                  <Row>
+                    <Col md={10} className="pe-0">
+                      <Form.Control type="text" size="sm" placeholder="프로모션 코드를 입력해주세요." className="" />
+                    </Col>
+                    <Col md={2} className="">
+                      <Button size="sm" className=" px-3" variant="outline-secondary">적용</Button>
+                    </Col>
+                  </Row>
+                </div>
+                <hr />
+                <div className="text-start "><b>서비스이용금액 (월)</b></div>
+                <div className="text-start my-1" style={{ fontSize: '14px' }}>
+                  <span>CLUB</span><span style={{ float: 'right' }}><b>20,000</b><span>원</span></span><br />
+                  <span>사용자 추가(1명)</span><span style={{ float: 'right' }}><b>3,000</b><span>원</span></span>
+                </div>
+                <hr />
+                <div className="text-start mt-0" style={{ color: "#5ea5e6", fontSize: '14px' }}>
+                  <span>합계</span><span style={{ float: 'right' }}><b>23,000</b><span>원</span></span><br />
+                </div>
+              </div>
+            </Col>
+            <Col md={6} className="" style={{ border: '1px dotted #000' }}>
+              <div className="m-3">
+                <div className="text-start"><b>납부주기 설정</b></div>
+                <div className="d-grid gap-2 mt-2">
+                  <ToggleButtonGroup type="radio" name="options" defaultValue={1} className="" >
+                    <ToggleButton id="tbg-radio-1" value={1} variant="outline-primary" className="">
+                      월단위 결제
+                    </ToggleButton>
+                    <ToggleButton id="tbg-radio-2" value={2} variant="outline-primary">
+                      연단위 결제
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+                <hr />
+                <div className="text-start"><b>납부주기 설정</b></div>
+                <div className="text-start my-1" style={{ fontSize: '14px' }}>
+                  <span>총 이용금액</span><span style={{ float: 'right' }}><b>23,000</b><span>원</span></span><br />
+                  <span>부가세</span><span style={{ float: 'right' }}><b>2,300</b><span>원</span></span>
+                </div>
+                <hr />
+                <div className="text-start mt-0" style={{ fontSize: '21px' }}>
+                  <span><b>최종 결제금액</b></span><span style={{ float: 'right' }}><b style={{ color: "#ff003c" }}>25,300</b><span>원</span></span><br />
+                </div>
+              </div>
+            </Col>
+          </Row>
+          <Row className="justify-content-center my-4" style={{ marginLeft: '31px', marginRight: '31px' }}>
+            <div style={{ border: '1px dotted #000', background: '#f5f5f5' }} className="">
+              <div className="text-start m-3" style={{ fontSize: '14px' }}>
+                <span>다음 결제금액</span><span style={{ float: 'right' }}><b>25,300</b><span>원</span></span><br />
+                <span className="text-muted small-text">결제 예정일 :사용 시작일로부터 1개월</span>
+              </div>
+            </div>
+            <div className="text-muted small-text text-start my-3">
+              <div>- 모든 서비스에 부가세 10%는 별도로 청구됩니다.</div>
+              <div>- 이후 결제예정일에 정기결제 서비스 금액이 청구되며,
+                서비스 추가 구매 시 실제 결제금액은 차이가 있을 수 있습니다.</div>
+              <div>- 서비스 사용을 원하지 않을 경우, 회사삭제를 진행해주세요.</div>
+              <div>- 회사생성 후 90일 이내로 결제를 하지 않을 경우, 생성된 회사가 삭제됩니다.</div>
+            </div>
+            <div className="d-grid gap-2">
+              <Button variant="primary" size="lg">
+                결제하기
+              </Button>
+            </div>
+          </Row>
+
+        </div>
       </Container>
     </div>
   );
