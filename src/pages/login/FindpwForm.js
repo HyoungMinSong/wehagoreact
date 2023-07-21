@@ -1,38 +1,52 @@
-// FindPwForm.js
-
 import React, { useState } from 'react';
-import axiosApi from "../../AxiosApi";
-import './FindpwForm.css'; // Import the CSS file
+import './FindpwForm.css'; // Import FindpwForm.css
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import axiosApi from "../../AxiosApi";
 
-const FindPwForm = () => {
+
+const FindpwForm = () => { // Rename the component to FindpwForm
+  const navigate = useNavigate();
   const [searchOption, setSearchOption] = useState();
-  const [id, setId] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [resetLinkSent, setResetLinkSent] = useState(false);
+  const [foundpw, setFoundpw] = useState('');
+  const [error, setError] = useState('');
+  const [ispwFound, setIspwFound] = useState(false);
+
+  const test = (e) => {
+    console.log('hihi');
+    console.log({ foundpw });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      let params;
+      let url;
+      let data;
+
       if (searchOption === 'phone') {
-        params = { id, phone };
+        url = '/findpw2';
+        data = { t_user_name: name, t_user_phone: phone };
       } else {
-        params = { id, email };
+        url = '/findpw1';
+        data = { t_user_name: name, t_user_email: email };
       }
 
-      const response = await axiosApi.get('/api/resetPassword', { params });
+      const response = await axiosApi.post(url, data);
 
-      // Assuming the response data contains the success status
-      const resetSuccess = response.data.success;
-      if (resetSuccess) {
-        setResetLinkSent(true);
-      }
+      const foundpw = response.data.t_user_password;
+      setFoundpw(foundpw);
+      setError('');
+      setIspwFound(true);
+
+      navigate('/findpwresult', { state: { foundpw } }); // Redirect to the password reset result page
     } catch (error) {
-      // Handle error
-      console.log(error);
+      console.error(error);
+      setError('등록된 정보와 일치하지 않습니다');
+      setFoundpw('');
+      setIspwFound(false);
     }
   };
 
@@ -41,12 +55,12 @@ const FindPwForm = () => {
   };
 
   return (
-    <div className="find-pw-container">
-      <form className="find-pw-form" onSubmit={handleSubmit}>
-        <div className="find-pw-title">비밀번호 찾기</div>
-        <div className="find-pw-description">WEHAGO에 등록된 회원정보로 비밀번호를 찾으실 수 있습니다.</div>
-        <div className="find-pw-search-option">
-          <div className="find-pw-option">
+    <div className="find-pw-container"> {/* Use the class name from FindpwForm.css */}
+      <form className="find-pw-form" onSubmit={handleSubmit}> {/* Use the class name from FindpwForm.css */}
+        <div className="find-pw-title">비밀번호 찾기</div> {/* Use the class name from FindpwForm.css */}
+        <div className="find-pw-description">WEHAGO에 등록된 회원정보로 비밀번호를 찾으실 수 있습니다.</div> {/* Use the class name from FindpwForm.css */}
+        <div className="find-pw-search-option"> {/* Use the class name from FindpwForm.css */}
+          <div className="find-pw-option"> {/* Use the class name from FindpwForm.css */}
             <input
               type="radio"
               id="phone-option"
@@ -56,7 +70,7 @@ const FindPwForm = () => {
             />
             <label htmlFor="phone-option">휴대폰 번호로 찾기</label>
           </div>
-          <div className="find-pw-option">
+          <div className="find-pw-option"> {/* Use the class name from FindpwForm.css */}
             <input
               type="radio"
               id="email-option"
@@ -67,22 +81,22 @@ const FindPwForm = () => {
             <label htmlFor="email-option">이메일로 찾기</label>
           </div>
         </div>
-        <div className="find-pw-form-group">
-          <label className="find-pw-form-label" htmlFor="id">아이디</label>
+        <div className="find-pw-form-group"> {/* Use the class name from FindpwForm.css */}
+          <label className="find-pw-form-label" htmlFor="name">이름</label> {/* Use the class name from FindpwForm.css */}
           <input
-            className="find-pw-form-input"
+            className="find-pw-form-input"  
             type="text"
-            id="id"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
           />
         </div>
         {searchOption === 'email' && (
-          <div className="find-pw-form-group">
-            <label className="find-pw-form-label" htmlFor="email">이메일</label>
+          <div className="find-pw-form-group"> 
+            <label className="find-pw-form-label" htmlFor="email">이메일</label> {/* Use the class name from FindpwForm.css */}
             <input
-              className="find-pw-form-input"
+              className="find-pw-form-input"  
               type="email"
               id="email"
               value={email}
@@ -92,10 +106,10 @@ const FindPwForm = () => {
           </div>
         )}
         {searchOption === 'phone' && (
-          <div className="find-pw-form-group">
-            <label className="find-pw-form-label" htmlFor="phone">휴대폰 번호</label>
+          <div className="find-pw-form-group"> 
+            <label className="find-pw-form-label" htmlFor="phone">휴대폰 번호</label> 
             <input
-              className="find-pw-form-input"
+              className="find-pw-form-input"  
               type="tel"
               id="phone"
               value={phone}
@@ -104,17 +118,16 @@ const FindPwForm = () => {
             />
           </div>
         )}
-        <button className="find-pw-form-button" type="submit">Find PW</button>
-        <Link to="/findid" className="find-pw-link">아이디 찾기</Link>
+        <button className="find-pw-form-button" type="submit" onClick={test}>비밀번호 찾기</button> {/* Use the class name from FindpwForm.css */}
+        <Link to="/findid" className="find-pw-link">아이디 찾기</Link> {/* Use the class name from FindpwForm.css */}
       </form>
-      {resetLinkSent && (
-        <div className="find-pw-result">
-          <p>비밀번호 재설정 링크가 전송되었습니다.</p>
-          {/* Display the reset link sent message or any other message */}
+      {error && (
+        <div className="find-pw-error"> {/* Use the class name from FindpwForm.css */}
+          {error}
         </div>
       )}
     </div>
   );
 };
 
-export default FindPwForm;
+export default FindpwForm; // Export the component as FindpwForm

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import './FindIdForm.css';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
-import FindIdResult from './FindIdResult'; // Import the FindIdResult component
+
 
 const FindIdForm = () => {
+  const navigate = useNavigate();
   const [searchOption, setSearchOption] = useState();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -12,10 +14,12 @@ const FindIdForm = () => {
   const [foundId, setFoundId] = useState('');
   const [error, setError] = useState('');
   const [isIdFound, setIsIdFound] = useState(false); // Add a state variable to track whether the ID is found
-
+  const test = (e) =>{
+    console.log('hihi')
+    console.log({foundId})
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       let url;
       let data;
@@ -30,17 +34,21 @@ const FindIdForm = () => {
 
       const response = await axiosApi.post(url, data);
 
-      // 응답 데이터에 찾은 아이디가 포함되어 있다고 가정합니다.
-      const foundId = response.data.t_user_id; // 수정: 응답 데이터에서 아이디를 가져오도록 수정
+      const foundId = response.data.t_user_id;
       setFoundId(foundId);
-      setError(''); // 에러가 있던 경우 초기화
-      setIsIdFound(true); // 아이디를 찾은 경우 상태를 true로 설정하여 FindIdResult 컴포넌트를 표시합니다.
+      console.log( ' 1.' + foundId)
+      console.log('2.'+response.data.t_user_id )
+      setError('');
+      setIsIdFound(true);
+      console.log( ' 3.' + foundId)
+
+      navigate('/findIdresult' , { state: {foundId}  }); // 로그인이 성공하면 /findIdresult 페이지로 이동합니다.
+      console.log( ' 4.' + foundId)
     } catch (error) {
-      // 에러 처리
-      console.error(error); // 에러를 콘솔에 출력
-      setError('서버에서 오류가 발생했습니다. 다시 시도해주세요.'); // 사용자에게 오류 메시지를 표시
-      setFoundId(''); // 에러가 발생했을 경우 찾은 아이디 초기화
-      setIsIdFound(false); // 아이디를 찾지 못한 경우 상태를 false로 설정하여 FindIdResult 컴포넌트를 숨깁니다.
+      console.error(error);
+      setError('등록된 정보와 일치하지 않습니다');
+      setFoundId('');
+      setIsIdFound(false);
     }
   };
 
@@ -112,7 +120,7 @@ const FindIdForm = () => {
             />
           </div>
         )}
-        <button className="find-id-form-button" type="submit">Find ID</button>
+        <button className="find-id-form-button" type="submit" onClick={test}>Find ID</button>
         <Link to="/findpw" className="find-id-link">비밀번호 찾기</Link>
       </form>
       {error && (
@@ -120,8 +128,7 @@ const FindIdForm = () => {
           {error}
         </div>
       )}
-      {/* Conditionally render the FindIdResult component */}
-      {isIdFound && <FindIdResult foundId={foundId} />}
+      
     </div>
   );
 };
