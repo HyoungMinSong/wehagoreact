@@ -19,6 +19,7 @@ import FindPwForm from './pages/login/FindpwForm';
 import FindIdResult from './pages/login/FindIdResult';
 import FindpwResult from './pages/login/FindpwResult';
 import SignUp_package from './pages/signUp/SignUp_package';
+import Main from './pages/main/Main';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -36,14 +37,14 @@ root.render(
           <Route path="administrator" element={<Administrator />} />
           <Route path="services" element={<Services />} />
         </Route>
-        <Route path="/about" element={<div>라우트 테스트임2222</div>} />
-        <Route path="/login" element={<div className="d-flex align-items-center py-4 bg-body-tertiary">
-          <LoginPage></LoginPage></div>} />
-        <Route path="/findId" element={<FindIdForm></FindIdForm>} />
-        <Route path="/findpw" element={<FindPwForm></FindPwForm>} />
-        <Route path="/findidresult" element={<FindIdResult></FindIdResult>} />
-        <Route path="/findpwresult" element={<FindpwResult></FindpwResult>} />
-
+        <Route path="/about" element={ <div>라우트 테스트임2222</div> } />
+        <Route path="/login" element={ <div className="d-flex align-items-center py-4 bg-body-tertiary">
+        <LoginPage></LoginPage></div>} />
+<Route path="/findId" element={ <FindIdForm></FindIdForm> } />
+<Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
+<Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
+<Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
+<Route path='/main' element={<Main/>}/>
       </Routes>
     </BrowserRouter>
   </Provider>
