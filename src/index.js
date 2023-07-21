@@ -24,15 +24,15 @@ import Main from './pages/main/Main';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
-  <BrowserRouter>
-    <Routes>
+    <BrowserRouter>
+      <Routes>
         <Route path='/' element={<App />} />
-        <Route path='/signup' element={<SignUp_infomation/>}/>
-        <Route path='/signup/company' element={<SignUp_company/>}/>
-        <Route path='/signup/complete' element={<SignUp_complete/>}/>
-        <Route path='/signup/package' element={<SignUp_package/>}/>
-        <Route path="/detail" element={ <div>라우트 테스트임</div> } />
-        <Route path='/organization/*' element={ <Organization /> } >
+        <Route path='/signup' element={<SignUp_infomation />} />
+        <Route path='/signup/company' element={<SignUp_company />} />
+        <Route path='/signup/complete' element={<SignUp_complete />} />
+        <Route path='/signup/package' element={<SignUp_package />} />
+        <Route path="/detail" element={<div>라우트 테스트임</div>} />
+        <Route path='/organization/*' element={<Organization />} >
           <Route path="management" element={<Management />} />
           <Route path="administrator" element={<Administrator />} />
           <Route path="services" element={<Services />} />
@@ -46,7 +46,7 @@ root.render(
 <Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
 <Route path='/main' element={<Main/>}/>
       </Routes>
-  </BrowserRouter>
+    </BrowserRouter>
   </Provider>
 );
 

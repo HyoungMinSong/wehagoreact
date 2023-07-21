@@ -1,14 +1,14 @@
-// FindIdResult.js
-
 import React from 'react';
 import './FindIdResult.css';
 import PortraitIcon from '@mui/icons-material/Portrait';
-import { Link } from 'react-router-dom';
+import { Link ,useLocation} from 'react-router-dom';
+import './FindIdForm.js';
 
-const FindIdResult = ({ foundId }) => {
-  const handleLoginClick = () => {
-    // Handle the login button click here (e.g., navigate to the login page)
-  };
+const FindIdResult = () => {
+  const location = useLocation(); // useLocation 훅을 추가
+  const { foundId } = location.state || {};
+  // 콘솔에 출력
+  console.log('Found ID:', {foundId});
 
   return (
     <div className="find-id-result-container">
@@ -19,7 +19,7 @@ const FindIdResult = ({ foundId }) => {
         <h6 className="find-id-result-title2">찾으신 회원님의 아이디를 확인하세요.</h6>
         <div className="find-id-result-content">
           <p className="find-id-result-message">회원님의 아이디는</p>
-          <p className="find-id-result-id">{foundId}</p>
+          <p className="find-id-result-id">{foundId}</p> {/* foundId를 직접 출력 */}
           <div className="find-id-result-note">
             <p>가입 시 입력하신 정보는 로그인 후 [개인설정]에서 확인하실 수 있습니다.</p>
           </div>

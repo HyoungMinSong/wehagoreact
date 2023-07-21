@@ -1,117 +1,116 @@
-/* FindPwForm.css */
+/* FindpwForm.css */
 
 .find-pw-search-option {
-    display: flex;
-    flex-direction: row-reverse; /* Reverses the order of the options */
-    justify-content: flex-start; /* Aligns options to the right side */
-    margin-bottom: 20px;
-  }
-  
-  .find-pw-option {
-    display: flex;
-    align-items: center;
-    margin-right: 20px; /* Adds spacing between options */
-  }
-  
-  .find-pw-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-  
-  .find-pw-title {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-  }
-  
-  .find-pw-description {
-    text-align: center;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-  }
-  
-  .find-pw-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 600px;
-    padding: 3rem; /* Adjusted value */
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    margin-top: 2rem;
-  }
-  
-  .find-pw-form-group {
-    margin-bottom: 1rem;
-    width: 100%;
-  }
-  
-  .find-pw-form-label {
-    font-size: 14px;
-    margin-bottom: 0.5rem;
-  }
-  
-  .find-pw-form-input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-  }
-  
-  .find-pw-form-button {
-    padding: 10px 15px;
-    background-color: #37cfee;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .find-pw-form-button:hover {
-    background-color: #010a0c;
-  }
-  
-  .find-pw-result {
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f5f5f5;
-  }
-  
-  /* Radio button adjustments */
-  .find-pw-form-radio-group {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-  
-  .find-pw-form-radio {
-    display: flex;
-    align-items: center;
-    margin-right: 1rem;
-  }
-  
-  .find-pw-form-radio input[type="radio"] {
-    margin-right: 0.5rem;
-  }
-  
-  .find-pw-form-button {
-    color: white;
-    margin-top: 20px; /* 아이디 찾기 버튼 아래 여백 추가 */
-  }
-  
-  .find-pw-form-button ~ a {
-    margin-top: 20px; /* 아이디 찾기 버튼과 링크 사이 여백 추가 */
-    display: block; /* 링크를 블록 요소로 변경하여 버튼 아래로 이동 */
-    color: rgba(3, 4, 4, 0.92); /* 링크 텍스트 색상을 검정색으로 변경 */
-  }
-  
-  .find-pw-link {
-    text-decoration: none; /* 텍스트에 밑줄 스타일 제거 */
-  }
-  
+  display: flex;
+  flex-direction: row-reverse; /* 옵션들의 순서를 반대로 변경 */
+  justify-content: flex-start; /* 옵션들을 오른쪽에 정렬 */
+  margin-bottom: 20px;
+}
+
+.find-pw-option {
+  display: flex;
+  align-items: center;
+  margin-right: 20px; /* 옵션들 사이에 간격 추가 */
+}
+
+.find-pw-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.find-pw-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.find-pw-description {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.find-pw-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 600px;
+  padding: 3rem; /* 조정된 값 */
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  margin-top: 2rem;
+}
+
+.find-pw-form-group {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.find-pw-form-label {
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+}
+
+.find-pw-form-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.find-pw-form-button {
+  padding: 10px 15px;
+  background-color: #37cfee;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.find-pw-form-button:hover {
+  background-color: #010a0c;
+}
+
+.find-pw-result {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+}
+
+/* 라디오 버튼에 대한 조정 */
+.find-pw-form-radio-group {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.find-pw-form-radio {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.find-pw-form-radio input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+.find-pw-form-button {
+  color: white;
+  margin-top: 20px; /* 비밀번호 찾기 버튼 아래 여백 추가 */
+}
+
+.find-pw-form-button ~ a {
+  margin-top: 20px; /* 비밀번호 찾기 버튼과 링크 사이 여백 추가 */
+  display: block; /* 링크를 블록 요소로 변경하여 버튼 아래로 이동 */
+  color: rgba(3, 4, 4, 0.92); /* 링크 텍스트 색상을 검정색으로 변경 */
+}
+
+.find-pw-link {
+  text-decoration: none; /* 텍스트에 밑줄 스타일 제거 */
+}
