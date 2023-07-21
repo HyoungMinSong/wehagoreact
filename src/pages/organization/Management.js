@@ -267,7 +267,6 @@ const BasicTreeViewDepth = styled.div`
 `;
 
 function Management() {
-  // 편집중엔 그리드 비활성화할 state
 
   // 토큰으로 회원번호
   const [tUserNo, setTUserNo] = useState("1");
@@ -307,23 +306,12 @@ function Management() {
   // 선택한 개체의 회사의 직원 상태
   const [selectedEmployeeState, setSelectedEmployeeState] = useState([]);
 
-  useEffect(() => {
-    console.log('ddddd',selectedEmployeeState);
-  }, [selectedEmployeeState]);
-
-  // 아코디언 오프너 버튼
-  const handleCompanyClick = (companyIndex) => {
-    setSelectedCompanyIndex(
-      companyIndex === selectedCompanyIndex ? -1 : companyIndex
-      );
-    };
-    
   // 2번째 파라미터로 빈 배열 배치시 렌더링하는 처음만 실행
   useEffect(() => {
     fetchData();
   }, []);
 
-  // 선택 값에 따라 그리드 갱신
+  // 선택 값에 따라 직원 목록 갱신
   useEffect(() => {
     if (
       editingItem != null &&
@@ -332,36 +320,48 @@ function Management() {
       selectedListTab != null &&
       editingOrganization === false
     ) {
-      console.log("이펙트 : ",editingItem, selectedNodePk, selectedNodeIndex, selectedListTab);
-      showMyEmployees(editingItem, selectedNodePk, selectedNodeIndex, selectedListTab);
+      console.log(
+        "이펙트 : ",
+        editingItem,
+        selectedNodePk,
+        selectedNodeIndex,
+        selectedListTab
+      );
+      showMyEmployees(
+        editingItem,
+        selectedNodePk,
+        selectedNodeIndex,
+        selectedListTab
+      );
     }
   }, [editingItem, selectedNodePk, selectedNodeIndex, selectedListTab]);
 
   // 선택 개체에 따라 직원 상태 갱신
   useEffect(() => {
-    // if(selectedCompanyPk != null){
+    if (selectedCompanyPk != null) {
       showMyEmployeeState(selectedCompanyPk);
-
-    // }
+    }
   }, [selectedCompanyPk]);
 
-  // 첫 렌더링에 가져올 값
-  const fetchData = async () => {
-    try {
-      const response = await axiosApi.get("/showMyWorkPlace", {
-        params: {
-          t_user_no: tUserNo,
-        },
-      });
-      console.log("렌더링 ",response.data);
-      setMyWorkPlace(response.data);
-      setSelectedCompanyIndex(0);
-      setEditingItem(response.data[0].t_company_name);
-      setSelectedNodeIndex(-1);
-      setSelectedNodePk(response.data[0].t_company_no);
-      setSelectedCompanyPk(response.data[0].t_company_no);
-    } catch (error) {
-      console.error(error);
+  // 아코디언 오프너 버튼
+  const handleCompanyClick = (companyIndex) => {
+    setSelectedCompanyIndex(
+      companyIndex === selectedCompanyIndex ? -1 : companyIndex
+    );
+  };
+
+  // 조직도 클릭 이벤트
+  const handleItemClick = (name, pk, index, listTab, compk) => {
+    if (isExpanded === "true") {
+      setIsExpanded("false");
+    }
+    if (editingOrganization === false) {
+      console.log(name, pk, index, listTab, compk);
+      setSelectedNodeIndex(listTab);
+      setEditingItem(name);
+      setSelectedNodeIndex(index);
+      setSelectedNodePk(pk);
+      setSelectedCompanyPk(compk);
     }
   };
 
@@ -369,7 +369,7 @@ function Management() {
   const handleEditClick = (e) => {
     if (e.target.name == "EditB") {
       setEditingOrganization(true);
-      if(isExpanded === "true"){
+      if (isExpanded === "true") {
         setIsExpanded("false");
       }
     } else {
@@ -401,18 +401,35 @@ function Management() {
     // }
   };
 
-  // 조직도 클릭 이벤트
-  const handleItemClick = (name, pk, index, listTab, compk) => {
-    if (isExpanded === "true") {
-      setIsExpanded("false");
-    }
-    if (editingOrganization === false){
-      console.log(name, pk, index, listTab, compk);
-      setSelectedNodeIndex(listTab);
-      setEditingItem(name);
-      setSelectedNodeIndex(index);
-      setSelectedNodePk(pk);
-      setSelectedCompanyPk(compk);
+  // 저장 버튼 클릭
+  const handleEditSave = () => {
+    // if (editingItem && inputRef.current) {
+    //   // 수정된 내용을 저장
+    //   const editedOrganization = myOrganization.map((item) =>
+    //     item === editingItem ? inputRef.current.value : item
+    //   );
+    //   setMyOrganization(editedOrganization);
+    //   setEditingOrganization(false); // 편집 모드 비활성화
+    // }
+  };
+
+  // 첫 렌더링에 가져올 값
+  const fetchData = async () => {
+    try {
+      const response = await axiosApi.get("/showMyWorkPlace", {
+        params: {
+          t_user_no: tUserNo,
+        },
+      });
+      console.log("렌더링 ", response.data);
+      setMyWorkPlace(response.data);
+      setSelectedCompanyIndex(0);
+      setEditingItem(response.data[0].t_company_name);
+      setSelectedNodeIndex(-1);
+      setSelectedNodePk(response.data[0].t_company_no);
+      setSelectedCompanyPk(response.data[0].t_company_no);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -434,7 +451,6 @@ function Management() {
         .catch((error) => {
           console.error(error);
         });
-
     } catch (error) {
       console.error(error);
     }
@@ -443,7 +459,7 @@ function Management() {
   // 직원 상태 Select
   const showMyEmployeeState = (pk) => {
     try {
-      console.log("pk가 뭐였을까 ",pk);
+      console.log("pk가 뭐였을까 ", pk);
       const response = axiosApi
         .get("/showMyEmployeeState", {
           params: {
@@ -457,22 +473,10 @@ function Management() {
         .catch((error) => {
           console.error(error);
         });
-      console.log("리스트 : ",response);
+      console.log("리스트 : ", response);
     } catch (error) {
       console.error(error);
     }
-  };
-
-  // 저장 버튼 클릭
-  const handleEditSave = () => {
-    // if (editingItem && inputRef.current) {
-    //   // 수정된 내용을 저장
-    //   const editedOrganization = myOrganization.map((item) =>
-    //     item === editingItem ? inputRef.current.value : item
-    //   );
-    //   setMyOrganization(editedOrganization);
-    //   setEditingOrganization(false); // 편집 모드 비활성화
-    // }
   };
 
   // select 한 배열에서 회사의 중복된 열 없도록 회사 목록만 추출
@@ -483,7 +487,7 @@ function Management() {
     return {
       t_company_name: company.t_company_name,
       t_company_no: company.t_company_no,
-      company_employee_count: company.company_employee_count
+      company_employee_count: company.company_employee_count,
     };
   });
 
@@ -514,7 +518,7 @@ function Management() {
                     name="UpdateB"
                     onClick={handleCrudClick}
                   >
-                    편집
+                    수정
                   </button>
                   <button
                     className="editOrganizationButton"
@@ -545,7 +549,7 @@ function Management() {
                     name="EditB"
                     onClick={handleEditClick}
                   >
-                    수정
+                    편집
                   </button>
                 </>
               )}
@@ -557,7 +561,8 @@ function Management() {
                 <div className="mTree">
                   {uniqueCompanies.map((companyName, companyIndex) => {
                     const departments = myWorkPlace.filter(
-                      (company) => company.t_company_name === companyName.t_company_name
+                      (company) =>
+                        company.t_company_no === companyName.t_company_no
                     );
                     return (
                       <div className="mNode" key={companyIndex}>
@@ -565,9 +570,20 @@ function Management() {
                           className={`accordionButton ${
                             selectedCompanyIndex === companyIndex ? "open" : ""
                           }`}
-                          onClick={() => handleItemClick(companyName.t_company_name, companyName.t_company_no, -1, selectedListTab, companyName.t_company_no)}
+                          onClick={() =>
+                            handleItemClick(
+                              companyName.t_company_name,
+                              companyName.t_company_no,
+                              -1,
+                              selectedListTab,
+                              companyName.t_company_no
+                            )
+                          }
                         >
-                          <span className="accordionIcon" onClick={() => handleCompanyClick(companyIndex)}>
+                          <span
+                            className="accordionIcon"
+                            onClick={() => handleCompanyClick(companyIndex)}
+                          >
                             {selectedCompanyIndex === companyIndex
                               ? "＞"
                               : "＞"}
@@ -576,9 +592,11 @@ function Management() {
                             <BusinessOutlinedIcon />
                           </span>
                           <span className="txtNodeTitle">
-                            <span className="num">{companyName.company_employee_count}</span>
-                            {companyName.t_company_name}
+                            <span className="num">
+                              {companyName.company_employee_count}
                             </span>
+                            {companyName.t_company_name}
+                          </span>
                         </div>
                         <div
                           className={`nodeInnerGroup ${
@@ -589,13 +607,23 @@ function Management() {
                             <div
                               className="departmentItem"
                               key={departmentIndex}
-                              onClick={() => handleItemClick(department.t_organization_name, department.t_organization_no, 0, selectedListTab, department.t_company_no)}
+                              onClick={() =>
+                                handleItemClick(
+                                  department.t_organization_name,
+                                  department.t_organization_no,
+                                  0,
+                                  selectedListTab,
+                                  department.t_company_no
+                                )
+                              }
                             >
                               <span className="buildingIcon">
                                 <FolderTwoToneIcon />
                               </span>
                               <span className="txtNodeTitle">
-                                <span className="num">{department.organization_employee_count}</span>
+                                <span className="num">
+                                  {department.organization_employee_count}
+                                </span>
                                 {department.t_organization_name}
                               </span>
                             </div>
