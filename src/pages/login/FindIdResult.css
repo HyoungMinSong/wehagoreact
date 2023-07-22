@@ -13,7 +13,6 @@
   transform: translate(-50%, -50%);
 }
 
-
 .find-id-result-title {
   text-align: center;
   font-size: 28px;
@@ -72,6 +71,7 @@
 
 .find-id-result-title2 {
   margin-bottom: 60px; /* 여백 크기 조정 */
+  text-align: center;
 }
 
 .find-id-result-password-recovery-link {
@@ -85,3 +85,10 @@
   margin-bottom: 30px;
 }
 
+/* 수정된 부분 */
+
+.find-id-result-message {
+  font-size: 18px;
+  text-align: center;
+  margin-top: 30px; /* 필요에 따라 여백 조정 */
+}
