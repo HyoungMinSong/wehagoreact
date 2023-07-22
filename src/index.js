@@ -39,12 +39,12 @@ root.render(
         </Route>
         <Route path="/about" element={ <div>라우트 테스트임2222</div> } />
         <Route path="/login" element={ <div className="d-flex align-items-center py-4 bg-body-tertiary">
-        <LoginPage></LoginPage></div>} />
-<Route path="/findId" element={ <FindIdForm></FindIdForm> } />
-<Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
-<Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
-<Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
-<Route path='/main' element={<Main/>}/>
+          <LoginPage></LoginPage></div>} />
+        <Route path="/findId" element={ <FindIdForm></FindIdForm> } />
+        <Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
+        <Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
+        <Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
+        <Route path='/main' element={<Main/>}/>
       </Routes>
     </BrowserRouter>
   </Provider>
