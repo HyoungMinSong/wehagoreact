@@ -16,6 +16,8 @@ import EmailIcon from '@mui/icons-material/Email';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import PaymentIcon from '@mui/icons-material/Payment';
+import Swal from "sweetalert2";
+import { CircularProgress } from "@mui/material";
 
 
 // className="border-danger"
@@ -320,6 +322,7 @@ function SignUp_package() {
                   <ToggleButtonGroup type="radio" name="options" defaultValue={1}  >
                     <ToggleButton id="tbg-radio-1" value={1} variant="outline-primary" onClick={()=>{
                       setPayPeriod(0);
+                      
                     }}>
                       월단위 결제
                     </ToggleButton>
@@ -358,7 +361,27 @@ function SignUp_package() {
               <div>- 회사생성 후 90일 이내로 결제를 하지 않을 경우, 생성된 회사가 삭제됩니다.</div>
             </div>
             <div className="d-grid gap-2">
-              <Button variant="primary" size="lg">
+              <Button variant="primary" size="lg" onClick={()=>{
+                let test = payPeriod == 0 ? (packagePrice.servicePrice + packagePrice.perUserPrice) + ((packagePrice.servicePrice + packagePrice.perUserPrice)*0.1) : ((packagePrice.servicePrice + packagePrice.perUserPrice)*12) + (((packagePrice.servicePrice + packagePrice.perUserPrice)*12)*0.1)
+                 Swal.fire({
+                  title: " 최종 결제 금액 " + test + "원입니다.",
+                  text: "위의 금액으로 최종 결제를 진행합니다.",
+                  icon: "warning",
+                  showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+                  confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                  cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                  confirmButtonText: "승인", // confirm 버튼 텍스트 지정
+                  cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                  reverseButtons: true, // 버튼 순서 거꾸로
+                }).then((result) => {
+                  // 만약 Promise리턴을 받으면,
+                  if (result.isConfirmed) {
+                    
+                    
+                    // 만약 모달창에서 confirm 버튼을 눌렀다면
+                    // fetchData();
+                    // setEditingOrganization(false);
+              }})}}>
                 결제하기
               </Button>
             </div>
