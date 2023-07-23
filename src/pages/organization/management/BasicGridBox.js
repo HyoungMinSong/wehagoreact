@@ -1,6 +1,8 @@
 import { styled, css } from "styled-components";
 import React, { useEffect, useState } from "react";
 import Img2 from "../images/img2.gif";
+import { beTheChosenOnes } from "../../../store";
+import { useDispatch, useSelector } from "react-redux";
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   // isexpanded prop를 DOM 요소로 전달합니다.
@@ -361,6 +363,27 @@ function BasicGridBox(props) {
     props.setIsExpanded("false");
   };
 
+  // redux dispatch
+  const dispatch = useDispatch();
+  const dataOfTheChosenOnes = useSelector(state => state.areThereAnyChosenOnes);
+
+  // 체크박스 이벤트
+  const chosenOnes= (e, user) =>{
+    console.log(e.target.checked);
+    console.log(user);
+    if(e.target.checked){
+      const updateDataOfTheChosenOnes = [...dataOfTheChosenOnes, {t_user_no:user.t_user_no}];
+      dispatch(beTheChosenOnes(updateDataOfTheChosenOnes));
+    }else if(!e.target.checked){
+      const updateDataOfTheChosenOnes = [...dataOfTheChosenOnes];
+      const chosenOnesIndex = dataOfTheChosenOnes.findIndex(
+        (item) => item.t_user_no === user.t_user_no
+      );
+      updateDataOfTheChosenOnes.splice(chosenOnesIndex, 1);
+      dispatch(beTheChosenOnes(updateDataOfTheChosenOnes));
+    }
+  };
+
   return (
     <WrappingGridBox $isexpanded={props.isExpanded}>
       <div className="realMovingTable">
@@ -392,7 +415,7 @@ function BasicGridBox(props) {
                     className={selectedUser === user ? "selected" : ""}
                   >
                     <td onClick={(e) => e.stopPropagation()}>
-                      <input type="checkbox" />
+                      <input type="checkbox" onChange={(e)=>chosenOnes(e,user)}/>
                     </td>
                     <td>{user.t_user_id}</td>
                     <td>{user.t_user_name}</td>
