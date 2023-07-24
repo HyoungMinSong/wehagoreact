@@ -20,7 +20,10 @@ import FindIdResult from './pages/login/FindIdResult';
 import FindpwResult from './pages/login/FindpwResult';
 import SignUp_package from './pages/signUp/SignUp_package';
 import Main from './pages/main/Main';
+import PrivateRoute from './PrivateRoute';
 
+const accessToken = localStorage.getItem('accessToken');
+console.log("토큰 있는지 확인 : " + accessToken);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
@@ -39,12 +42,14 @@ root.render(
         </Route>
         <Route path="/about" element={ <div>라우트 테스트임2222</div> } />
         <Route path="/login" element={ <div className="d-flex align-items-center py-4 bg-body-tertiary">
-          <LoginPage></LoginPage></div>} />
+
+        <LoginPage></LoginPage></div>} />
         <Route path="/findId" element={ <FindIdForm></FindIdForm> } />
         <Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
         <Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
         <Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
-        <Route path='/main' element={<Main/>}/>
+        <Route path='/main' element={<PrivateRoute component={<Main />} isLogin={accessToken} />}/>
+
       </Routes>
     </BrowserRouter>
   </Provider>
