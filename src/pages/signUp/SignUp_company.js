@@ -23,12 +23,14 @@ function SignUp_company() {
   let [companyPhoneNumber, setCompanyPhoneNumber] = useState('');
   let [companyPhoneNumberError, setCompanyPhoneNumberError] = useState(false);
 
-  let companyNameRegex = /^[가-힣!@#$%^&*()_+={}\[\]:;"'<>,.?/~\\]+$/; //단어한글과특수문자
-  let registrationNumberRegex = /^\d{3}-\d{2}-\d{5}$/; //숫자 10자리만
+  let companyNameRegex = /^[가-힣!@#$%^&*()_+={}\[\]:;"'<>,.?/~\\]+$/; //단어한글과특수문자/^\d{11}$/;
+  // let registrationNumberRegex = /^\d{3}-\d{2}-\d{5}$/; //숫자 10자리만
+  let registrationNumberRegex = /^\d{10}$/; //숫자 10자리만
   let statusRegex = /^[가-힣]{1,5}$/; //힌글단어 5자리까지
   let categoryRegex = /^[가-힣]{1,5}$/; //힌글단어 5자리까지
-  let reNameRegex = /^[가-힣a-zA-Z]{1,20}$/; // 한글단어나 영문20자리까지 
-  let cpNumberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+  let reNameRegex = /^[가-힣a-zA-Z]{1,20}$/; // 한글단어나 영문20자리까지 /^\d{11}$/;
+  // let cpNumberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+  let cpNumberRegex = /^\d{11}$/;
 
   let dispatch = useDispatch();
 
@@ -126,7 +128,7 @@ function SignUp_company() {
                         // className=""
                         placeholder="Enter business registration number"
                         onChange={(e) => {
-                          setBusinessRegistrationNumber(e.target.value);
+                          setBusinessRegistrationNumber(e.target.value.replace(/-/g, ''));
                           // numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
                         }} className={businessRegistrationNumberError ? "form-control border-danger" : "form-control"}
 
@@ -192,7 +194,7 @@ function SignUp_company() {
                         // className=""
                         placeholder="Enter company phone number"
                         onChange={(e) => {
-                          setCompanyPhoneNumber(e.target.value);
+                          setCompanyPhoneNumber(e.target.value.replace(/-/g, ''));
                           // numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
                         }} className={companyPhoneNumberError ? "form-control border-danger" : "form-control"}
 
@@ -231,7 +233,7 @@ function SignUp_company() {
                       companyPhoneNumber != '' && companyPhoneNumberError == false) {
                         dispatch(increase({...test, companyName:companyName, businessType:businessType,businessRegistrationNumber:businessRegistrationNumber,
                           businessStatus:businessStatus,businessCategory:businessCategory,representativeName:representativeName,companyPhoneNumber:companyPhoneNumber}))
-                          navigate('/signup/complete')
+                          navigate('/signup/package')
                       }
                       
                       }}>

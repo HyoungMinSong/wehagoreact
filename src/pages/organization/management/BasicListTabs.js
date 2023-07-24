@@ -49,6 +49,7 @@ const ListTabs = styled.div`
 function BasicListTabs(props) {
   // 선택한 리스트 탭의 인덱스를 저장할 state
   const [selectedListTab, setSelectedListTab] = useState(props.selectedListTab);
+  
 
   // 리스트 탭 상태 전송
   useEffect(() => {
@@ -81,7 +82,7 @@ function BasicListTabs(props) {
             >
               <span>
                 전체
-                <span className="num">10</span>
+                <span className="num">{props.selectedEmployeeState.count_state_all}</span>
               </span>
             </li>
             <li
@@ -92,7 +93,7 @@ function BasicListTabs(props) {
             >
               <span>
                 미가입
-                <span className="num">0</span>
+                <span className="num">{props.selectedEmployeeState.count_state_0}</span>
               </span>
             </li>
             <li
@@ -103,7 +104,7 @@ function BasicListTabs(props) {
             >
               <span>
                 가입대기
-                <span className="num">0</span>
+                <span className="num">{props.selectedEmployeeState.count_state_1}</span>
               </span>
             </li>
             <li
@@ -114,7 +115,7 @@ function BasicListTabs(props) {
             >
               <span>
                 사용중
-                <span className="num">10</span>
+                <span className="num">{props.selectedEmployeeState.count_state_2}</span>
               </span>
             </li>
             <li
@@ -125,7 +126,7 @@ function BasicListTabs(props) {
             >
               <span>
                 사용중지
-                <span className="num">0</span>
+                <span className="num">{props.selectedEmployeeState.count_state_3}</span>
               </span>
             </li>
           </ul>

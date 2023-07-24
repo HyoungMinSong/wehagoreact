@@ -23,7 +23,8 @@ function SignUp_infomation() {
   let [emailError, setEmailError] = useState(false);
 
   let regex = /^[가-힣a-zA-Z]+$/;
-  let numberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+  // let numberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+  let numberRegex = /^\d{11}$/;
   // let idRegex = /^[a-z]+[a-z0-9]{5,19}$/g;
   let idRegex = /^[a-zA-Z0-9]*$/;
   let pwRegex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
@@ -107,7 +108,8 @@ function SignUp_infomation() {
                         // className=""
                         placeholder="Enter phone number"
                         onChange={(e) => {
-                          setPhoneNumber(e.target.value);
+                          
+                          setPhoneNumber(e.target.value.replace(/-/g, ''));
                           // numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
                         }} className={phoneNumberError ? "form-control border-danger" : "form-control"}
 
