@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import Header from "./HeaderComponent/Header";
 import Section from "./Section";
 import Footer from "./Footer";
-import axios from "axios";
+import axiosApi from "../../AxiosApi";
 import { styled } from "styled-components";
+import { checkAndRefreshToken } from '../../jwtUtils';
 
 const Wrapper = styled.div`
   width: 1500px;
@@ -11,14 +12,35 @@ const Wrapper = styled.div`
 `;
 
 function Main(props) {
-    // const baseUrl = "http://localhost:8080";
-    // const [userData, setUserData] = useState([]);
+    const baseUrl = "http://localhost:8080";
+    const [userData, setUserData] = useState(null);
 
-    // useEffect(() => {
-    //     axios.get(baseUrl + '/api/login/user/data')
-    //     .then(response => setUserData(response.data))
-    //     .catch(error => console.log(error))
-    // }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            // localStorage에 있는 Access Token 가져오기
+            const accessToken = localStorage.getItem('accessToken');
+          
+            // Access Token이 있으면 헤더에 등록 시키기
+            if (accessToken) {
+              axiosApi.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            }
+          
+            try {
+              // checkAndRefreshToken() 함수 실행 후 데이터 요청
+              await checkAndRefreshToken();
+              
+              // 요청 데이터 가져오기
+              const response = await axiosApi.get('/api/data');
+              setUserData(response.data);
+              console.log(response.data);
+            } catch (error) {
+              console.error(error);
+            }
+        };
+          
+        fetchData();
+    }, []);
+
     const dummyUserData = 
         {
             "name": "이주용",

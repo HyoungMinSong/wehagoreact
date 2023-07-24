@@ -13,26 +13,30 @@ let user = createSlice({
 
 
   // 조직도 조건문
-let organizatoinManagement = createSlice({
-  name : 'organizatoinManagement',
-  initialState : {},
+let areThereAnyChosenOnes = createSlice({
+  name : 'areThereAnyChosenOnes',
+  initialState : [],
   reducers : {
-      addIngredients(state, a){
+    beTheChosenOnes(state, a){
         return a.payload
-      }
+      },
+    clearChosenOnes(state) {
+      return [];
+    }
   }
 })
 
   
   // 함수명 추출
   export let { increase } = user.actions 
-  export let { addIngredients } = organizatoinManagement.actions
+  export let { beTheChosenOnes } = areThereAnyChosenOnes.actions
+  export let { clearChosenOnes } = areThereAnyChosenOnes.actions
 
   // 저장소 추출
   export default configureStore({
     reducer: {
       user : user.reducer,
-      organizatoinManagement : organizatoinManagement.reducer,
+      areThereAnyChosenOnes : areThereAnyChosenOnes.reducer,
     }
   })
 

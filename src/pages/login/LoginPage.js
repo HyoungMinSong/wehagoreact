@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './LoginPage.css';
 import { Link } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
+import jwt_decode from 'jwt-decode';
 
 const LoginForm = ({ handleLogin }) => {
   return (
@@ -25,15 +26,34 @@ const LoginPage = () => {
     const password = event.target.elements.password.value;
   
     try {
-      const response = await axiosApi.post('/login', {
-        userid: username,
-        password: password,
+      // JWT 토큰 발급
+      const response = await axiosApi.post('/api/login', {
+          userid: username,
+          password: password,
       });
-  
+      
       if (response.status === 200) {
         console.log('로그인 성공!');
         setLoggedIn(true);
         setLoginError(null);
+
+        // 발급 받은 Access Token 헤더에 등록
+        const accessToken = response.data.accessToken;
+
+        // 로그인 성공 후 Access Token을 localStorage에 저장
+        localStorage.setItem('accessToken', accessToken);
+        
+        // Refresh Token 유효기간 가져오기
+        const refreshToken = response.data.refreshToken;
+        const decodedRefreshToken = jwt_decode(refreshToken);
+        const refreshTokenExpiration = new Date(decodedRefreshToken.exp * 1000);
+        
+        // Refresh Token을 쿠키에 등록
+        const expires = refreshTokenExpiration.toUTCString();
+        document.cookie = `refreshToken=${refreshToken}; path=/; expires=${expires}`;
+
+        // 메인 페이지로 넘어가기
+        window.location.replace('/main');
       } else if (response.status === 401) {
         console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
         setLoggedIn(false);

@@ -6,6 +6,8 @@ import BasicListTabs from "./management/BasicListTabs";
 import { useEffect, useState } from "react";
 import axiosApi from "../../AxiosApi";
 import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
+import { clearChosenOnes } from "../../store";
 
 const CsContainer = styled.div`
   margin-bottom: 80px;
@@ -310,6 +312,8 @@ function Management() {
   const [proEditiedOrganization, setProEditiedOrganization] = useState([]);
   // 부서 이름 수정시 input에 입력할 이전 이름
   const [prevEditingOrganizationName, setPrevEditingOrganizationName] = useState("");
+  // redux dispatch
+  const dispatch = useDispatch();
 
   // 2번째 파라미터로 빈 배열 배치시 렌더링하는 처음만 실행
   useEffect(() => {
@@ -325,19 +329,13 @@ function Management() {
       selectedListTab != null &&
       editingOrganization === false
     ) {
-      console.log(
-        "이펙트 : ",
-        editingItem,
-        selectedNodePk,
-        selectedNodeIndex,
-        selectedListTab
-      );
       showMyEmployees(
         editingItem,
         selectedNodePk,
         selectedNodeIndex,
         selectedListTab
       );
+      dispatch(clearChosenOnes());
     }
   }, [editingItem, selectedNodePk, selectedNodeIndex, selectedListTab]);
 
@@ -345,6 +343,7 @@ function Management() {
   useEffect(() => {
     if (selectedCompanyPk != null) {
       showMyEmployeeState(selectedCompanyPk);
+      dispatch(clearChosenOnes());
     }
   }, [selectedCompanyPk]);
 
@@ -372,6 +371,7 @@ function Management() {
   const handleEditClick = (e) => {
     if (e.target.name == "EditB") {
       setEditingOrganization(true);
+      dispatch(clearChosenOnes());
       if (isExpanded === "true") {
         setIsExpanded("false");
       }
