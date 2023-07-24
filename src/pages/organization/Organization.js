@@ -9,6 +9,7 @@ const SectionTag = styled.div`
     background-color: white;
     text-align: center;
     position: absolute;
+    min-width: 1240px;
     top: 0;
     bottom: 0;
     left: 0;
@@ -103,7 +104,6 @@ const SectionContainer = styled.div`
 function Organization() {
 
   const dataOfTheChosenOnes = useSelector(state => state.areThereAnyChosenOnes);
-  console.log("에에",dataOfTheChosenOnes);
   return(
     <SectionTag>
       <SubHeader>
