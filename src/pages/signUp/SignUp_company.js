@@ -109,9 +109,9 @@ function SignUp_company() {
                         setBusinessType(e.target.value);
                       }} className={businessTypeError ? "border-danger" : ""} > 
                         <option value="">Select business type</option>
-                        <option value="1">개인사업자</option>
-                        <option value="2">법인사업자</option>
-                        <option value="3">기타</option>
+                        <option value="개인사업자">개인사업자</option>
+                        <option value="법인사업자">법인사업자</option>
+                        <option value="기타">기타</option>
                       </Form.Select>
                       {businessTypeError ?
                         <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
