@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Badge, Button, ButtonGroup, Card, CardGroup, Col, Container, Form, Image, ListGroup, Row, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import { Badge, Button, ButtonGroup, Card,  Col, Container, Form,  ListGroup, Row, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import InputMask from 'react-input-mask';
 import { useSelector } from "react-redux";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -17,8 +17,11 @@ import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import PaymentIcon from '@mui/icons-material/Payment';
 import Swal from "sweetalert2";
-import { CircularProgress } from "@mui/material";
 import axiosApi from "../../AxiosApi";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 
 // className="border-danger"
@@ -38,6 +41,7 @@ function SignUp_package() {
   // let numberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
 
   let test11 = useSelector((state) => { return state.user });
+  let navigate = useNavigate();
   // console.log(test11);
 
   return (
@@ -388,7 +392,7 @@ function SignUp_package() {
                     
                     axiosApi.post("/signupinsert", finalTest).then((c) => {
                       console.log(c.data);
-                      // navigate('/signup/company')
+                      navigate('/')
                     }).catch(() => {
 
                       console.log('실패함')
