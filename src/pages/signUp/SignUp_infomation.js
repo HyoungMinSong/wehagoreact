@@ -63,7 +63,6 @@ function SignUp_infomation() {
   return (
 
     <Container style={{ backgroundColor: '#f5f5f5' }} className="pt-5 pb-3">
-
       <Row className="justify-content-center mb-5">
 
         <Col md={10} >

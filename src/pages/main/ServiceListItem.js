@@ -24,7 +24,7 @@ function ServiceListItem(props) {
     return (
         <Item>
             <img src="https://cdn-icons-png.flaticon.com/128/11324/11324302.png" alt="서비스 이미지" width="80px" height="80px"/>
-            <small>{item.name}</small>
+            <small>{item.t_service_name}</small>
         </Item>
     );
 }

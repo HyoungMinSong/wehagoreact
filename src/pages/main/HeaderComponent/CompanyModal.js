@@ -15,7 +15,7 @@ const ModalWrapper = styled.div`
     /* translate는 본인의 크기 기준으로 작동한다. */
     position: absolute;
     top: 75px;
-    left: 200px;
+    left: 10%;
 
     /* 모달창 디자인 */
     background: linear-gradient(#800080, #DDDDDD, #DDDDDD);

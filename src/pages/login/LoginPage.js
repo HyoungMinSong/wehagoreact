@@ -32,7 +32,7 @@ const LoginPage = () => {
           password: password,
       });
       
-      if (response.status === 200) {
+      if (response.data) {
         console.log('로그인 성공!');
         setLoggedIn(true);
         setLoginError(null);
@@ -84,7 +84,7 @@ const LoginPage = () => {
 
           {!loggedIn ? (
             <form onSubmit={handleLogin}>
-              <input type="text" placeholder="아이디" name="username" />
+              <input type="text" placeholder="아이디" name="username"/>
               <input type="password" placeholder="비밀번호" name="password" />
               <button type="submit" id="login-button">
                 로그인
