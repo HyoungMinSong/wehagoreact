@@ -166,6 +166,8 @@ function BasicTreeViewList(props) {
           setSelectedUser={setSelectedUser}
           updateSelectedUser={updateSelectedUser}
           setUpdateSelectedUser={setUpdateSelectedUser}
+          myWorkPlace={props.myWorkPlace}
+          myCompanyInfo={props.myCompanyInfo}
         />
       </div>
     </TreeViewList>

@@ -345,7 +345,6 @@ function BasicGridBox(props) {
   // 회사, 조직에 해당하는 유저들의 목록
   const [showingMyEmployees, setShowingMyEmployees] = useState([]);
 
-
   // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
   useEffect(() => {
     if (Array.isArray(props.showingMyEmployees)) {
@@ -359,6 +358,7 @@ function BasicGridBox(props) {
   const handleRowClick = (user) => {
     props.setSelectedUser(user);
     props.setUpdateSelectedUser(user);
+    console.log("dsdsd", props.updateSelectedUser);
     props.setIsExpanded("true");
   };
 
@@ -395,29 +395,32 @@ function BasicGridBox(props) {
   };
 
   // 개인정보 수정 이벤트
-  const updateOnes = (e) =>{
-    const editedUpdateSelectedUser = {...props.updateSelectedUser};
-    if(e.target.name === 'su-usname'){
+  const updateOnes = (e) => {
+    const editedUpdateSelectedUser = { ...props.updateSelectedUser };
+    if (e.target.name === "su-usname") {
       editedUpdateSelectedUser.t_user_name = e.target.value;
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
-    if(e.target.name === 'su-orname'){
+    if (e.target.name === "su-orname") {
       editedUpdateSelectedUser.t_organization_name = e.target.value;
+      const label = e.target.options[e.target.selectedIndex].dataset.label;
+      console.log("value",e.target.value);
+      console.log("label",label);
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
-    if(e.target.name === 'su-emposi'){
+    if (e.target.name === "su-emposi") {
       editedUpdateSelectedUser.t_employee_position = e.target.value;
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
-    if(e.target.name === 'su-emduty'){
+    if (e.target.name === "su-emduty") {
       editedUpdateSelectedUser.t_employee_duty = e.target.value;
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
-    if(e.target.name === 'su-usphon'){
+    if (e.target.name === "su-usphon") {
       editedUpdateSelectedUser.t_user_phone = e.target.value;
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
-    if(e.target.name === 'su-usemai'){
+    if (e.target.name === "su-usemai") {
       editedUpdateSelectedUser.t_user_email = e.target.value;
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
@@ -425,7 +428,7 @@ function BasicGridBox(props) {
 
   // 저장버튼 이벤트
   const handleSaveClick = () => {
-    console.log("props.updateSelectedUser",props.updateSelectedUser);
+    console.log("props.updateSelectedUser", props.updateSelectedUser);
   };
 
   return (
@@ -511,12 +514,20 @@ function BasicGridBox(props) {
             <div className="detailBoxTit">
               <h2>직원정보</h2>
               <div className="detailBoxButtonBox">
-                {props.updateSelectedUser.length !== 0 ?(<button type="button" className="detailBoxBB">
-                  사용중지
-                </button>) : ('')}
-                {props.updateSelectedUser.length !== 0 ?(<button type="button" className="detailBoxBB">
-                  퇴사
-                </button>) : ('')}
+                {props.updateSelectedUser.length !== 0 ? (
+                  <button type="button" className="detailBoxBB">
+                    사용중지
+                  </button>
+                ) : (
+                  ""
+                )}
+                {props.updateSelectedUser.length !== 0 ? (
+                  <button type="button" className="detailBoxBB">
+                    퇴사
+                  </button>
+                ) : (
+                  ""
+                )}
                 <button
                   type="button"
                   className="detailBoxBX"
@@ -579,52 +590,104 @@ function BasicGridBox(props) {
                     <col></col>
                   </colgroup>
                   <tbody>
-                    {props.updateSelectedUser.length !== 0 ?('') : (<tr>
-                      <th>이름</th>
-                      <td>
-                        <input 
-                          type="text"
-                          name="su-usname"
-                          value={props.updateSelectedUser.t_user_name || ''}
-                          onChange={(e) => updateOnes(e)}
-                        />
-                      </td>
-                    </tr>)}
+                    {props.updateSelectedUser.length !== 0 ? (
+                      ""
+                    ) : (
+                      <tr>
+                        <th>이름</th>
+                        <td>
+                          <input
+                            type="text"
+                            name="su-usname"
+                            value={props.updateSelectedUser.t_user_name || ""}
+                            onChange={(e) => updateOnes(e)}
+                          />
+                        </td>
+                      </tr>
+                    )}
                     <tr>
                       <th>소속</th>
-                      <td><input 
-                          type="text"
-                          name="su-orname"
-                          value={props.updateSelectedUser.t_organization_name || ''}
-                          onChange={(e) => updateOnes(e)}
-                        /></td>
+                      <td>
+                        {props.myCompanyInfo.map(
+                          (companyName, companyIndex) => {
+                            const departments = props.myWorkPlace.filter(
+                              (company) =>
+                                company.t_company_no ===
+                                companyName.t_company_no
+                            );
+                            return (
+                              <select
+                                name="su-orname"
+                                key={companyIndex}
+                                onChange={(e) => updateOnes(e)}
+                                value={
+                                  props.updateSelectedUser
+                                    .t_organization_name || ""
+                                }
+                              >
+                                <option
+                                  key={companyName.t_organization_no}
+                                  value={companyName.t_company_name}
+                                  data-label="-1"
+                                >
+                                  {companyName.t_company_name}
+                                </option>
+                                {departments.map(
+                                  (department) => {
+                                    if (department.t_organization_no === null) {
+                                      return null; // null을 반환하여 해당 div를 출력하지 않음
+                                    }
+                                    return (
+                                      <option
+                                        key={department.t_organization_no}
+                                        value={department.t_organization_name}
+                                        data-label={department.t_organization_no}
+                                      >
+                                        {department.t_organization_name}
+                                      </option>
+                                    );
+                                  }
+                                )}
+                              </select>
+                            );
+                          }
+                        )}
+                      </td>
                     </tr>
                     <tr>
                       <th>직급</th>
-                      <td><input 
+                      <td>
+                        <input
                           type="text"
                           name="su-emposi"
-                          value={props.updateSelectedUser.t_employee_position || ''}
+                          value={
+                            props.updateSelectedUser.t_employee_position || ""
+                          }
                           onChange={(e) => updateOnes(e)}
-                        /></td>
+                        />
+                      </td>
                     </tr>
                     <tr>
                       <th>직책</th>
-                      <td><input 
+                      <td>
+                        <input
                           type="text"
                           name="su-emduty"
-                          value={props.updateSelectedUser.t_employee_duty || ''}
+                          value={props.updateSelectedUser.t_employee_duty || ""}
                           onChange={(e) => updateOnes(e)}
-                        /></td>
+                        />
+                      </td>
                     </tr>
                     <tr>
                       <th>유선전화번호</th>
-                      <td><input 
+                      <td>
+                        <input
                           type="text"
                           name="su-usphon"
-                          value={props.updateSelectedUser.t_user_phone || ''}
+                          value={props.updateSelectedUser.t_user_phone || ""}
                           onChange={(e) => updateOnes(e)}
-                        /></td>
+                        />
+                      </td>
                     </tr>
                     <tr>
                       <th>입사일</th>
@@ -632,32 +695,51 @@ function BasicGridBox(props) {
                     </tr>
                     <tr>
                       <th>이메일주소</th>
-                      <td><input 
+                      <td>
+                        <input
                           type="text"
                           name="su-usemai"
-                          value={props.updateSelectedUser.t_user_email || ''}
+                          value={props.updateSelectedUser.t_user_email || ""}
                           onChange={(e) => updateOnes(e)}
-                        /></td>
-                    </tr>
-                    {props.updateSelectedUser.length !== 0 ?(<tr>
-                      <th>상태</th>
-                      <td>
-                        {props.updateSelectedUser.t_employee_state === 0 && "미가입"}
-                        {props.updateSelectedUser.t_employee_state === 1 && "가입대기"}
-                        {props.updateSelectedUser.t_employee_state === 2 && "사용중"}
-                        {props.updateSelectedUser.t_employee_state === 3 && "사용중지"}
-                        {props.updateSelectedUser.t_employee_state === -1 && "퇴사"}
+                        />
                       </td>
-                    </tr>) : ('')}
+                    </tr>
+                    {props.updateSelectedUser.length !== 0 ? (
+                      <tr>
+                        <th>상태</th>
+                        <td>
+                          {props.updateSelectedUser.t_employee_state === 0 &&
+                            "미가입"}
+                          {props.updateSelectedUser.t_employee_state === 1 &&
+                            "가입대기"}
+                          {props.updateSelectedUser.t_employee_state === 2 &&
+                            "사용중"}
+                          {props.updateSelectedUser.t_employee_state === 3 &&
+                            "사용중지"}
+                          {props.updateSelectedUser.t_employee_state === -1 &&
+                            "퇴사"}
+                        </td>
+                      </tr>
+                    ) : (
+                      ""
+                    )}
                   </tbody>
                 </table>
               </div>
             </div>
             <div className="detailBoxFormButton">
-              <button type="button" className="detailBoxFormCancelButton" onClick={handleXClick}>
+              <button
+                type="button"
+                className="detailBoxFormCancelButton"
+                onClick={handleXClick}
+              >
                 취소
               </button>
-              <button type="button" className="detailBoxFormSaveButton" onClick={handleSaveClick}>
+              <button
+                type="button"
+                className="detailBoxFormSaveButton"
+                onClick={handleSaveClick}
+              >
                 저장
               </button>
             </div>
