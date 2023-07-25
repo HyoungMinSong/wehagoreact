@@ -70,7 +70,7 @@ function Header(props) {
     const {user, company, companyName, setCompanyName} = props;
     const [companyModalOpen, setCompanyModalOpen] = useState(false);
     const [userModalOpen, setUserModalOpen] = useState(false);
-    const selectedCompany = company && company.length > 0 ? company.find((item) => item.t_company_name === companyName).t_employee_duty : '';
+    const selectedCompanyRank = company && company.length > 0 ? company.find((item) => item.t_company_name === companyName).t_employee_duty : '';
 
     const showCompanyModal = () => {
         setCompanyModalOpen(preState => !preState);
@@ -109,12 +109,12 @@ function Header(props) {
                 <ProfileButton className="profile" onClick={showUserModal}>
                     <div>
                         <span className="profile">{user.name}</span>
-                        <span className="profile">{selectedCompany}</span>
+                        <span className="profile">{selectedCompanyRank}</span>
                     </div>
                     <img className="profile" id="detail" src="https://cdn-icons-png.flaticon.com/128/748/748063.png" alt="상세보기" width="10px" height="10px" />
                     <img className="profile" src="https://cdn-icons-png.flaticon.com/128/309/309492.png" alt="프로필 사진" width="35px" height="35px" />
                 </ProfileButton>
-                {userModalOpen && <UserModal setUserModalOpen={setUserModalOpen} user={user} company={company} companyName={companyName} />}
+                {userModalOpen && <UserModal setUserModalOpen={setUserModalOpen} user={user} company={company} companyName={companyName} selectedCompanyRank={selectedCompanyRank} />}
             </Area>
         </Wrapper>
     );

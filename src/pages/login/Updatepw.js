@@ -35,6 +35,7 @@ const Updatepw = () => {
       // 예를 들어, 비밀번호가 성공적으로 변경된 경우 성공 메시지를 표시할 수 있습니다.
       
       if(response.data) {
+        setError('');
         setIsPasswordChanged(true);
       } else {
         setError('비밀번호 변경에 실패했습니다.');
