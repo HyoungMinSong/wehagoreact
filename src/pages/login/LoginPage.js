@@ -32,7 +32,7 @@ const LoginPage = () => {
           password: password,
       });
       
-      if (response.data) {
+      if (response.status === 200) {
         console.log('로그인 성공!');
         setLoggedIn(true);
         setLoginError(null);
