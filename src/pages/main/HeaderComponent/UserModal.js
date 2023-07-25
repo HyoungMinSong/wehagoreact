@@ -110,6 +110,12 @@ const ButtonWrapper = styled.div`
 function UserModal(props) {
     const {setUserModalOpen, user, company, companyName} = props;
     const userModalRef = useRef(null);
+
+    const logoutHandler = () => {
+        localStorage.removeItem('accessToken');
+        document.cookie = 'refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        window.location.replace('/login');
+    }
     
     useEffect(() => {
         const handler = (event) => {
@@ -153,7 +159,7 @@ function UserModal(props) {
                     <img src="https://cdn-icons-png.flaticon.com/128/126/126472.png" alt="개인설정" />
                     <span>개인설정</span>
                 </a>
-                <button>
+                <button onClick={logoutHandler}>
                     <img src="https://cdn-icons-png.flaticon.com/128/8367/8367686.png" alt="로그아웃" />
                     <span>로그아웃</span>
                 </button>

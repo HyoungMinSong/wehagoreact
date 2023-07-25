@@ -1,5 +1,7 @@
 import { Link, Outlet, Route, Routes } from "react-router-dom";
 import { styled } from "styled-components";
+import ActionFooter from "./ActionFooter";
+import { useSelector } from "react-redux";
 
 const SectionTag = styled.div`
     display:block;
@@ -11,6 +13,22 @@ const SectionTag = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
+    .organizationSectionContainerX{
+      position: absolute;
+      top: 48px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transition: bottom 0.4s;
+    }
+    .organizationSectionContainerO{
+      position: absolute;
+      top: 48px;
+      bottom: 44px;
+      left: 0;
+      right: 0;
+      transition: bottom 0.4s;
+    }
 `;
 const SubHeader = styled.div`
     height: 48px;
@@ -80,21 +98,12 @@ const SectionContainer = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    .ogContentClearfix{
-        overflow-y: auto;
-        position: absolute;
-        top: 48px;
-        bottom: 0;
-        left: 200px;
-        right: 0;
-        width: auto;
-        padding: 24px 20px 10px;
-    }
 `;
 
 function Organization() {
 
-
+  const dataOfTheChosenOnes = useSelector(state => state.areThereAnyChosenOnes);
+  console.log("에에",dataOfTheChosenOnes);
   return(
     <SectionTag>
       <SubHeader>
@@ -115,9 +124,10 @@ function Organization() {
           </div>
         </div>
       </SubHeader>
-      <SectionContainer>
+      <div className={dataOfTheChosenOnes.length>0 ? "organizationSectionContainerO":"organizationSectionContainerX"} >
         <Outlet />
-      </SectionContainer>
+      </div>
+      <ActionFooter />
     </SectionTag>
   );
 }export default Organization;
