@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 
 const Wrapper = styled.div`
-    width: 1500px;
+    width: 100%;
     text-align: center;
     padding: 20px 0px;
 `;
