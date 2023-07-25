@@ -1,0 +1,112 @@
+/* Updatepw.css */
+
+.update-password-container {
+  max-width: 700px;
+  margin: 0 auto;
+  margin-top: 60px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #ccc;
+  align-items: center;
+  justify-content: center;
+  min-height: 85vh;
+}
+
+.update-password-title {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.update-password-description-div {
+  padding-bottom: 50px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid gray;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.update-password-description {
+  font-size: 16px;
+  color: #666;
+}
+
+.update-password-form-group {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.update-password-form-label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.update-password-form-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.update-password-form-button-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.update-password-form-button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #37cfee;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.update-password-form-button:hover {
+  background-color: #010a0c;
+}
+
+.update-password-error,
+.update-password-success {
+  padding: 10px;
+  font-size: 18px;
+  border-radius: 4px;
+  text-align: center;
+  width: 100%;
+}
+
+.update-password-error {
+  color: #ff0000;
+  
+}
+
+.update-password-success {
+  color: #00a000;
+  
+}
+
+/* 추가된 스타일 */
+.update-password-description3 {
+  white-space: nowrap;
+}
+.update-password-form {
+  height: 700px;
+}
+
+.update-password-login-link{
+  text-decoration: none;
+  color: black;
+  display: block;
+  width: fit-content; 
+  margin: 0 auto;
+}
+

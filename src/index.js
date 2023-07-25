@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -23,8 +23,27 @@ import Main from './pages/main/Main';
 import PrivateRoute from './PrivateRoute';
 import Test_up from './pages/signUp/Test_up';
 import SignUpHeader from './pages/signUp/SignUpHeader';
+import Updatepw from './pages/login/Updatepw';
+import LoginRoute from './LoginRoute';
+import { checkAndRefreshToken }from './jwtUtils';
+
 
 const accessToken = localStorage.getItem('accessToken');
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+};
+const refreshToken = getCookie('refreshToken');
+
+if(accessToken) {
+  checkAndRefreshToken(); // Access Token 만료시 재발급
+}
+
+// refreshToken이 만료 되었으면 로컬 스토리지에 있는 accessToken 지우기
+if(!refreshToken) {
+  localStorage.removeItem('accessToken');
+}
 console.log("토큰 있는지 확인 : " + accessToken);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -44,12 +63,12 @@ root.render(
         </Route>
         <Route path="/about" element={ <div>라우트 테스트임2222</div> } />
         <Route path="/login" element={ <div className="d-flex align-items-center py-4 bg-body-tertiary">
-
-        <LoginPage></LoginPage></div>} />
+        <LoginRoute url='/main' isLogin={accessToken} /></div>} />
         <Route path="/findId" element={ <FindIdForm></FindIdForm> } />
         <Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
         <Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
         <Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
+        <Route path="/updatepw" element={ <Updatepw></Updatepw> } />
         <Route path='/main' element={<PrivateRoute component={<Main />} isLogin={accessToken} />}/>
         <Route path="/test" element={ <Test_up></Test_up>} />
         <Route path="/test2" element={ <SignUpHeader></SignUpHeader>} />

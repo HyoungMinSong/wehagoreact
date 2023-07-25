@@ -67,7 +67,6 @@ function SignUp_infomation() {
 <SignUpHeader/>
 <div style={{ backgroundColor: '#f5f5f5', width: '100%', height: '100%'}}>
     <Container style={{ backgroundColor: '#f5f5f5' }} className="pt-5 pb-3">
-
       <Row className="justify-content-center mb-5">
 
         <Col md={10} >

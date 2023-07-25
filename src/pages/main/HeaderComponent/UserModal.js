@@ -13,7 +13,7 @@ const ModalWrapper = styled.div`
     /* top, bottom, left, right 는 브라우저 기준으로 작동 */
     position: absolute;
     top: 75px;
-    right: 200px;
+    right: 5%;
 
     /* 모달창 디자인 */
     background: linear-gradient(#800080, #EEEEEE, #EEEEEE, #EEEEEE);
@@ -110,6 +110,14 @@ const ButtonWrapper = styled.div`
 function UserModal(props) {
     const {setUserModalOpen, user, company, companyName} = props;
     const userModalRef = useRef(null);
+
+    const selectedCompany = company.find((item) => item.t_company_name === companyName);
+
+    const logoutHandler = () => {
+        localStorage.removeItem('accessToken');
+        document.cookie = `refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        window.location.replace('/login');
+    }
     
     useEffect(() => {
         const handler = (event) => {
@@ -137,7 +145,7 @@ function UserModal(props) {
                 </div>
                 <div className="user">
                     <span>{user.name}</span>
-                    <span>{user.rank}</span>
+                    <span>{selectedCompany.t_employee_duty}</span>
                 </div>
                 <button className="email">
                     <img src="https://cdn-icons-png.flaticon.com/128/9554/9554729.png" alt="이메일" width="30px" height="30px" />
@@ -153,7 +161,7 @@ function UserModal(props) {
                     <img src="https://cdn-icons-png.flaticon.com/128/126/126472.png" alt="개인설정" />
                     <span>개인설정</span>
                 </a>
-                <button>
+                <button onClick={logoutHandler}>
                     <img src="https://cdn-icons-png.flaticon.com/128/8367/8367686.png" alt="로그아웃" />
                     <span>로그아웃</span>
                 </button>

@@ -27,8 +27,9 @@
 
 .find-id-title {
   text-align: center;
+  font-weight: bold;
   margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
 }
 
 .find-id-description {
@@ -116,5 +117,6 @@
 }
 
 .find-id-link {
-  text-decoration: none; /* 텍스트에 밑줄 스타일 제거 */
+  text-decoration: none;
+   /* 텍스트에 밑줄 스타일 제거 */
 }
