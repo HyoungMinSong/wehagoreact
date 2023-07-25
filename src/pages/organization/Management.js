@@ -365,6 +365,7 @@ function Management() {
       }
     } else {
       console.log(proEditiedOrganization);
+      console.log("mw", myWorkPlace);
       Swal.fire({
         title: "정말로 그렇게 하시겠습니까?",
         text: "다시 되돌릴 수 없습니다. 신중하세요.",
@@ -388,8 +389,10 @@ function Management() {
 
   // 추가 버튼 클릭
   const handleCreateClick = (e) => {
-    const isExistEmptyOrganization = myWorkPlace.some(
-      (item) => item.t_organization_name.trim() === ""
+    const isExistEmptyOrganization = myWorkPlace.some((item) =>
+      item.t_organization_name === null
+        ? false
+        : item.t_organization_name.trim() === ""
     );
 
     if (!isExistEmptyOrganization) {
@@ -423,8 +426,10 @@ function Management() {
 
   // 편집 버튼 클릭
   const handleUpdateClick = (e) => {
-    const isExistEmptyOrganization = myWorkPlace.some(
-      (item) => item.t_organization_name.trim() === ""
+    const isExistEmptyOrganization = myWorkPlace.some((item) =>
+      item.t_organization_name === null
+        ? false
+        : item.t_organization_name.trim() === ""
     );
 
     if (!isExistEmptyOrganization) {
@@ -473,8 +478,10 @@ function Management() {
 
   // 삭제 버튼 클릭
   const handleDeleteClick = (e) => {
-    const isExistEmptyOrganization = myWorkPlace.some(
-      (item) => item.t_organization_name.trim() === ""
+    const isExistEmptyOrganization = myWorkPlace.some((item) =>
+      item.t_organization_name === null
+        ? false
+        : item.t_organization_name.trim() === ""
     );
 
     if (!isExistEmptyOrganization) {
@@ -614,6 +621,9 @@ function Management() {
           t_user_no: tUserNo,
         },
       });
+      console.log("response", response);
+      console.log("showMyWorkPlace",response.data);
+      console.log("showMyCompanyInfo",res.data);
       setMyCompanyInfo(res.data);
       setMyWorkPlace(response.data);
       setSelectedCompanyIndex(0);
@@ -676,17 +686,6 @@ function Management() {
     setPrevEditingOrganizationName(e.target.value);
   };
 
-  // select 한 배열에서 회사의 중복된 열 없도록 회사 목록만 추출
-  const uniqueCompanies = Array.from(
-    new Set(myWorkPlace.map((company) => company.t_company_no))
-  ).map((companyNo) => {
-    const company = myWorkPlace.find((c) => c.t_company_no === companyNo);
-    return {
-      t_company_name: company.t_company_name,
-      t_company_no: company.t_company_no,
-      company_employee_count: company.company_employee_count,
-    };
-  });
 
   return (
     <CsContainer>
@@ -806,53 +805,59 @@ function Management() {
                             selectedCompanyIndex === companyIndex ? "open" : ""
                           }`}
                         >
-                          {departments.map((department, departmentIndex) => (
-                            <div
-                              className="departmentItem"
-                              key={departmentIndex}
-                              onClick={() =>
-                                handleItemClick(
-                                  department.t_organization_name,
-                                  department.t_organization_no,
-                                  0,
-                                  selectedListTab,
-                                  department.t_company_no
-                                )
-                              }
-                            >
-                              <span className="buildingIcon">
-                                <FolderTwoToneIcon />
-                              </span>
-                              <span
-                                className={`txtNodeTitle ${
-                                  selectedNodePk ===
-                                  department.t_organization_no
-                                    ? "selectedNodePkBackgroundColor"
-                                    : ""
-                                }`}
+                          {departments.map((department, departmentIndex) => {
+                            if (department.t_organization_no === null) {
+                              return null; // null을 반환하여 해당 div를 출력하지 않음
+                            }
+
+                            return (
+                              <div
+                                className="departmentItem"
+                                key={departmentIndex}
+                                onClick={() =>
+                                  handleItemClick(
+                                    department.t_organization_name,
+                                    department.t_organization_no,
+                                    0,
+                                    selectedListTab,
+                                    department.t_company_no
+                                  )
+                                }
                               >
-                                <span className="num">
-                                  {department.organization_employee_count}
+                                <span className="buildingIcon">
+                                  <FolderTwoToneIcon />
                                 </span>
-                                {department.t_organization_name === "" ? (
-                                  <input
-                                    type="text"
-                                    value={prevEditingOrganizationName}
-                                    onKeyDown={(e) =>
-                                      handleInputKeyPress(
-                                        e,
-                                        department.row_index
-                                      )
-                                    }
-                                    onChange={handleInputChange} // input 값 변경 시 실행되는 함수
-                                    placeholder="새로운 조직 이름 입력"
-                                  />
-                                ) : (
-                                  department.t_organization_name
-                                )}
-                              </span>
-                            </div>
-                          ))}
+                                <span
+                                  className={`txtNodeTitle ${
+                                    selectedNodePk ===
+                                    department.t_organization_no
+                                      ? "selectedNodePkBackgroundColor"
+                                      : ""
+                                  }`}
+                                >
+                                  <span className="num">
+                                    {department.organization_employee_count}
+                                  </span>
+                                  {department.t_organization_name === "" ? (
+                                    <input
+                                      type="text"
+                                      value={prevEditingOrganizationName}
+                                      onKeyDown={(e) =>
+                                        handleInputKeyPress(
+                                          e,
+                                          department.row_index
+                                        )
+                                      }
+                                      onChange={handleInputChange} // input 값 변경 시 실행되는 함수
+                                      placeholder="새로운 조직 이름 입력"
+                                    />
+                                  ) : (
+                                    department.t_organization_name
+                                  )}
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     );
@@ -876,6 +881,8 @@ function Management() {
           setIsExpanded={setIsExpanded}
           editingOrganization={editingOrganization}
           selectedListTab={selectedListTab}
+          myWorkPlace={myWorkPlace}
+          myCompanyInfo={myCompanyInfo}
         />
       </WrappedTreeView>
     </CsContainer>
