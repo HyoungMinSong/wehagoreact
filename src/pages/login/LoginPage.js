@@ -106,7 +106,7 @@ const LoginPage = () => {
 
           {!loggedIn ? (
             <form onSubmit={handleLogin}>
-              <input type="text" placeholder="아이디" name="username" />
+              <input type="text" placeholder="아이디" name="username"/>
               <input type="password" placeholder="비밀번호" name="password" />
               <button type="submit" id="login-button">
                 로그인

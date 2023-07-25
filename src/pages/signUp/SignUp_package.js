@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Badge, Button, ButtonGroup, Card, CardGroup, Col, Container, Form, Image, ListGroup, Row, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import { Badge, Button, ButtonGroup, Card,  Col, Container, Form,  ListGroup, Row, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import InputMask from 'react-input-mask';
 import { useSelector } from "react-redux";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -17,7 +17,11 @@ import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import PaymentIcon from '@mui/icons-material/Payment';
 import Swal from "sweetalert2";
-import { CircularProgress } from "@mui/material";
+import axiosApi from "../../AxiosApi";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 
 // className="border-danger"
@@ -36,8 +40,9 @@ function SignUp_package() {
   // let regex =  /^[가-힣a-zA-Z]+$/;
   // let numberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
 
-  let test = useSelector((state) => { return state.user });
-  console.log(test);
+  let test11 = useSelector((state) => { return state.user });
+  let navigate = useNavigate();
+  // console.log(test11);
 
   return (
 
@@ -375,9 +380,23 @@ function SignUp_package() {
                   reverseButtons: true, // 버튼 순서 거꾸로
                 }).then((result) => {
                   // 만약 Promise리턴을 받으면,
+                  let finalTest;
                   if (result.isConfirmed) {
+                    console.log('name : ' + test11.name + 'id : ' + test11.id+ 'businessCategory : ' + test11.businessCategory);
+                    if (packagePrice.selectPackge === 'CLUB') {
+                      finalTest={ ...test11, packageNo : 1};
+                    } else {
+                      finalTest={ ...test11, packageNo : 2};
+                    }
                     
                     
+                    axiosApi.post("/signupinsert", finalTest).then((c) => {
+                      console.log(c.data);
+                      navigate('/')
+                    }).catch(() => {
+
+                      console.log('실패함')
+                    })
                     // 만약 모달창에서 confirm 버튼을 눌렀다면
                     // fetchData();
                     // setEditingOrganization(false);

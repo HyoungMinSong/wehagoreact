@@ -10,7 +10,7 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
 }))`
   height: 100%;
   .unrealGridBox {
-    height:100%;
+    height: 100%;
     background-color: gray;
   }
   .unrealGridBoxText {
@@ -64,6 +64,7 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   }
   th {
     background-color: #efeffb;
+    width: 150px;
   }
   caption {
     border-top: black;
@@ -84,6 +85,9 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
     background: #fff;
     width: ${(props) => (props.isexpanded == "true" ? "50%" : "0%")};
     transition: width 0.5s;
+  }
+  #theChosenOnes {
+    checked: false;
   }
 `;
 
@@ -341,6 +345,7 @@ function BasicGridBox(props) {
   // 회사, 조직에 해당하는 유저들의 목록
   const [showingMyEmployees, setShowingMyEmployees] = useState([]);
 
+
   // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
   useEffect(() => {
     if (Array.isArray(props.showingMyEmployees)) {
@@ -350,31 +355,36 @@ function BasicGridBox(props) {
     }
   }, [props.showingMyEmployees, props.isExpanded]);
 
-  // 선택한 직원 정보
-  const [selectedUser, setSelectedUser] = useState(null);
-
   // 직원 행 클릭 이벤트
   const handleRowClick = (user) => {
-    setSelectedUser(user);
+    props.setSelectedUser(user);
+    props.setUpdateSelectedUser(user);
     props.setIsExpanded("true");
   };
+
   // Detail X버튼 클릭 이벤트
   const handleXClick = () => {
+    props.setUpdateSelectedUser([]);
     props.setIsExpanded("false");
   };
 
   // redux dispatch
   const dispatch = useDispatch();
-  const dataOfTheChosenOnes = useSelector(state => state.areThereAnyChosenOnes);
+  const dataOfTheChosenOnes = useSelector(
+    (state) => state.areThereAnyChosenOnes
+  );
 
   // 체크박스 이벤트
-  const chosenOnes= (e, user) =>{
+  const chosenOnes = (e, user) => {
     console.log(e.target.checked);
     console.log(user);
-    if(e.target.checked){
-      const updateDataOfTheChosenOnes = [...dataOfTheChosenOnes, {t_user_no:user.t_user_no}];
+    if (e.target.checked) {
+      const updateDataOfTheChosenOnes = [
+        ...dataOfTheChosenOnes,
+        { t_user_no: user.t_user_no },
+      ];
       dispatch(beTheChosenOnes(updateDataOfTheChosenOnes));
-    }else if(!e.target.checked){
+    } else if (!e.target.checked) {
       const updateDataOfTheChosenOnes = [...dataOfTheChosenOnes];
       const chosenOnesIndex = dataOfTheChosenOnes.findIndex(
         (item) => item.t_user_no === user.t_user_no
@@ -384,26 +394,69 @@ function BasicGridBox(props) {
     }
   };
 
+  // 개인정보 수정 이벤트
+  const updateOnes = (e) =>{
+    const editedUpdateSelectedUser = {...props.updateSelectedUser};
+    if(e.target.name === 'su-usname'){
+      editedUpdateSelectedUser.t_user_name = e.target.value;
+      props.setUpdateSelectedUser(editedUpdateSelectedUser);
+    }
+    if(e.target.name === 'su-orname'){
+      editedUpdateSelectedUser.t_organization_name = e.target.value;
+      props.setUpdateSelectedUser(editedUpdateSelectedUser);
+    }
+    if(e.target.name === 'su-emposi'){
+      editedUpdateSelectedUser.t_employee_position = e.target.value;
+      props.setUpdateSelectedUser(editedUpdateSelectedUser);
+    }
+    if(e.target.name === 'su-emduty'){
+      editedUpdateSelectedUser.t_employee_duty = e.target.value;
+      props.setUpdateSelectedUser(editedUpdateSelectedUser);
+    }
+    if(e.target.name === 'su-usphon'){
+      editedUpdateSelectedUser.t_user_phone = e.target.value;
+      props.setUpdateSelectedUser(editedUpdateSelectedUser);
+    }
+    if(e.target.name === 'su-usemai'){
+      editedUpdateSelectedUser.t_user_email = e.target.value;
+      props.setUpdateSelectedUser(editedUpdateSelectedUser);
+    }
+  };
+
+  // 저장버튼 이벤트
+  const handleSaveClick = () => {
+    console.log("props.updateSelectedUser",props.updateSelectedUser);
+  };
+
   return (
     <WrappingGridBox $isexpanded={props.isExpanded}>
       <div className="realMovingTable">
         <div className="WrappingTable">
-          <div className={`unrealGridBox ${props.editingOrganization ? "" : "unrealTable"}`}>
+          <div
+            className={`unrealGridBox ${
+              props.editingOrganization ? "" : "unrealTable"
+            }`}
+          >
             <span className="unrealGridBoxText">
               조직도 수정 시 직원리스트 조회가 불가합니다.
             </span>
           </div>
-          <div className={`movingTable ${props.editingOrganization ? "unrealTable" : ""}`}>
+          <div
+            className={`movingTable ${
+              props.editingOrganization ? "unrealTable" : ""
+            }`}
+          >
             <table>
               <thead>
                 <tr>
-                  <th>V</th>
+                  {props.selectedListTab === 0 && <th>V</th>}
+                  {props.selectedListTab === 1 && <th>V</th>}
                   <th>이름</th>
                   <th>소속</th>
                   <th>직급</th>
                   <th>이메일주소</th>
-                  <th>유선전화번호</th>
                   <th>휴대전화번호</th>
+                  <th>입사일</th>
                   <th>상태</th>
                 </tr>
               </thead>
@@ -412,18 +465,39 @@ function BasicGridBox(props) {
                   <tr
                     key={user.t_user_no}
                     onClick={() => handleRowClick(user)}
-                    className={selectedUser === user ? "selected" : ""}
+                    className={props.selectedUser === user ? "selected" : ""}
                   >
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <input type="checkbox" onChange={(e)=>chosenOnes(e,user)}/>
-                    </td>
-                    <td>{user.t_user_id}</td>
+                    {props.selectedListTab === 0 && (
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          name="theChosenOnes"
+                          onChange={(e) => chosenOnes(e, user)}
+                        />
+                      </td>
+                    )}
+                    {props.selectedListTab === 1 && (
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          name="theChosenOnes"
+                          onChange={(e) => chosenOnes(e, user)}
+                        />
+                      </td>
+                    )}
                     <td>{user.t_user_name}</td>
+                    <td>{user.t_organization_name}</td>
+                    <td>{user.t_employee_position}</td>
                     <td>{user.t_user_email}</td>
-                    <td>010-9370-4871</td>
-                    <td>3조</td>
-                    <td>인턴</td>
-                    <td>사용중</td>
+                    <td>{user.t_user_phone}</td>
+                    <td>{user.t_employee_date}</td>
+                    <td>
+                      {user.t_employee_state === 0 && "미가입"}
+                      {user.t_employee_state === 1 && "가입대기"}
+                      {user.t_employee_state === 2 && "사용중"}
+                      {user.t_employee_state === 3 && "사용중지"}
+                      {user.t_employee_state === -1 && "퇴사"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -431,18 +505,18 @@ function BasicGridBox(props) {
           </div>
         </div>
       </div>
-      {selectedUser && (
+      {props.updateSelectedUser && (
         <div className="user-detail">
           <WrappingDetailBox>
             <div className="detailBoxTit">
               <h2>직원정보</h2>
               <div className="detailBoxButtonBox">
-                <button type="button" className="detailBoxBB">
+                {props.updateSelectedUser.length !== 0 ?(<button type="button" className="detailBoxBB">
                   사용중지
-                </button>
-                <button type="button" className="detailBoxBB">
+                </button>) : ('')}
+                {props.updateSelectedUser.length !== 0 ?(<button type="button" className="detailBoxBB">
                   퇴사
-                </button>
+                </button>) : ('')}
                 <button
                   type="button"
                   className="detailBoxBX"
@@ -466,9 +540,9 @@ function BasicGridBox(props) {
                 </div>
                 <div className="detailBoxProfBt">
                   <div className="detailBoxProfInfo">
-                    {selectedUser.t_user_name}
+                    {props.selectedUser && props.selectedUser.t_user_name}
                     <span className="detailBoxProfId">
-                      {selectedUser.t_user_id}
+                      {props.updateSelectedUser.t_user_id}
                     </span>
                   </div>
                   <div>
@@ -505,47 +579,85 @@ function BasicGridBox(props) {
                     <col></col>
                   </colgroup>
                   <tbody>
-                    <tr>
+                    {props.updateSelectedUser.length !== 0 ?('') : (<tr>
                       <th>이름</th>
-                      <td>{selectedUser.t_user_name}</td>
-                    </tr>
+                      <td>
+                        <input 
+                          type="text"
+                          name="su-usname"
+                          value={props.updateSelectedUser.t_user_name || ''}
+                          onChange={(e) => updateOnes(e)}
+                        />
+                      </td>
+                    </tr>)}
                     <tr>
                       <th>소속</th>
-                      <td>더존</td>
+                      <td><input 
+                          type="text"
+                          name="su-orname"
+                          value={props.updateSelectedUser.t_organization_name || ''}
+                          onChange={(e) => updateOnes(e)}
+                        /></td>
                     </tr>
                     <tr>
                       <th>직급</th>
-                      <td>인턴</td>
+                      <td><input 
+                          type="text"
+                          name="su-emposi"
+                          value={props.updateSelectedUser.t_employee_position || ''}
+                          onChange={(e) => updateOnes(e)}
+                        /></td>
                     </tr>
                     <tr>
                       <th>직책</th>
-                      <td>팀원</td>
+                      <td><input 
+                          type="text"
+                          name="su-emduty"
+                          value={props.updateSelectedUser.t_employee_duty || ''}
+                          onChange={(e) => updateOnes(e)}
+                        /></td>
                     </tr>
                     <tr>
                       <th>유선전화번호</th>
-                      <td>0212341234</td>
+                      <td><input 
+                          type="text"
+                          name="su-usphon"
+                          value={props.updateSelectedUser.t_user_phone || ''}
+                          onChange={(e) => updateOnes(e)}
+                        /></td>
                     </tr>
                     <tr>
                       <th>입사일</th>
-                      <td>2023.07.14</td>
+                      <td>{props.updateSelectedUser.t_employee_date}</td>
                     </tr>
                     <tr>
                       <th>이메일주소</th>
-                      <td>{selectedUser.t_user_email}</td>
+                      <td><input 
+                          type="text"
+                          name="su-usemai"
+                          value={props.updateSelectedUser.t_user_email || ''}
+                          onChange={(e) => updateOnes(e)}
+                        /></td>
                     </tr>
-                    <tr>
-                      <th>휴대전화번호</th>
-                      <td>01011112222</td>
-                    </tr>
+                    {props.updateSelectedUser.length !== 0 ?(<tr>
+                      <th>상태</th>
+                      <td>
+                        {props.updateSelectedUser.t_employee_state === 0 && "미가입"}
+                        {props.updateSelectedUser.t_employee_state === 1 && "가입대기"}
+                        {props.updateSelectedUser.t_employee_state === 2 && "사용중"}
+                        {props.updateSelectedUser.t_employee_state === 3 && "사용중지"}
+                        {props.updateSelectedUser.t_employee_state === -1 && "퇴사"}
+                      </td>
+                    </tr>) : ('')}
                   </tbody>
                 </table>
               </div>
             </div>
             <div className="detailBoxFormButton">
-              <button type="button" className="detailBoxFormCancelButton">
+              <button type="button" className="detailBoxFormCancelButton" onClick={handleXClick}>
                 취소
               </button>
-              <button type="button" className="detailBoxFormSaveButton">
+              <button type="button" className="detailBoxFormSaveButton" onClick={handleSaveClick}>
                 저장
               </button>
             </div>

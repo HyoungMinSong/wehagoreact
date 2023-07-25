@@ -1,6 +1,7 @@
 import { styled } from "styled-components";
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import BasicGridBox from "./BasicGridBox";
+import { useState } from "react";
 
 const TreeViewList = styled.div`
   position: absolute;
@@ -9,9 +10,9 @@ const TreeViewList = styled.div`
   left: 290px;
   right: 34px;
   width: auto;
-  transition: right .25s;
+  transition: right 0.25s;
   float: right;
-  h2{
+  h2 {
     font-size: 15px;
     line-height: 22px;
     color: #000;
@@ -19,19 +20,19 @@ const TreeViewList = styled.div`
     font-weight: bold;
     float: left;
   }
-  .buttonBox{
+  .buttonBox {
     position: absolute;
     top: 2px;
     right: 0;
   }
-  .luxSearchBox{
+  .luxSearchBox {
     margin: 0px;
     padding: 0px;
     width: 250px;
     position: relative;
     display: inline-block;
   }
-  .wrappingInput{
+  .wrappingInput {
     margin: 0px;
     padding: 5px 70px 1px 6px;
     position: relative;
@@ -40,7 +41,7 @@ const TreeViewList = styled.div`
     height: 27px;
     line-height: 19px;
   }
-  .searchInput{
+  .searchInput {
     margin: 0px;
     padding: 0px;
     display: block;
@@ -55,7 +56,7 @@ const TreeViewList = styled.div`
     width: 215px;
     writing-mode: horizontal-tb !important;
   }
-  .basicSearchButton{
+  .basicSearchButton {
     box-sizing: border-box;
     cursor: pointer;
     display: inline-block;
@@ -85,7 +86,7 @@ const TreeViewList = styled.div`
     top: 0px;
     right: 0px;
   }
-  .registerEmployeeButton{
+  .registerEmployeeButton {
     box-sizing: border-box;
     cursor: pointer;
     display: inline-block;
@@ -107,7 +108,7 @@ const TreeViewList = styled.div`
     width: auto;
     margin-left: 4px;
   }
-  .tblGridBox{
+  .tblGridBox {
     border-bottom: 1px solid rgb(225, 225, 225);
     position: absolute;
     top: 32px;
@@ -118,17 +119,32 @@ const TreeViewList = styled.div`
   }
 `;
 
-function BasicTreeViewList(props){
+function BasicTreeViewList(props) {
 
+  // 선택한 직원 정보
+  const [selectedUser, setSelectedUser] = useState(null);
+  // 업데이트 할 유저 정보
+  const [updateSelectedUser, setUpdateSelectedUser] = useState([]);
 
-  return(
+  // 직원 등록 클릭 이벤트
+  const handleRegistrationClick = () =>{
+    setSelectedUser([]);
+    setUpdateSelectedUser([]);
+    props.setIsExpanded("true");
+  };
+
+  return (
     <TreeViewList>
       <div className="basicTblTit">
         <h2>직원리스트</h2>
         <div className="buttonBox">
           <div className="luxSearchBox">
             <div className="wrappingInput">
-              <input type="text" className="searchInput" placeholder="이름, 조직, 유선, 휴대폰 전화번호로 검색" />
+              <input
+                type="text"
+                className="searchInput"
+                placeholder="이름, 조직, 유선, 휴대폰 전화번호로 검색"
+              />
               <button type="button" className="basicSearchButton">
                 <span className="wrappingIcon">
                   <SearchOutlinedIcon />
@@ -136,17 +152,23 @@ function BasicTreeViewList(props){
               </button>
             </div>
           </div>
-          <button className="registerEmployeeButton">직원등록</button>
+          <button className="registerEmployeeButton" onClick={handleRegistrationClick}>직원등록</button>
         </div>
       </div>
       <div className="tblGridBox">
-        <BasicGridBox 
-          showingMyEmployees={props.showingMyEmployees} 
-          isExpanded={props.isExpanded} 
+        <BasicGridBox
+          showingMyEmployees={props.showingMyEmployees}
+          isExpanded={props.isExpanded}
           setIsExpanded={props.setIsExpanded}
           editingOrganization={props.editingOrganization}
-          />
+          selectedListTab={props.selectedListTab}
+          selectedUser={selectedUser} 
+          setSelectedUser={setSelectedUser}
+          updateSelectedUser={updateSelectedUser}
+          setUpdateSelectedUser={setUpdateSelectedUser}
+        />
       </div>
     </TreeViewList>
   );
-}export default BasicTreeViewList;
+}
+export default BasicTreeViewList;

@@ -8,7 +8,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 1500px;
+    width: 100%;
     height: 70px;      
     background-color: rgba(0, 0, 0, 0.1);
     position: sticky;
@@ -16,7 +16,6 @@ const Wrapper = styled.div`
 `;
 
 const Area = styled.div`
-    width: 500px;
     display: flex;
     align-items: center;
 `;
@@ -68,10 +67,10 @@ const ProfileButton = styled.button`
 `;
 
 function Header(props) {
-    const {user, company} = props;
+    const {user, company, companyName, setCompanyName} = props;
     const [companyModalOpen, setCompanyModalOpen] = useState(false);
     const [userModalOpen, setUserModalOpen] = useState(false);
-    const [companyName, setCompanyName] = useState(company[0].name);
+    const selectedCompany = company && company.length > 0 ? company.find((item) => item.t_company_name === companyName).t_employee_duty : '';
 
     const showCompanyModal = () => {
         setCompanyModalOpen(preState => !preState);
@@ -93,6 +92,7 @@ function Header(props) {
                 </CompanyButton>
                 {companyModalOpen && <CompanyModal setCompanyModalOpen={setCompanyModalOpen} company={company} companyName={companyName} setCompanyName={setCompanyName} />}
             </Area>
+            <Area/><Area/>
             <Area>
                 <Button>
                     <img src="https://cdn-icons-png.flaticon.com/128/8335/8335899.png" alt="알림" width="30px" height="30px"/>
@@ -109,7 +109,7 @@ function Header(props) {
                 <ProfileButton className="profile" onClick={showUserModal}>
                     <div>
                         <span className="profile">{user.name}</span>
-                        <span className="profile">{user.rank}</span>
+                        <span className="profile">{selectedCompany}</span>
                     </div>
                     <img className="profile" id="detail" src="https://cdn-icons-png.flaticon.com/128/748/748063.png" alt="상세보기" width="10px" height="10px" />
                     <img className="profile" src="https://cdn-icons-png.flaticon.com/128/309/309492.png" alt="프로필 사진" width="35px" height="35px" />

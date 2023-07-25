@@ -286,20 +286,7 @@ function Management() {
   // 선택한 리스트 탭의 인덱스를 저장할 state
   const [selectedListTab, setSelectedListTab] = useState(-1);
   // 회사, 조직에 해당하는 유저들의 목록
-  const [showingMyEmployees, setShowingMyEmployees] = useState({
-    t_user_no: "",
-    t_user_id: "",
-    t_user_password: "",
-    t_user_name: "",
-    t_user_phone: "",
-    t_user_email: "",
-    t_user_photo_name: "",
-    t_user_photo_path: "",
-    t_user_sign_date: "",
-    t_user_delete_date: "",
-    t_user_state: "",
-    t_user_update_date: "",
-  });
+  const [showingMyEmployees, setShowingMyEmployees] = useState([]);
   // Detail 오프너
   const [isExpanded, setIsExpanded] = useState("false");
   // 아코디언 오프너
@@ -311,7 +298,8 @@ function Management() {
   // 수정할 조직도의 정보
   const [proEditiedOrganization, setProEditiedOrganization] = useState([]);
   // 부서 이름 수정시 input에 입력할 이전 이름
-  const [prevEditingOrganizationName, setPrevEditingOrganizationName] = useState("");
+  const [prevEditingOrganizationName, setPrevEditingOrganizationName] =
+    useState("");
   // redux dispatch
   const dispatch = useDispatch();
 
@@ -335,6 +323,7 @@ function Management() {
         selectedNodeIndex,
         selectedListTab
       );
+      showMyEmployeeState(selectedNodePk, selectedNodeIndex);
       dispatch(clearChosenOnes());
     }
   }, [editingItem, selectedNodePk, selectedNodeIndex, selectedListTab]);
@@ -342,7 +331,7 @@ function Management() {
   // 선택 개체에 따라 직원 상태 갱신
   useEffect(() => {
     if (selectedCompanyPk != null) {
-      showMyEmployeeState(selectedCompanyPk);
+      // showMyEmployeeState(selectedCompanyPk, selectedNodeIndex);
       dispatch(clearChosenOnes());
     }
   }, [selectedCompanyPk]);
@@ -359,12 +348,11 @@ function Management() {
     if (isExpanded === "true") {
       setIsExpanded("false");
     }
-      console.log(name, pk, index, listTab, compk);
-      setSelectedNodeIndex(listTab);
-      setEditingItem(name);
-      setSelectedNodeIndex(index);
-      setSelectedNodePk(pk);
-      setSelectedCompanyPk(compk);
+    setSelectedNodeIndex(listTab);
+    setEditingItem(name);
+    setSelectedNodeIndex(index);
+    setSelectedNodePk(pk);
+    setSelectedCompanyPk(compk);
   };
 
   // 수정, 취소 버튼 클릭
@@ -400,35 +388,36 @@ function Management() {
 
   // 추가 버튼 클릭
   const handleCreateClick = (e) => {
-      const isExistEmptyOrganization = myWorkPlace.some(
-        (item) => item.t_organization_name.trim() === ""
-      );
-  
-      if (!isExistEmptyOrganization) {
-        const newCompany = {
-          t_company_no: selectedCompanyPk,
-          t_company_name: "",
-          t_organization_no: ((myWorkPlace[myWorkPlace.length-1].row_index)+1)*(-1),
-          t_organization_name: "",
-          company_employee_count: 0,
-          organization_employee_count: 0,
-          row_index : (myWorkPlace[myWorkPlace.length-1].row_index)+1
-        };
-        // 기존 myWorkPlace 배열을 복사하고, 새로운 회사 정보를 추가하여 업데이트
-        setMyWorkPlace((prevWorkPlace) => [...prevWorkPlace, newCompany]);
-      }else{
-        Swal.fire({
-          title: "문제가 발생했습니다.",
-          text: "이미 작성중인 부서가 있습니다.",
-          icon: "warning",
-          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
-          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        }).then((result) => {
-          // 만약 Promise리턴을 받으면,
-          if (result.isConfirmed) {
-            // 만약 모달창에서 confirm 버튼을 눌렀다면
-          }
-        });
+    const isExistEmptyOrganization = myWorkPlace.some(
+      (item) => item.t_organization_name.trim() === ""
+    );
+
+    if (!isExistEmptyOrganization) {
+      const newCompany = {
+        t_company_no: selectedCompanyPk,
+        t_company_name: "",
+        t_organization_no:
+          (myWorkPlace[myWorkPlace.length - 1].row_index + 1) * -1,
+        t_organization_name: "",
+        company_employee_count: 0,
+        organization_employee_count: 0,
+        row_index: myWorkPlace[myWorkPlace.length - 1].row_index + 1,
+      };
+      // 기존 myWorkPlace 배열을 복사하고, 새로운 회사 정보를 추가하여 업데이트
+      setMyWorkPlace((prevWorkPlace) => [...prevWorkPlace, newCompany]);
+    } else {
+      Swal.fire({
+        title: "문제가 발생했습니다.",
+        text: "이미 작성중인 부서가 있습니다.",
+        icon: "warning",
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+        }
+      });
     }
   };
 
@@ -439,16 +428,18 @@ function Management() {
     );
 
     if (!isExistEmptyOrganization) {
-      const company = myWorkPlace.find((c) => c.t_organization_no === selectedNodePk);
-      if(company != null){
+      const company = myWorkPlace.find(
+        (c) => c.t_organization_no === selectedNodePk
+      );
+      if (company != null) {
         setPrevEditingOrganizationName(company.t_organization_name);
         const indexToUpdate = myWorkPlace.findIndex(
           (item) => item.t_organization_no === selectedNodePk
         );
         const updatingMyWorkplace = [...myWorkPlace];
-        updatingMyWorkplace[indexToUpdate].t_organization_name='';
+        updatingMyWorkplace[indexToUpdate].t_organization_name = "";
         setMyWorkPlace(updatingMyWorkplace);
-      }else{
+      } else {
         Swal.fire({
           title: "문제가 발생했습니다.",
           text: "회사 이름은 수정할 수 없습니다.",
@@ -463,7 +454,7 @@ function Management() {
           }
         });
       }
-    }else{
+    } else {
       Swal.fire({
         title: "문제가 발생했습니다.",
         text: "이미 작성중인 부서가 있습니다.",
@@ -477,7 +468,7 @@ function Management() {
           console.log(result);
         }
       });
-  }
+    }
   };
 
   // 삭제 버튼 클릭
@@ -487,8 +478,10 @@ function Management() {
     );
 
     if (!isExistEmptyOrganization) {
-      const company = myWorkPlace.find((c) => c.t_organization_no === selectedNodePk);
-      if(company != null && company.organization_employee_count != 0){
+      const company = myWorkPlace.find(
+        (c) => c.t_organization_no === selectedNodePk
+      );
+      if (company != null && company.organization_employee_count != 0) {
         Swal.fire({
           title: "문제가 발생했습니다.",
           text: "해당 부서에 소속된 직원이 존재하고 있습니다.",
@@ -502,7 +495,7 @@ function Management() {
             console.log(result);
           }
         });
-      }else if(company != null && company.organization_employee_count === 0){
+      } else if (company != null && company.organization_employee_count === 0) {
         const indexToDelete = myWorkPlace.findIndex(
           (item) => item.t_organization_no === selectedNodePk
         );
@@ -511,13 +504,16 @@ function Management() {
         setMyWorkPlace(deletingMyWorkplace);
         // 편집 전송 할 배열에 추가
         const proEditiedWorkPlace = {
-          t_organization_name : null,
-          t_company_no : null,
-          t_organization_no : selectedNodePk
+          t_organization_name: null,
+          t_company_no: null,
+          t_organization_no: selectedNodePk,
         };
-        const prevEditiedOrganization = [...proEditiedOrganization, proEditiedWorkPlace];
+        const prevEditiedOrganization = [
+          ...proEditiedOrganization,
+          proEditiedWorkPlace,
+        ];
         setProEditiedOrganization(prevEditiedOrganization);
-      }else{
+      } else {
         Swal.fire({
           title: "문제가 발생했습니다.",
           text: "회사는 삭제할 수 없습니다.",
@@ -532,7 +528,7 @@ function Management() {
           }
         });
       }
-    }else{
+    } else {
       Swal.fire({
         title: "문제가 발생했습니다.",
         text: "이미 작성중인 부서가 있습니다.",
@@ -546,24 +542,26 @@ function Management() {
           console.log(result);
         }
       });
-  }
+    }
   };
-
 
   // 조직도 input 입력값이 변경될 때마다 state 업데이트
   const handleInputKeyPress = (e, rowIndex) => {
     if (e.key === "Enter") {
       const updatedWorkPlace = [...myWorkPlace];
-      updatedWorkPlace[rowIndex-1].t_organization_name = e.target.value;
+      updatedWorkPlace[rowIndex - 1].t_organization_name = e.target.value;
       setMyWorkPlace(updatedWorkPlace);
 
-      const preEditiedWorkPlace = updatedWorkPlace[rowIndex-1];
+      const preEditiedWorkPlace = updatedWorkPlace[rowIndex - 1];
       const proEditiedWorkPlace = {
-        t_organization_name : preEditiedWorkPlace.t_organization_name,
-        t_company_no : preEditiedWorkPlace.t_company_no,
-        t_organization_no : preEditiedWorkPlace.t_organization_no
+        t_organization_name: preEditiedWorkPlace.t_organization_name,
+        t_company_no: preEditiedWorkPlace.t_company_no,
+        t_organization_no: preEditiedWorkPlace.t_organization_no,
       };
-      const prevEditiedOrganization = [...proEditiedOrganization, proEditiedWorkPlace];
+      const prevEditiedOrganization = [
+        ...proEditiedOrganization,
+        proEditiedWorkPlace,
+      ];
       setProEditiedOrganization(prevEditiedOrganization);
       setPrevEditingOrganizationName("");
     }
@@ -616,8 +614,6 @@ function Management() {
           t_user_no: tUserNo,
         },
       });
-      console.log("랜더링 ",res.data);
-      console.log("렌더링 ", response.data);
       setMyCompanyInfo(res.data);
       setMyWorkPlace(response.data);
       setSelectedCompanyIndex(0);
@@ -655,23 +651,21 @@ function Management() {
   };
 
   // 직원 상태 Select
-  const showMyEmployeeState = (pk) => {
+  const showMyEmployeeState = (pk, index) => {
     try {
-      console.log("pk가 뭐였을까 ", pk);
       const response = axiosApi
         .get("/showMyEmployeeState", {
           params: {
-            t_company_no: pk,
+            pk: pk,
+            index: index,
           },
         })
         .then((res) => {
-          // setShowingMyEmployees(res.data);
           setSelectedEmployeeState(res.data);
         })
         .catch((error) => {
           console.error(error);
         });
-      console.log("리스트 : ", response);
     } catch (error) {
       console.error(error);
     }
@@ -794,10 +788,16 @@ function Management() {
                           <span className="buildingIcon">
                             <BusinessOutlinedIcon />
                           </span>
-                          <span className={`txtNodeTitle ${selectedNodePk ===companyName.t_company_no ? 'selectedNodePkBackgroundColor' : ''}`}>
-                              <span className="num">
-                                {companyName.company_employee_count}
-                              </span>
+                          <span
+                            className={`txtNodeTitle ${
+                              selectedNodePk === companyName.t_company_no
+                                ? "selectedNodePkBackgroundColor"
+                                : ""
+                            }`}
+                          >
+                            <span className="num">
+                              {companyName.company_employee_count}
+                            </span>
                             {companyName.t_company_name}
                           </span>
                         </div>
@@ -823,7 +823,14 @@ function Management() {
                               <span className="buildingIcon">
                                 <FolderTwoToneIcon />
                               </span>
-                              <span className={`txtNodeTitle ${selectedNodePk ===department.t_organization_no ? 'selectedNodePkBackgroundColor' : ''}`}>
+                              <span
+                                className={`txtNodeTitle ${
+                                  selectedNodePk ===
+                                  department.t_organization_no
+                                    ? "selectedNodePkBackgroundColor"
+                                    : ""
+                                }`}
+                              >
                                 <span className="num">
                                   {department.organization_employee_count}
                                 </span>
@@ -831,7 +838,12 @@ function Management() {
                                   <input
                                     type="text"
                                     value={prevEditingOrganizationName}
-                                    onKeyDown={(e) => handleInputKeyPress(e, department.row_index)}
+                                    onKeyDown={(e) =>
+                                      handleInputKeyPress(
+                                        e,
+                                        department.row_index
+                                      )
+                                    }
                                     onChange={handleInputChange} // input 값 변경 시 실행되는 함수
                                     placeholder="새로운 조직 이름 입력"
                                   />
@@ -863,6 +875,7 @@ function Management() {
           isExpanded={isExpanded}
           setIsExpanded={setIsExpanded}
           editingOrganization={editingOrganization}
+          selectedListTab={selectedListTab}
         />
       </WrappedTreeView>
     </CsContainer>

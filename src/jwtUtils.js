@@ -19,7 +19,8 @@ export const checkAndRefreshToken = async () => {
     }
   } else {
     console.log('로그인이 필요합니다.');
-    window.location.replace("/login");
+    // alert('로그인이 필요합니다.');
+    // window.location.replace("/login");
   }
 };
 
@@ -46,6 +47,14 @@ export const reissueAccessToken = async () => {
           console.log('Access Token 재발급 성공!');
           const newAccessToken = response.data.accessToken;
           localStorage.setItem('accessToken', newAccessToken);
+          
+          const newRefreshToken = response.data.refreshToken;
+          const decodedRefreshToken = jwt_decode(newRefreshToken);
+          const refreshTokenExpiration = new Date(decodedRefreshToken.exp * 1000);
+        
+          // Refresh Token을 쿠키에 등록
+          const expires = refreshTokenExpiration.toUTCString();
+          document.cookie = `refreshToken=${newRefreshToken}; path=/; expires=${expires}`;
 
           // 재발급 된 Access Token으로 axios의 Authorization 헤더 업데이트
           axiosApi.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
@@ -55,6 +64,7 @@ export const reissueAccessToken = async () => {
       } else {
         console.error('Refresh Token이 만료 되었습니다. 다시 로그인 하세요.');
         localStorage.removeItem('accessToken'); // 남아있는 Access Token 지우기
+        alert('재로그인이 필요합니다.');
         // 로그인 창 돌아 가기
         window.location.replace('/login');
       }    

@@ -6,15 +6,16 @@ import 'react-calendar/dist/Calendar.css';
 import ServiceList from "./ServiceList";
 
 const Wrapper = styled.div`
-    width: 1400px;
-    height: 700px;
+    width: 100%;
+    height: 100%;
     display: flex;
-    padding: 100px 0px 0px 120px;
+    justify-content: center;
+    margin-top: 150px;
 `;
 
 const ServiceWrapper = styled.div`
-    width: 790px;
-    height: 600px;
+    width: 60%;
+    height: 680px;
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 10px;
     padding-left: 12.5px;
@@ -30,13 +31,14 @@ const MyService = styled.h3`
 const SideWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    height: 630px;
+    height: 700px;
+    margin-left: 30px;
 `;
 
 const StyledCalendar = styled(Calendar)`
-    width: 350px;
+    width: 400px;
     height: 350px;
-    margin-left: 30px;
+    
     background-color: white;
     border: none;
     border-radius: 10px;
@@ -59,9 +61,9 @@ const StyledCalendar = styled(Calendar)`
 `;
 
 const Notice = styled.div`
-    width: 350px;
-    height: 250px;
-    margin: 30px;
+    width: 400px;
+    height: 300px;
+    margin-top: 30px;
     background-color: white;
     border-radius: 10px;
 `;
@@ -99,7 +101,7 @@ const A = styled.a`
 `;
 
 function Section(props) {
-    const {service} = props;
+    const {companyName, service} = props;
 
     return(
         <Wrapper>
@@ -115,7 +117,7 @@ function Section(props) {
                     <NoticeHeader>
                         <div>
                             <span>공지사항</span>
-                            <CompanyLabel>더존비즈온</CompanyLabel>
+                            <CompanyLabel>{companyName}</CompanyLabel>
                         </div>
                         <A href="#">더보기 &gt;</A>
                     </NoticeHeader>

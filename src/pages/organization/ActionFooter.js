@@ -11,7 +11,7 @@ const ActionFooterBar = styled.div`
       bottom: 0px;
       z-index: 50;
       min-height: 31px;
-      visibility: visible;
+      // visibility: visible;
       transform: translateY(0); /* 초기 위치 */
       transition: transform 0.4s;
     }
@@ -23,7 +23,7 @@ const ActionFooterBar = styled.div`
       right: 0px;
       bottom: 0px;
       z-index: 50;
-      visibility: hidden;
+      // visibility: hidden;
       transform: translateY(100%); /* 완전히 숨길 위치 (예를 들어, 100%로 설정) */
       transition: transform 0.4s;
     }

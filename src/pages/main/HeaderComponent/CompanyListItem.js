@@ -30,7 +30,7 @@ function CompanyListItem(props) {
     const {item, setCompanyModalOpen, companyName, setCompanyName} = props;
 
     const handleCompanyItemClick = () => {
-        setCompanyName(item.name);
+        setCompanyName(item.t_company_name);
         setCompanyModalOpen(false);
     };
 
@@ -38,9 +38,9 @@ function CompanyListItem(props) {
         <Item onClick={handleCompanyItemClick}>
             <div>
                 <img src="https://cdn-icons-png.flaticon.com/128/7118/7118291.png" alt="회사" />
-                <small>{item.name}</small>
+                <small>{item.t_company_name}</small>
             </div>
-            {item.name === companyName && <img src="https://cdn-icons-png.flaticon.com/128/6520/6520110.png" alt="체크" width="25px" height="25px" /> }
+            {item.t_company_name === companyName && <img src="https://cdn-icons-png.flaticon.com/128/6520/6520110.png" alt="체크" width="25px" height="25px" /> }
         </Item>
     );
 }
