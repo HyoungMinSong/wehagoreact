@@ -26,6 +26,9 @@ const FindpwResult = () => { // Rename the component to FindpwResult
           <Link to="/login" className="find-pw-result-login-button"> {/* Use the class name from FindpwResult.css */}
             로그인
           </Link>
+          <Link to="/Updatepw" className="find-pw-result-updatepw-button">
+            비밀번호 변경
+          </Link>
         </div>
       </div>
     </div>

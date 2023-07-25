@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LoginPage.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
 import jwt_decode from 'jwt-decode';
 
@@ -18,20 +18,21 @@ const LoginPage = () => {
   const [formSuccess, setFormSuccess] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
-  
+
     const username = event.target.elements.username.value;
     const password = event.target.elements.password.value;
-  
+
     try {
       // JWT 토큰 발급
       const response = await axiosApi.post('/api/login', {
-          userid: username,
-          password: password,
+        userid: username,
+        password: password,
       });
-      
+
       if (response.status === 200) {
         console.log('로그인 성공!');
         setLoggedIn(true);
@@ -42,12 +43,12 @@ const LoginPage = () => {
 
         // 로그인 성공 후 Access Token을 localStorage에 저장
         localStorage.setItem('accessToken', accessToken);
-        
+
         // Refresh Token 유효기간 가져오기
         const refreshToken = response.data.refreshToken;
         const decodedRefreshToken = jwt_decode(refreshToken);
         const refreshTokenExpiration = new Date(decodedRefreshToken.exp * 1000);
-        
+
         // Refresh Token을 쿠키에 등록
         const expires = refreshTokenExpiration.toUTCString();
         document.cookie = `refreshToken=${refreshToken}; path=/; expires=${expires}`;
@@ -75,6 +76,27 @@ const LoginPage = () => {
       }
     }
   };
+
+     // 액세스 토큰이 유효한 경우 로그인 페이지 접속 차단
+  const isAccessTokenValid = () => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      const decodedAccessToken = jwt_decode(accessToken);
+      const currentTime = Date.now() / 1000;
+      return decodedAccessToken.exp > currentTime;
+    }
+    return false;
+  };
+
+
+  
+  useEffect(() => {
+    if (isAccessTokenValid()) {
+      // 액세스 토큰이 유효한 경우, 메인 페이지 또는 원하는 다른 페이지로 리다이렉트
+      navigate('/main'); // 메인 페이지로 리다이렉트 예시
+    }
+  }, [navigate]);
+
 
   return (
     <div className="jongwonscss">
@@ -104,19 +126,19 @@ const LoginPage = () => {
           {loginError && <div className="error text-white">{loginError}</div>}
         </div>
 
-      <ul className="bg-bubbles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
-    </div>
+        <ul className="bg-bubbles">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
     </div>
   );
 };
