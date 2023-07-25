@@ -4,6 +4,7 @@ import InputMask from 'react-input-mask';
 import { useDispatch, useSelector } from "react-redux";
 import { increase } from "../../store";
 import { useNavigate } from "react-router-dom";
+import SignUpHeader from "./SignUpHeader";
 
 
 // className="border-danger"
@@ -63,7 +64,9 @@ function SignUp_company() {
 
   
   return (
-
+<>
+<SignUpHeader/>
+<div style={{ backgroundColor: '#f5f5f5', width: '100%', height: '100%'}}>
     <Container style={{ backgroundColor: '#f5f5f5' }} className="pt-5 pb-3">
 
       <Row className="justify-content-center mb-5">
@@ -248,6 +251,8 @@ function SignUp_company() {
         </Col>
       </Row>
     </Container>
+    </div>
+    </>
   );
 }
 

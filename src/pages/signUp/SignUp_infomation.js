@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Col, Container, Form, Modal, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Modal, Row, Spinner } from "react-bootstrap";
 import InputMask from 'react-input-mask';
 import axiosApi from "../../AxiosApi";
 import { useDispatch } from "react-redux";
 import { increase } from "../../store";
 import { useNavigate } from "react-router-dom";
+import SignUpHeader from "./SignUpHeader";
 
 
 // className="border-danger"
@@ -21,6 +22,7 @@ function SignUp_infomation() {
   let [confirmPasswordError, setConfirmPasswordError] = useState(false);
   let [email, setEmail] = useState('');
   let [emailError, setEmailError] = useState(false);
+  let [loading, setLoading] = useState(false);
 
   let regex = /^[가-힣a-zA-Z]+$/;
   // let numberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
@@ -61,7 +63,9 @@ function SignUp_infomation() {
   let navigate = useNavigate();
 
   return (
-
+<>
+<SignUpHeader/>
+<div style={{ backgroundColor: '#f5f5f5', width: '100%', height: '100%'}}>
     <Container style={{ backgroundColor: '#f5f5f5' }} className="pt-5 pb-3">
 
       <Row className="justify-content-center mb-5">
@@ -210,6 +214,7 @@ function SignUp_infomation() {
                       &lt; 이전
                     </Button>
                     <Button variant="primary" className="mx-3" onClick={() => {
+                      setLoading(true);
                       if (name != '' && nameError == false && phoneNumber != '' && phoneNumberError == false && id != ''
                         && idError == false && password != '' && passwordError == false && confirmPassword != '' && confirmPasswordError == false &&
                         email != '' && emailError == false) {
@@ -227,6 +232,8 @@ function SignUp_infomation() {
                         }).catch(() => {
 
                           console.log('실패함')
+                        }).finally(()=>{
+                          setLoading(false);
                         })
                       }
                       // console.log(name, phoneNumber, id, password, confirmPassword, email) 
@@ -256,7 +263,17 @@ function SignUp_infomation() {
           </Button> */}
         </Modal.Footer>
       </Modal>
+      {loading && (
+            <div className="overlay-loading-box text-center">
+        
+          {/* 로딩 스피너 컴포넌트 */}
+          <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
+          <div className="mt-3">회원가입이 진행 중입니다.<br />잠시만 기다려주세요.</div>
+        </div>
+      )}
     </Container>
+    </div>
+    </>
   );
 }
 

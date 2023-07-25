@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button, Card, Col, Container, Form, Image, Row } from "react-bootstrap";
 import InputMask from 'react-input-mask';
 import { useSelector } from "react-redux";
+import SignUpHeader from "./SignUpHeader";
+import { useNavigate } from "react-router-dom";
 
 
 // className="border-danger"
@@ -20,9 +22,11 @@ function SignUp_complete() {
 
   let test = useSelector((state) => { return state.user });
   console.log(test);
-  
+  let navigate = useNavigate();
     return (
-        
+      <>
+      <SignUpHeader/>
+      <div style={{ backgroundColor: '#f5f5f5', width: '100%', height: '100%'}}>
 <Container style={{ backgroundColor: '#f5f5f5' }} className="pt-5 pb-3">
 
   <Row className="justify-content-center mb-5">
@@ -41,11 +45,13 @@ function SignUp_complete() {
           </Card.Text>
           
         </Card.Body>
-        <div className="my-4">
+        <div className="my-4 text-center">
           <p>회원가입 절차가 모두 완료되었습니다.</p>
           <p>로그인 후 편리하고 안전한 위하고 서비스를 확인해 보세요.</p>
         </div>
-        <Button variant="primary" size="lg" className="mb-5">
+        <Button variant="primary" size="lg" className="mb-5" onClick={()=>{
+          navigate('/login')
+        }}>
           로그인
         </Button>
       </Card>
@@ -53,6 +59,8 @@ function SignUp_complete() {
     </Col>
   </Row>
 </Container>
+</div>
+</>
     );
 }
 

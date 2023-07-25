@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Badge, Button, ButtonGroup, Card,  Col, Container, Form,  ListGroup, Row, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
-import InputMask from 'react-input-mask';
+import { Badge, Button, ButtonGroup, Card,  Col, Container, Form,  ListGroup, Row, Spinner, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'; 
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import FaxIcon from '@mui/icons-material/Fax';
 import VideoChatIcon from '@mui/icons-material/VideoChat';
@@ -19,30 +18,17 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import Swal from "sweetalert2";
 import axiosApi from "../../AxiosApi";
 import { useNavigate } from "react-router-dom";
-
-
-
+import { styled } from "styled-components";
 
 
 // className="border-danger"
 function SignUp_package() {
   let [packagePrice, setPackagePrice] = useState({servicePrice : 20000, perUserPrice : 3000, selectPackge : 'CLUB'});
   let [payPeriod, setPayPeriod] = useState(0); //0 월단위, 1 연단위
-  // let [selectPackage, setSelectPackage] = useState('CLUB');
-  // let [nameError, setNameError] = useState(false);
-  // let [phoneNumber, setPhoneNumber] = useState('');
-  // let [phoneNumberError, setphoneNumberError] = useState(false);
-  // let [id, setId] = useState('');
-  // let [password, setPassword] = useState('');
-  // let [confirmPassword, setConfirmPassword] = useState('');
-  // let [email, setEmail] = useState('');
-
-  // let regex =  /^[가-힣a-zA-Z]+$/;
-  // let numberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+  let [loading, setLoading] = useState(false);
 
   let test11 = useSelector((state) => { return state.user });
   let navigate = useNavigate();
-  // console.log(test11);
 
   return (
 
@@ -67,7 +53,6 @@ function SignUp_package() {
           </div>
         </div>
       </div>
-
       <Container style={{ background: 'linear-gradient(90deg, #e6f5ff, #d5eeff)' }} className="pt-5 pb-5 ">
 
         <h1 className="mt-4" style={{ color: '#133662', fontWeight: 800 }}>우리 회사에 꼭 맞는 플랜을 만나보세요!</h1>
@@ -80,13 +65,8 @@ function SignUp_package() {
             싱글팩
           </Badge>
         </div>
-        {/* <CardGroup className="my-5"> */}
         <Row className="mt-5 justify-content-center">
           <Col sm={5}>
-            {/* <Card className={`text-center ${isMouseHover ? 'border-2 border-primary' : 'border-0'}`} 
-        onMouseEnter={()=>setIsMouseHover(true)}
-        onMouseLeave={()=>setIsMouseHover(false)}
-      > */}
             <Card className='text-center border-0'>
               <Card.Header className="border-0" style={{
                 height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
@@ -113,15 +93,6 @@ function SignUp_package() {
                       월 기본료 20,000원
                     </span>
                   </div>
-                  {/* <Container>
-          <Row className="text-center">
-            <Col xs={1}>하이</Col>
-            <Col xs={1}>하이2</Col>
-            <Col xs={8}></Col>
-            <Col xs={1}>하이3</Col>
-            <Col xs={1}>하이4</Col>
-          </Row>
-        </Container> */}
                 </Card.Body>
 
                 <Card.Footer className="text-muted">
@@ -380,6 +351,7 @@ function SignUp_package() {
                   reverseButtons: true, // 버튼 순서 거꾸로
                 }).then((result) => {
                   // 만약 Promise리턴을 받으면,
+                  setLoading(true);
                   let finalTest;
                   if (result.isConfirmed) {
                     console.log('name : ' + test11.name + 'id : ' + test11.id+ 'businessCategory : ' + test11.businessCategory);
@@ -392,11 +364,19 @@ function SignUp_package() {
                     
                     axiosApi.post("/signupinsert", finalTest).then((c) => {
                       console.log(c.data);
-                      navigate('/')
+                      navigate('/login');
                     }).catch(() => {
-
-                      console.log('실패함')
-                    })
+                      console.log('실패함');
+                      Swal.fire({
+                        title: "회원 가입 오류",
+                        text: "다시 한번 시도해 주세요.",
+                        icon: "error",
+                        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                      })
+                    }).finally(()=>{
+                      setLoading(false);
+                    });
                     // 만약 모달창에서 confirm 버튼을 눌렀다면
                     // fetchData();
                     // setEditingOrganization(false);
@@ -408,6 +388,14 @@ function SignUp_package() {
 
         </div>
       </Container>
+      {loading && (
+            <div className="overlay-loading-box text-center">
+        
+          {/* 로딩 스피너 컴포넌트 */}
+          <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
+          <div className="mt-3">회원가입이 진행 중입니다.<br />잠시만 기다려주세요.</div>
+        </div>
+      )}
     </div>
   );
 }
