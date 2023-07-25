@@ -5,7 +5,7 @@
   margin: auto;
   padding: 20px;
   background-color: #ffffff;
-  border: 1px solid #dddddd;
+  border: 1px solid rgb(127, 125, 125);
   border-radius: 4px;
   position: absolute;
   top: 50%;
@@ -77,6 +77,11 @@
 .find-pw-result-login-button {
   margin-top: 10px;
   margin-bottom: 30px;
+}
+
+.find-pw-result-updatepw-button{
+  text-decoration: none;
+  color: black;
 }
 
 /* 수정된 부분 */

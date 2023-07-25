@@ -21,8 +21,10 @@ import FindpwResult from './pages/login/FindpwResult';
 import SignUp_package from './pages/signUp/SignUp_package';
 import Main from './pages/main/Main';
 import PrivateRoute from './PrivateRoute';
+import Updatepw from './pages/login/Updatepw';
 import LoginRoute from './LoginRoute';
 import { checkAndRefreshToken }from './jwtUtils';
+
 
 const accessToken = localStorage.getItem('accessToken');
 const getCookie = (name) => {
@@ -64,6 +66,7 @@ root.render(
         <Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
         <Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
         <Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
+        <Route path="/updatepw" element={ <Updatepw></Updatepw> } />
         <Route path='/main' element={<PrivateRoute component={<Main />} isLogin={accessToken} />}/>
 
       </Routes>

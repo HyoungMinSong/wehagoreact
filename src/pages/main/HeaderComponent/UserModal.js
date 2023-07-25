@@ -110,6 +110,7 @@ const ButtonWrapper = styled.div`
 function UserModal(props) {
     const {setUserModalOpen, user, company, companyName} = props;
     const userModalRef = useRef(null);
+
     const selectedCompany = company.find((item) => item.t_company_name === companyName);
 
     const logoutHandler = () => {
