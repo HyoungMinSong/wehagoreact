@@ -23,25 +23,13 @@ import Main from './pages/main/Main';
 import PrivateRoute from './PrivateRoute';
 import Updatepw from './pages/login/Updatepw';
 import LoginRoute from './LoginRoute';
-import { checkAndRefreshToken }from './jwtUtils';
 
-
-const accessToken = localStorage.getItem('accessToken');
 const getCookie = (name) => {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(';').shift();
 };
-const refreshToken = getCookie('refreshToken');
-
-if(accessToken) {
-  checkAndRefreshToken(); // Access Token 만료시 재발급
-}
-
-// refreshToken이 만료 되었으면 로컬 스토리지에 있는 accessToken 지우기
-if(!refreshToken) {
-  localStorage.removeItem('accessToken');
-}
+const accessToken = getCookie('accessToken');
 console.log("토큰 있는지 확인 : " + accessToken);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

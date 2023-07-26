@@ -4,7 +4,7 @@ import Section from "./Section";
 import Footer from "./Footer";
 import axiosApi from "../../AxiosApi";
 import { styled } from "styled-components";
-import { checkAndRefreshToken } from '../../jwtUtils';
+import { Spinner } from "react-bootstrap";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -13,120 +13,52 @@ const Wrapper = styled.div`
 `;
 
 function Main(props) {
-    const baseUrl = "http://localhost:8080";
     const [user, setUser] = useState({});
     const [service, setService] = useState([]);
     const [company, setCompany] = useState([]);
     const [companyName, setCompanyName] = useState('');
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
-            // localStorage에 있는 Access Token 가져오기
-            const accessToken = localStorage.getItem('accessToken');
+            // 쿠키에 있는 Access Token 가져오기
+            const getCookie = (name) => {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+              };
+            const accessToken = getCookie('accessToken');
           
             // Access Token이 있으면 헤더에 등록 시키기
             if (accessToken) {
               axiosApi.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            } else {
+                alert('로그인 시간이 만료되어 재로그인이 필요합니다.');
+                window.location.replace('/login');
             }
           
             try {
             //   await checkAndRefreshToken();
               // 요청 데이터 가져오기
               const response = await axiosApi.get('/api/data');
-              console.log(response.data);
-              const userInfo = 
-              {
-                "name" : response.data.t_user_name,
-                "email" : response.data.t_user_email,
-                "photo" : response.data.t_user_photo_path
-              }
-              const userCompany = response.data.userCompanyDtoList;
-              const userService = response.data.userServiceDtoList;
               
-              setUser(userInfo);
-              setCompany(userCompany);
-              setService(userService);
-              setCompanyName(userCompany[0].t_company_name);
-            // const dummyUserData = 
-            // {
-            //     "name": "이주용",
-            //     "rank": "사원",
-            //     "email": "aaa@google.com",
-            // };
-            // setUser(dummyUserData);
-            
-
-            // const dummyServiceData = [
-            //     {
-            //         "id": "1",
-            //         "name" : "메신저"
-            //     },
-            //     {
-            //         "id": "2",
-            //         "name" : "화상회의"
-            //     },
-            //     {
-            //         "id": "3",
-            //         "name" : "웹스토리지"
-            //     },
-            //     {
-            //         "id": "4",
-            //         "name" : "거래처관리"
-            //     },
-            //     {
-            //         "id": "5",
-            //         "name" : "연락처"
-            //     },
-            //     {
-            //         "id": "6",
-            //         "name" : "메일"
-            //     },
-            //     {
-            //         "id": "7",
-            //         "name" : "일정관리"
-            //     },
-            //     {
-            //         "id": "8",
-            //         "name" : "할일관리"
-            //     },
-            //     {
-            //         "id": "9",
-            //         "name" : "노트"
-            //     },
-            //     {
-            //         "id": "10",
-            //         "name" : "팩스"
-            //     },
-            //     {
-            //         "id": "11",
-            //         "name" : "내PC원격접속"
-            //     }
-            // ];
-            // setService(dummyServiceData);
-            
-            // const dummyCompanyData = [
-            //     {
-            //         "id": "1",
-            //         "name" : "삼성"
-            //     },
-            //     {
-            //         "id": "2",
-            //         "name" : "더존비즈온"
-            //     },
-            //     {
-            //         "id": "3",
-            //         "name" : "카카오"
-            //     },
-            //     {
-            //         "id": "4",
-            //         "name" : "네이버"
-            //     },
-            //     {
-            //         "id": "5",
-            //         "name" : "쿠팡"
-            //     }
-            // ];
-            // setCompany(dummyCompanyData);
+              if(response.status == 200) {
+                setLoading(false);
+                const userInfo = 
+                {
+                    "name" : response.data.t_user_name,
+                    "email" : response.data.t_user_email,
+                    "photo" : response.data.t_user_photo_path
+                }
+                const userCompany = response.data.userCompanyDtoList;
+                const userService = response.data.userServiceDtoList;
+                
+                setUser(userInfo);
+                setCompany(userCompany);
+                setService(userService);
+                setCompanyName(userCompany[0].t_company_name);
+              }
+              
             } catch (error) {
               console.error(error);
             }
@@ -136,6 +68,12 @@ function Main(props) {
     
     return(
         <Wrapper>
+            {loading && (
+            <div className="overlay-loading-box text-center">
+                {/* 로딩 스피너 컴포넌트 */}
+                <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
+                <div className="mt-3">유저 정보를 불러오는 중입니다.<br />잠시만 기다려주세요.</div>
+            </div>)}
             <Header user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
             <Section user={user} companyName={companyName} service={service}/>
             <Footer/>

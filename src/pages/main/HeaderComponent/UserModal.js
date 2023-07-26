@@ -113,10 +113,10 @@ function UserModal(props) {
 
     const selectedCompany = company.find((item) => item.t_company_name === companyName);
 
+    // 로그아웃 버튼 눌렀을 때
     const logoutHandler = () => {
-        localStorage.removeItem('accessToken');
-        document.cookie = `refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-        window.location.replace('/login');
+        document.cookie = `accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`; // 쿠키에 있는 Access Token 지우기
+        window.location.replace('/login'); // 로그인 창으로 가기
     }
     
     useEffect(() => {
