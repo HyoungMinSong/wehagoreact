@@ -17,13 +17,17 @@ const Item = styled.button`
     & > small {
         font-size: 12px;
     }
+
+    & > img {
+        border-radius: 10px;
+    }
 `;
 
 function ServiceListItem(props) {
     const {item, onClick} = props;
     return (
         <Item>
-            <img src="https://cdn-icons-png.flaticon.com/128/11324/11324302.png" alt="서비스 이미지" width="80px" height="80px"/>
+            <img src={item.t_service_main_icon_path} alt="서비스 이미지" width="80px" height="80px"/>
             <small>{item.t_service_name}</small>
         </Item>
     );
