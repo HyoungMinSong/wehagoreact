@@ -8,6 +8,7 @@ import axiosApi from "../../AxiosApi";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { clearChosenOnes } from "../../store";
+import { Spinner } from "react-bootstrap";
 
 const CsContainer = styled.div`
   margin-bottom: 80px;
@@ -302,6 +303,8 @@ function Management() {
     useState("");
   // redux dispatch
   const dispatch = useDispatch();
+  // 로딩 스피너
+  const[loading, setLoading] = useState(false);
 
   // 2번째 파라미터로 빈 배열 배치시 렌더링하는 처음만 실행
   useEffect(() => {
@@ -326,6 +329,8 @@ function Management() {
       showMyEmployeeState(selectedNodePk, selectedNodeIndex);
       dispatch(clearChosenOnes());
     }
+
+    
   }, [editingItem, selectedNodePk, selectedNodeIndex, selectedListTab]);
 
   // 선택 개체에 따라 직원 상태 갱신
@@ -611,6 +616,7 @@ function Management() {
   // 첫 렌더링에 가져올 값
   const fetchData = async () => {
     try {
+      setLoading(true);
       const res = await axiosApi.get("/showMyCompanyInfo", {
         params: {
           t_user_no: tUserNo,
@@ -634,6 +640,8 @@ function Management() {
       setProEditiedOrganization([]);
     } catch (error) {
       console.error(error);
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -865,6 +873,14 @@ function Management() {
                 </div>
               </div>
             </div>
+            {loading && (
+            <div className="overlay-loading-box text-center">
+        
+          {/* 로딩 스피너 컴포넌트 */}
+          <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
+          <div className="mt-3">회원가입이 진행 중입니다.<br />잠시만 기다려주세요.</div>
+        </div>
+      )}
           </div>
         </BasicTreeViewDepth>
         <BasicListTabs

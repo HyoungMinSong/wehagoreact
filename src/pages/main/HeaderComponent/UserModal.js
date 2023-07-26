@@ -108,15 +108,15 @@ const ButtonWrapper = styled.div`
 `;
 
 function UserModal(props) {
-    const {setUserModalOpen, user, company, companyName} = props;
+    const {setUserModalOpen, user, company, companyName, selectedCompanyRank} = props;
     const userModalRef = useRef(null);
 
     const selectedCompany = company.find((item) => item.t_company_name === companyName);
 
+    // 로그아웃 버튼 눌렀을 때
     const logoutHandler = () => {
-        localStorage.removeItem('accessToken');
-        document.cookie = `refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-        window.location.replace('/login');
+        document.cookie = `accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`; // 쿠키에 있는 Access Token 지우기
+        window.location.replace('/login'); // 로그인 창으로 가기
     }
     
     useEffect(() => {
@@ -145,7 +145,7 @@ function UserModal(props) {
                 </div>
                 <div className="user">
                     <span>{user.name}</span>
-                    <span>{selectedCompany.t_employee_duty}</span>
+                    <span>{selectedCompanyRank}</span>
                 </div>
                 <button className="email">
                     <img src="https://cdn-icons-png.flaticon.com/128/9554/9554729.png" alt="이메일" width="30px" height="30px" />
