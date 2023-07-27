@@ -17,7 +17,6 @@ import LoginPage from './pages/login/LoginPage';
 import FindIdForm from './pages/login/FindIdForm';
 import FindPwForm from './pages/login/FindpwForm';
 import FindIdResult from './pages/login/FindIdResult';
-import FindpwResult from './pages/login/FindpwResult';
 import SignUp_package from './pages/signUp/SignUp_package';
 import Main from './pages/main/Main';
 import PrivateRoute from './PrivateRoute';
@@ -25,6 +24,8 @@ import Test_up from './pages/signUp/Test_up';
 import SignUpHeader from './pages/signUp/SignUpHeader';
 import Updatepw from './pages/login/Updatepw';
 import LoginRoute from './LoginRoute';
+import Email from './pages/login/Email';
+import SendTest from './pages/signUp/SendTest';
 
 const getCookie = (name) => {
   const value = `; ${document.cookie}`;
@@ -55,12 +56,12 @@ root.render(
         <Route path="/findId" element={ <FindIdForm></FindIdForm> } />
         <Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
         <Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
-        <Route path="/findpwresult" element={ <FindpwResult></FindpwResult> } />
         <Route path="/updatepw" element={ <Updatepw></Updatepw> } />
         <Route path='/main' element={<PrivateRoute component={<Main />} isLogin={accessToken} />}/>
         <Route path="/test" element={ <Test_up></Test_up>} />
         <Route path="/test2" element={ <SignUpHeader></SignUpHeader>} />
-
+        <Route path="/email" element={ <Email></Email>} />
+        <Route path="/test3" element={ <SendTest></SendTest>} />
       </Routes>
     </BrowserRouter>
   </Provider>
