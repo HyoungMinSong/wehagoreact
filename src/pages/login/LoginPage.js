@@ -39,20 +39,14 @@ const LoginPage = () => {
         setLoggedIn(true);
         setLoginError(null);
 
-        // 발급 받은 Access Token 헤더에 등록
+        // 발급 받은 Access Token 쿠키에 등록
         const accessToken = response.data.accessToken;
+        const decodedAccessToken = jwt_decode(accessToken);
+        const accessTokenExpiration = new Date(decodedAccessToken.exp * 1000);
 
-        // 로그인 성공 후 Access Token을 localStorage에 저장
-        localStorage.setItem('accessToken', accessToken);
-
-        // Refresh Token 유효기간 가져오기
-        const refreshToken = response.data.refreshToken;
-        const decodedRefreshToken = jwt_decode(refreshToken);
-        const refreshTokenExpiration = new Date(decodedRefreshToken.exp * 1000);
-
-        // Refresh Token을 쿠키에 등록
-        const expires = refreshTokenExpiration.toUTCString();
-        document.cookie = `refreshToken=${refreshToken}; path=/; expires=${expires}`;
+        // Access Token을 쿠키에 등록
+        const expires = accessTokenExpiration.toUTCString();
+        document.cookie = `accessToken=${accessToken}; path=/; expires=${expires}`;
 
         // 메인 페이지로 넘어가기
         window.location.replace('/main');

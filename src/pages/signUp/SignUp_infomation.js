@@ -209,7 +209,10 @@ function SignUp_infomation() {
                     <p>- 가입완료 후 회사설정에서 회사인증 절차를 완료하면 더 다양한 서비스를 이용하실 수 있습니다.</p>
                   </div>
                   <div className="my-4">
-                    <Button variant="light" type="submit" className="mx-2">
+                    <Button variant="light"  className="mx-2" onClick={()=>{
+                      navigate(-1)
+                    }
+                    }>
                       &lt; 이전
                     </Button>
                     <Button variant="primary" className="mx-3" onClick={() => {
@@ -228,12 +231,14 @@ function SignUp_infomation() {
                                navigate('/signup/company')
                           }
                           console.log(c.data);
+                          
                         }).catch(() => {
-
                           console.log('실패함')
                         }).finally(()=>{
                           setLoading(false);
                         })
+                      } else{
+                        setLoading(false);
                       }
                       // console.log(name, phoneNumber, id, password, confirmPassword, email) 
 

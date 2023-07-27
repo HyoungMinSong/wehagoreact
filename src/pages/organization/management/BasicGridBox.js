@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import Img2 from "../images/img2.gif";
 import { beTheChosenOnes } from "../../../store";
 import { useDispatch, useSelector } from "react-redux";
+import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   // isexpanded prop를 DOM 요소로 전달합니다.
@@ -89,9 +91,18 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   #theChosenOnes {
     checked: false;
   }
+  select{
+    width:200px;
+    height: 25px;
+  }
+  input{
+    width:200px;
+    height: 25px;
+  }
 `;
 
 const WrappingDetailBox = styled.div`
+  height:700px;
   .detailBoxTit {
     margin: 5px 10px 0px;
     position: relative;
@@ -344,6 +355,8 @@ const WrappingDetailBox = styled.div`
 function BasicGridBox(props) {
   // 회사, 조직에 해당하는 유저들의 목록
   const [showingMyEmployees, setShowingMyEmployees] = useState([]);
+  // Date 형식 변환
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
   useEffect(() => {
@@ -354,12 +367,17 @@ function BasicGridBox(props) {
     }
   }, [props.showingMyEmployees, props.isExpanded]);
 
+  useEffect(() => {
+    updateOnesDate(selectedDate);
+  }, [selectedDate]);
+
   // 직원 행 클릭 이벤트
   const handleRowClick = (user) => {
     props.setSelectedUser(user);
     props.setUpdateSelectedUser(user);
     console.log("dsdsd", props.updateSelectedUser);
     props.setIsExpanded("true");
+    setSelectedDate(new Date(JSON.stringify(user.t_employee_date)));
   };
 
   // Detail X버튼 클릭 이벤트
@@ -404,8 +422,6 @@ function BasicGridBox(props) {
     if (e.target.name === "su-orname") {
       editedUpdateSelectedUser.t_organization_name = e.target.value;
       const label = e.target.options[e.target.selectedIndex].dataset.label;
-      console.log("value",e.target.value);
-      console.log("label",label);
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
     if (e.target.name === "su-emposi") {
@@ -424,6 +440,13 @@ function BasicGridBox(props) {
       editedUpdateSelectedUser.t_user_email = e.target.value;
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
+  };
+
+  // 개인정보 날짜 수정 이벤트
+  const updateOnesDate  = (e) => {
+    const editedUpdateSelectedUser = { ...props.updateSelectedUser };
+    editedUpdateSelectedUser.t_employee_date = e.toLocaleDateString().slice(0, -1).replace(/. /gi, "-");
+    props.setUpdateSelectedUser(editedUpdateSelectedUser);
   };
 
   // 저장버튼 이벤트
@@ -691,7 +714,14 @@ function BasicGridBox(props) {
                     </tr>
                     <tr>
                       <th>입사일</th>
-                      <td>{props.updateSelectedUser.t_employee_date}</td>
+                      <td>
+                      <DatePicker
+                        dateFormat='yyyy-MM-dd'
+                        shouldCloseOnSelect
+                        selected={selectedDate}
+                        onChange={(date) => setSelectedDate(date)}
+                      />
+                      </td>
                     </tr>
                     <tr>
                       <th>이메일주소</th>
