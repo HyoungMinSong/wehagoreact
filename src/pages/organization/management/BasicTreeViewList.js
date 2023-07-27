@@ -125,11 +125,25 @@ function BasicTreeViewList(props) {
   const [selectedUser, setSelectedUser] = useState(null);
   // 업데이트 할 유저 정보
   const [updateSelectedUser, setUpdateSelectedUser] = useState([]);
+  // Date 형식 변환
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  // 직원등록 On/Off
+  const [operateRegisMode, setOperateRegisMode] = useState(false);
+  // 기본 이미지
+  const [showMyThumbnail, setShowMyThumbnail] = useState('https://static.wehago.com/imgs/dummy/@dummy_02.jpg');
 
   // 직원 등록 클릭 이벤트
   const handleRegistrationClick = () =>{
-    setSelectedUser([]);
-    setUpdateSelectedUser([]);
+    setSelectedDate(new Date());
+    setUpdateSelectedUser({
+      t_user_no : props.showingMyEmployees[0].t_user_no,
+      t_company_no : props.showingMyEmployees[0].t_company_no,
+      t_organization_name : props.showingMyEmployees[0].t_organization_name,
+      t_organization_no : props.showingMyEmployees[0].t_organization_no,
+      t_employee_auth : 2,
+    });
+    setOperateRegisMode(true);
+    setShowMyThumbnail('https://static.wehago.com/imgs/dummy/@dummy_02.jpg');
     props.setIsExpanded("true");
   };
 
@@ -168,6 +182,12 @@ function BasicTreeViewList(props) {
           setUpdateSelectedUser={setUpdateSelectedUser}
           myWorkPlace={props.myWorkPlace}
           myCompanyInfo={props.myCompanyInfo}
+          operateRegisMode={operateRegisMode}
+          setOperateRegisMode={setOperateRegisMode}
+          showMyThumbnail={showMyThumbnail}
+          setShowMyThumbnail={setShowMyThumbnail}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
         />
       </div>
     </TreeViewList>
