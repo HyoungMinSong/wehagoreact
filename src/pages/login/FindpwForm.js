@@ -3,16 +3,20 @@ import './FindpwForm.css';
 import { useNavigate } from 'react-router-dom';
 import SignUpHeader from '../signUp/SignUpHeader';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import emailjs from '@emailjs/browser';
+import axiosApi from '../../AxiosApi';
+import { async } from 'q';
 
 const FindpwForm = () => {
   const navigate = useNavigate();
   const [searchOption, setSearchOption] = useState('email');
   const [id, setId] = useState('');
   const [email, setEmail] = useState('');
+  const [responseCode, setResponseCode] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [showVerificationField, setShowVerificationField] = useState(false);
   const [error, setError] = useState('');
+  const [idError, setIdError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   const handleSearchOptionChange = (e) => {
     setSearchOption(e.target.value);
@@ -25,37 +29,39 @@ const FindpwForm = () => {
     window.location.reload();
   };
 
-  const generateRandomVerificationCode = () => {
-    // 4자리 랜덤 숫자 생성
-    const min = 1000;
-    const max = 9999;
-    const randomCode = Math.floor(Math.random() * (max - min + 1)) + min;
-    return randomCode;
-  };
+  const handleSendVerificationCode = async () => {
+    if(id == '') {
+      setIdError(true);
+      document.getElementById('id').focus();
+      return;
+    } else {
+      setIdError(false);
+    }
 
-  const handleSendVerificationCode = () => {
-    const simulatedVerificationCode = generateRandomVerificationCode();
-    setVerificationCode(simulatedVerificationCode);
-    setShowVerificationField(true);
-
-    // 이메일로 인증번호 전송
-    const templateParams = {
-      to_email: email, // 수신자 이메일 주소
-      verification_code: simulatedVerificationCode, // 생성된 인증번호
-    };
-    // EmailJS를 사용하여 이메일 전송
-    emailjs.send(
-      'your_emailjs_service_id',
-      'your_emailjs_template_id',
-      templateParams,
-      'your_emailjs_user_id'
-    )
-    .then((response) => {
-      console.log('이메일 전송 성공:', response.status, response.text);
-    })
-    .catch((error) => {
-      console.error('이메일 전송 오류:', error);
-      // 이메일 전송 중 오류가 발생할 경우 오류 메시지를 설정하거나 필요한 처리를 합니다.
+    if(email == '') {
+      setEmailError(true);
+      document.getElementById('email').focus();
+      return;
+    } else {
+      setEmailError(false);
+    }
+    // 회원이 있는지 확인
+    axiosApi.post('/findpw', {
+      t_user_id: id,
+      t_user_email: email,
+    }).then((res) => {
+      setError('');
+      setShowVerificationField(true);
+      axiosApi.post('/mailConfirm', {
+        email: email
+      }).then((response) => {
+        alert('입력하신 이메일로 인증 번호를 발송하였습니다.');
+        setResponseCode(response.data);
+      }).catch((response) => {
+        alert('인증 번호 발송 실패..');
+      })
+    }).catch((res) => {
+      setError('아이디 또는 이메일이 일치하지 않습니다.');
     });
   };
 
@@ -63,15 +69,17 @@ const FindpwForm = () => {
     e.preventDefault();
     setError('');
 
-    // TODO: Send API request to server for verification of the entered code
-    // Compare the entered code with the code sent to the email.
     if (verificationCode === '') {
       setError('인증번호를 입력해주세요.');
       return;
     }
 
-    // If verification is successful, navigate to the password update page
-    navigate('/updatepw');
+    if(verificationCode == responseCode) {
+      navigate('/updatepw', {state: id});
+    } else {
+      setError('인증번호가 일치하지 않습니다.');
+      return;
+    }
   };
 
   return (
@@ -98,6 +106,7 @@ const FindpwForm = () => {
               onChange={(e) => setId(e.target.value)}
               required
             />
+            {idError && <small className='input-id-error'>아이디를 입력하세요.</small>}
           </div>
           {searchOption === 'email' && (
             <div className="find-pw-form-group">
@@ -112,6 +121,7 @@ const FindpwForm = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
+              {emailError && <small className='input-email-error'>이메일을 입력하세요.</small>}
             </div>
           )}
           <button
