@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
 import jwt_decode from 'jwt-decode';
 
+
 const LoginForm = ({ handleLogin }) => {
   return (
     <form onSubmit={handleLogin}>
@@ -102,7 +103,7 @@ const LoginPage = () => {
     <div className="jongwonscss">
       <div className={`wrapper${formSuccess ? ' form-success' : ''}`}>
         <div className="container">
-          <h1 className={`${formSuccess ? 'form-success text-white' : 'text-white'}`}>Welcome</h1>
+          <h1 className={`${formSuccess ? 'form-success text-white' : 'text-white'}`}>W E H A G O</h1>
 
           {!loggedIn ? (
             <form onSubmit={handleLogin}>

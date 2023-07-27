@@ -1,24 +1,11 @@
 /* FindpwForm.css */
 
-.find-pw-search-option {
-  display: flex;
-  flex-direction: row-reverse; /* 옵션들의 순서를 반대로 변경 */
-  justify-content: flex-start; /* 옵션들을 오른쪽에 정렬 */
-  margin-bottom: 20px;
-}
-
-.find-pw-option {
-  display: flex;
-  align-items: center;
-  margin-right: 20px; /* 옵션들 사이에 간격 추가 */
-}
-
 .find-pw-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 88vh;
 }
 
 .find-pw-title {
@@ -26,6 +13,12 @@
   font-weight: bold;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
+}
+
+/* Adjust the width and height of the PortraitIcon to match the font size */
+.find-id-title>LockOutlinedIcon {
+  width: 1em;
+  height: 1em;
 }
 
 .find-pw-description {
@@ -39,7 +32,7 @@
   flex-direction: column;
   align-items: center;
   width: 600px;
-  padding: 3rem; /* 조정된 값 */
+  padding: 3rem;
   border: 2px solid #ccc;
   border-radius: 8px;
   margin-top: 2rem;
@@ -60,11 +53,14 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 100%;
+  flex: 1;
+  /* 이메일 입력 란이 남은 공간을 모두 차지하도록 설정 */
 }
+
 
 .find-pw-form-button {
   padding: 10px 15px;
-  background-color: #37cfee;
+  background-color: rgb(120, 21, 105);
   color: white;
   border: none;
   border-radius: 4px;
@@ -84,34 +80,61 @@
   background-color: #f5f5f5;
 }
 
-/* 라디오 버튼에 대한 조정 */
-.find-pw-form-radio-group {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.find-pw-form-radio {
-  display: flex;
-  align-items: center;
-  margin-right: 1rem;
-}
-
-.find-pw-form-radio input[type="radio"] {
-  margin-right: 0.5rem;
-}
 
 .find-pw-form-button {
   color: white;
-  margin-top: 20px; /* 비밀번호 찾기 버튼 아래 여백 추가 */
+  margin-top: 20px;
+  /* 비밀번호 찾기 버튼 아래 여백 추가 */
+  text-decoration: none;
 }
 
-.find-pw-form-button ~ a {
-  margin-top: 20px; /* 비밀번호 찾기 버튼과 링크 사이 여백 추가 */
-  display: block; /* 링크를 블록 요소로 변경하여 버튼 아래로 이동 */
-  color: rgba(3, 4, 4, 0.92); /* 링크 텍스트 색상을 검정색으로 변경 */
+.find-pw-form-button~a {
+  margin-top: 20px;
+  /* 비밀번호 찾기 버튼과 링크 사이 여백 추가 */
+  display: block;
+  /* 링크를 블록 요소로 변경하여 버튼 아래로 이동 */
+  color: rgba(3, 4, 4, 0.92);
+  /* 링크 텍스트 색상을 검정색으로 변경 */
 }
 
-.find-pw-link {
-  text-decoration: none; /* 텍스트에 밑줄 스타일 제거 */
+.find-id-link {
+  text-decoration: none;
+  /* 텍스트에 밑줄 스타일 제거 */
+}
+
+.find-pw-error {
+  margin-top: 20px;
+  color: red;
+  font-weight: bold;
+}
+
+
+.find-pw-form-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1;
+  /* 이메일 입력 란이 남은 공간을 모두 차지하도록 설정 */
+}
+
+
+.find-pw-button-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.find-pw-confirm-button {
+  margin-top: 30px; /* 버튼 사이의 간격을 늘립니다. */
+  color: black;
+  border: none; /* 테두리 없음 */
+  margin-right: 10px;
+  background-color: white
+}
+
+.find-id-link {
+  margin-top: 30px; /* 버튼 사이의 간격을 늘립니다. */
+  color: black;
+  border: none; /* 테두리 없음 */
+  background-color: white
 }

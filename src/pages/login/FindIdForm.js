@@ -3,6 +3,8 @@ import './FindIdForm.css';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
+import SignUpHeader from '../signUp/SignUpHeader';
+import PortraitIcon from '@mui/icons-material/Portrait';
 
 
 const FindIdForm = () => {
@@ -57,9 +59,13 @@ const FindIdForm = () => {
   };
 
   return (
+    <>
+    <SignUpHeader>
+    </SignUpHeader>
     <div className="find-id-container">
       <form className="find-id-form" onSubmit={handleSubmit}>
-        <div className="find-id-title">아이디 찾기</div>
+        <div className="find-id-title">
+        <PortraitIcon fontSize='large' />아이디 찾기</div>
         <div className="find-id-description">WEHAGO에 등록된 회원정보로 아이디를 찾으실 수 있습니다.</div>
         <div className="find-id-search-option">
           <div className="find-id-option">
@@ -122,14 +128,15 @@ const FindIdForm = () => {
         )}
         <button className="find-id-form-button" type="submit" onClick={test}>Find ID</button>
         <Link to="/findpw" className="find-id-link">비밀번호 찾기</Link>
-      </form>
-      {error && (
+        {error && (
         <div className="find-id-error">
           {error}
         </div>
-      )}
+        )}
+      </form>
       
     </div>
+    </>
   );
 };
 
