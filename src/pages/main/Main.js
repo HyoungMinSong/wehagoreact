@@ -9,7 +9,9 @@ import { Spinner } from "react-bootstrap";
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  background: linear-gradient(#3D7EAA, #FFE47A);
+  background: url('https://images.wallpaperscraft.com/image/single/hong_kong_china_skyscrapers_119347_1280x720.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
 `;
 
 function Main(props) {
