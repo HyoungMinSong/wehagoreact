@@ -1,6 +1,5 @@
 import { styled, css } from "styled-components";
-import React, { useEffect, useState } from "react";
-import Img2 from "../images/img2.gif";
+import React, { useEffect, useRef, useState } from "react";
 import { beTheChosenOnes } from "../../../store";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
@@ -95,9 +94,16 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
     width:200px;
     height: 25px;
   }
-  input{
+  input[type=text]{
     width:200px;
     height: 25px;
+  }
+  input[type=radio]{
+    height: 15px;
+    width: 15px;
+    margin-right: 5px;
+    margin-left: 5px;
+    vertical-align: text-bottom;
   }
 `;
 
@@ -350,13 +356,17 @@ const WrappingDetailBox = styled.div`
     table-layout: fixed;
     border-spacing: 0;
   }
+
+
 `;
 
 function BasicGridBox(props) {
   // 회사, 조직에 해당하는 유저들의 목록
-  const [showingMyEmployees, setShowingMyEmployees] = useState([]);
-  // Date 형식 변환
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showingMyEmployees, setShowingMyEmployees] = useState([]);  
+  // 이미지 등록 참조
+  const fileInputRef = useRef(null);
+  
+
 
   // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
   useEffect(() => {
@@ -368,16 +378,22 @@ function BasicGridBox(props) {
   }, [props.showingMyEmployees, props.isExpanded]);
 
   useEffect(() => {
-    updateOnesDate(selectedDate);
-  }, [selectedDate]);
+    updateOnesDate(props.selectedDate);
+  }, [props.selectedDate]);
 
   // 직원 행 클릭 이벤트
   const handleRowClick = (user) => {
+    props.setOperateRegisMode(false);
     props.setSelectedUser(user);
     props.setUpdateSelectedUser(user);
+    if (user.t_user_photo_path.startsWith('http')) {
+      props.setShowMyThumbnail(user.t_user_photo_path);
+    } else {
+      props.setShowMyThumbnail(process.env.PUBLIC_URL + user.t_user_photo_path);
+    }    
     console.log("dsdsd", props.updateSelectedUser);
     props.setIsExpanded("true");
-    setSelectedDate(new Date(JSON.stringify(user.t_employee_date)));
+    props.setSelectedDate(new Date(JSON.stringify(user.t_employee_date)));
   };
 
   // Detail X버튼 클릭 이벤트
@@ -421,7 +437,7 @@ function BasicGridBox(props) {
     }
     if (e.target.name === "su-orname") {
       editedUpdateSelectedUser.t_organization_name = e.target.value;
-      const label = e.target.options[e.target.selectedIndex].dataset.label;
+      editedUpdateSelectedUser.t_organization_no = e.target.options[e.target.selectedIndex].dataset.label;
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
     if (e.target.name === "su-emposi") {
@@ -442,6 +458,21 @@ function BasicGridBox(props) {
     }
   };
 
+  // 권한 선택 이벤트
+  const handleUserRoleChange = (event) => {
+    if(event.target.value === "관리자"){
+      props.setUpdateSelectedUser({
+        ...props.updateSelectedUser,
+        t_employee_auth: 1,
+      });
+    }else if(event.target.value === "일반"){
+      props.setUpdateSelectedUser({
+        ...props.updateSelectedUser,
+        t_employee_auth: 2,
+      });
+    }
+  };
+
   // 개인정보 날짜 수정 이벤트
   const updateOnesDate  = (e) => {
     const editedUpdateSelectedUser = { ...props.updateSelectedUser };
@@ -449,9 +480,44 @@ function BasicGridBox(props) {
     props.setUpdateSelectedUser(editedUpdateSelectedUser);
   };
 
+  // 사진등록 버튼 이벤트
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  // 사진삭제 버튼 이벤트
+  const handleFileResetClick = () => {
+    props.setUpdateSelectedUser({
+      ...props.updateSelectedUser,
+      t_user_photo_path: 'https://static.wehago.com/imgs/dummy/@dummy_02.jpg',
+    });
+    props.setShowMyThumbnail('https://static.wehago.com/imgs/dummy/@dummy_02.jpg');
+  };
+
+  // 파일 변경 이벤트
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    console.log("파일",selectedFile);
+    props.setUpdateSelectedUser({
+      ...props.updateSelectedUser,
+      t_user_photo_path: '/images/'+selectedFile.name,
+    });
+    // 파일을 선택한 후에 처리할 작업을 수행합니다.
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const fileDataUrl = reader.result;
+        props.setShowMyThumbnail(fileDataUrl);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
   // 저장버튼 이벤트
   const handleSaveClick = () => {
     console.log("props.updateSelectedUser", props.updateSelectedUser);
+    // 이미지 파일 저장
+    
   };
 
   return (
@@ -531,32 +597,31 @@ function BasicGridBox(props) {
           </div>
         </div>
       </div>
-      {props.updateSelectedUser && (
         <div className="user-detail">
           <WrappingDetailBox>
             <div className="detailBoxTit">
               <h2>직원정보</h2>
               <div className="detailBoxButtonBox">
-                {props.updateSelectedUser.length !== 0 ? (
+                {(props.operateRegisMode || props.updateSelectedUser.t_employee_auth ===0) ? (
+                  ""
+                ) : (
                   <button type="button" className="detailBoxBB">
                     사용중지
                   </button>
-                ) : (
-                  ""
                 )}
-                {props.updateSelectedUser.length !== 0 ? (
+                {(props.operateRegisMode || props.updateSelectedUser.t_employee_auth ===0 ) ? (
+                  ""
+                ) : (
                   <button type="button" className="detailBoxBB">
                     퇴사
                   </button>
-                ) : (
-                  ""
                 )}
                 <button
                   type="button"
                   className="detailBoxBX"
                   onClick={handleXClick}
                 >
-                  X
+                  Ｘ
                 </button>
               </div>
             </div>
@@ -567,16 +632,16 @@ function BasicGridBox(props) {
                     <input type="file" className="hiddingInput" />
                   </div>
                   <img
-                    src={Img2}
+                    src={props.showMyThumbnail}
                     alt="프로필사진"
                     className="detailBoxStaffPhoto"
                   />
                 </div>
                 <div className="detailBoxProfBt">
                   <div className="detailBoxProfInfo">
-                    {props.selectedUser && props.selectedUser.t_user_name}
+                    {props.operateRegisMode ? "" : props.updateSelectedUser.t_user_name}
                     <span className="detailBoxProfId">
-                      {props.updateSelectedUser.t_user_id}
+                      {props.operateRegisMode ? "" : props.updateSelectedUser.t_user_id}
                     </span>
                   </div>
                   <div>
@@ -585,12 +650,22 @@ function BasicGridBox(props) {
                         type="button"
                         id="fileupload"
                         className="profPhotoInButton"
+                        onClick={handleButtonClick}
                       >
                         등록
                       </button>
-                      <input type="file" className="profPhotoInInput" />
+                      <input 
+                        type="file" 
+                        className="profPhotoInInput" 
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                      />
                     </div>
-                    <button type="button" className="profPhotoOutButton">
+                    <button 
+                      type="button" 
+                      className="profPhotoOutButton"
+                      onClick={handleFileResetClick}
+                    >
                       삭제
                     </button>
                     <p className="profPhotoGuideText">
@@ -613,20 +688,20 @@ function BasicGridBox(props) {
                     <col></col>
                   </colgroup>
                   <tbody>
-                    {props.updateSelectedUser.length !== 0 ? (
-                      ""
-                    ) : (
+                    {props.operateRegisMode ? (
                       <tr>
-                        <th>이름</th>
-                        <td>
-                          <input
-                            type="text"
-                            name="su-usname"
-                            value={props.updateSelectedUser.t_user_name || ""}
-                            onChange={(e) => updateOnes(e)}
-                          />
-                        </td>
-                      </tr>
+                      <th>이름</th>
+                      <td>
+                        <input
+                          type="text"
+                          name="su-usname"
+                          value={props.updateSelectedUser.t_user_name || ""}
+                          onChange={(e) => updateOnes(e)}
+                        />
+                      </td>
+                    </tr>
+                    ) : (
+                      ""
                     )}
                     <tr>
                       <th>소속</th>
@@ -683,6 +758,7 @@ function BasicGridBox(props) {
                         <input
                           type="text"
                           name="su-emposi"
+                          placeholder="인턴 사원 주임 대리 과장 부장"
                           value={
                             props.updateSelectedUser.t_employee_position || ""
                           }
@@ -696,6 +772,7 @@ function BasicGridBox(props) {
                         <input
                           type="text"
                           name="su-emduty"
+                          placeholder="팀원 팀장 실장 파트장 센터장"
                           value={props.updateSelectedUser.t_employee_duty || ""}
                           onChange={(e) => updateOnes(e)}
                         />
@@ -718,8 +795,9 @@ function BasicGridBox(props) {
                       <DatePicker
                         dateFormat='yyyy-MM-dd'
                         shouldCloseOnSelect
-                        selected={selectedDate}
-                        onChange={(date) => setSelectedDate(date)}
+                        selected={props.selectedDate}
+                        defaultValue
+                        onChange={(date) => props.setSelectedDate(date)}
                       />
                       </td>
                     </tr>
@@ -734,7 +812,9 @@ function BasicGridBox(props) {
                         />
                       </td>
                     </tr>
-                    {props.updateSelectedUser.length !== 0 ? (
+                    {props.operateRegisMode ? (
+                      ""
+                    ) : (
                       <tr>
                         <th>상태</th>
                         <td>
@@ -750,9 +830,40 @@ function BasicGridBox(props) {
                             "퇴사"}
                         </td>
                       </tr>
-                    ) : (
-                      ""
                     )}
+                    <tr>
+                      <th>관리자 권한</th>
+                    {props.updateSelectedUser.t_employee_auth ===0 ? (
+                      <td>
+                        <label><input
+                            type="radio"
+                            value="0"
+                            checked
+                          />마스터</label>
+                      </td>
+                    ) : (
+                      <td>
+                        <label>
+                          <input
+                            type="radio"
+                            value="관리자"
+                            checked={props.updateSelectedUser.t_employee_auth === 1}
+                            onChange={handleUserRoleChange}
+                          />
+                          관리자
+                        </label>
+                        <label>
+                          <input
+                            type="radio"
+                            value="일반"
+                            checked={props.updateSelectedUser.t_employee_auth !== 1}
+                            onChange={handleUserRoleChange}
+                          />
+                          일반
+                        </label>
+                      </td>
+                        )}
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -775,7 +886,6 @@ function BasicGridBox(props) {
             </div>
           </WrappingDetailBox>
         </div>
-      )}
     </WrappingGridBox>
   );
 }

@@ -299,8 +299,7 @@ function Management() {
   // 수정할 조직도의 정보
   const [proEditiedOrganization, setProEditiedOrganization] = useState([]);
   // 부서 이름 수정시 input에 입력할 이전 이름
-  const [prevEditingOrganizationName, setPrevEditingOrganizationName] =
-    useState("");
+  const [prevEditingOrganizationName, setPrevEditingOrganizationName] = useState("");
   // redux dispatch
   const dispatch = useDispatch();
   // 로딩 스피너
