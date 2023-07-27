@@ -5,12 +5,13 @@ const Wrapper = styled.div`
     width: 100%;
     text-align: center;
     padding: 20px 0px;
+    color: white;
 `;
 
 const A = styled.a`
     text-decoration: none;
     line-height: 1px;
-    color: black;
+    color: white;
 
     &::after {
         content: '';

@@ -24,7 +24,6 @@ import Test_up from './pages/signUp/Test_up';
 import SignUpHeader from './pages/signUp/SignUpHeader';
 import Updatepw from './pages/login/Updatepw';
 import LoginRoute from './LoginRoute';
-import Email from './pages/login/Email';
 import SendTest from './pages/signUp/SendTest';
 
 const getCookie = (name) => {
@@ -60,7 +59,6 @@ root.render(
         <Route path='/main' element={<PrivateRoute component={<Main />} isLogin={accessToken} />}/>
         <Route path="/test" element={ <Test_up></Test_up>} />
         <Route path="/test2" element={ <SignUpHeader></SignUpHeader>} />
-        <Route path="/email" element={ <Email></Email>} />
         <Route path="/test3" element={ <SendTest></SendTest>} />
       </Routes>
     </BrowserRouter>

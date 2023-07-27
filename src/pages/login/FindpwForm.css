@@ -138,3 +138,8 @@
   border: none; /* 테두리 없음 */
   background-color: white
 }
+
+.input-id-error, .input-email-error{
+  color: red;
+  font-size: 12px;
+}

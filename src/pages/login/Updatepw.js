@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import './Updatepw.css';
 import axiosApi from "../../AxiosApi";
-import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { RepeatOneSharp } from '@mui/icons-material';
 import SignUpHeader from '../signUp/SignUpHeader';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 
 const Updatepw = () => {
-  const [currentPassword, setCurrentPassword] = useState('');
+  const {state} = useLocation();
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [error, setError] = useState('');
   const [isPasswordChanged, setIsPasswordChanged] = useState(false);
-  const [currentUsername, setCurrentUsername] = useState('');
+  const [userId, setUserId] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,22 +23,23 @@ const Updatepw = () => {
         return;
       }
 
+      if(userId == null) {
+        return;
+      }
+
       const url = '/updatepw';
       const data = {
-        t_user_id: currentUsername,
-        t_user_password: currentPassword,
+        t_user_id: state,
         t_user_new_password: newPassword,
         t_user_new_password_check: confirmNewPassword,
       };
 
       const response = await axiosApi.post(url, data);
-
-      // API 응답을 처리하고 UI를 업데이트하는 코드를 추가하세요.
-      // 예를 들어, 비밀번호가 성공적으로 변경된 경우 성공 메시지를 표시할 수 있습니다.
       
       if(response.data) {
         setError('')
-        setIsPasswordChanged(true);
+        alert('비밀번호가 성공적으로 변경되었습니다.');
+        window.location.replace('/login');
       } else {
         setError('비밀번호 변경에 실패했습니다.');
         setIsPasswordChanged(false);
@@ -64,25 +65,14 @@ const Updatepw = () => {
             <div className="update-password-description">입력하세요.</div>
         </div>
         <div className="update-password-form-group">
-          <label className="update-password-form-label" htmlFor="currentUsername">현재 아이디</label>
+          <label className="update-password-form-label" htmlFor="userId">현재 아이디</label>
           <input
             className="update-password-form-input"
             type="text"
-            id="currentUsername"
-            value={currentUsername}
-            onChange={(e) => setCurrentUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div className="update-password-form-group">
-          <label className="update-password-form-label" htmlFor="currentPassword">현재 비밀번호</label>
-          <input
-            className="update-password-form-input"
-            type="password"
-            id="currentPassword"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            required
+            id="userId"
+            value={state}
+            onChange={(e) => setUserId(e.target.value)}
+            disabled
           />
         </div>
         <div className="update-password-form-group">
