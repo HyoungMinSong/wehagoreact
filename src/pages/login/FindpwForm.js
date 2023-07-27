@@ -8,7 +8,7 @@ import axiosApi from "../../AxiosApi";
 const FindpwForm = () => { // Rename the component to FindpwForm
   const navigate = useNavigate();
   const [searchOption, setSearchOption] = useState();
-  const [name, setName] = useState('');
+  const [id, setId] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [foundpw, setFoundpw] = useState('');
@@ -28,10 +28,10 @@ const FindpwForm = () => { // Rename the component to FindpwForm
 
       if (searchOption === 'phone') {
         url = '/findpw2';
-        data = { t_user_name: name, t_user_phone: phone };
+        data = { t_user_id: id, t_user_phone: phone };
       } else {
         url = '/findpw1';
-        data = { t_user_name: name, t_user_email: email };
+        data = { t_user_id: id, t_user_email: email };
       }
 
       const response = await axiosApi.post(url, data);
@@ -82,13 +82,13 @@ const FindpwForm = () => { // Rename the component to FindpwForm
           </div>
         </div>
         <div className="find-pw-form-group"> {/* Use the class name from FindpwForm.css */}
-          <label className="find-pw-form-label" htmlFor="name">이름</label> {/* Use the class name from FindpwForm.css */}
+          <label className="find-pw-form-label" htmlFor="name">아이디</label> {/* Use the class name from FindpwForm.css */}
           <input
             className="find-pw-form-input"  
             type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            id="id"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
             required
           />
         </div>
