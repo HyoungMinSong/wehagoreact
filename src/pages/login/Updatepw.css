@@ -14,10 +14,15 @@
 }
 
 .update-password-title {
-  font-size: 32px;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 30px;
+  font-size: 1.8rem;
+  margin-top: 10px;
+}
+
+.update-password-title > LockOutlinedIcon {
+  width: 1em;
+  height: 1em;
 }
 
 .update-password-description-div {
@@ -25,7 +30,7 @@
   margin-bottom: 30px;
   border-bottom: 1px solid gray;
   text-align: center;
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .update-password-description {
@@ -62,7 +67,7 @@
 .update-password-form-button {
   padding: 10px;
   font-size: 16px;
-  background-color: #37cfee;
+  background-color: rgb(120, 21, 105);
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -102,11 +107,5 @@
   height: 700px;
 }
 
-.update-password-login-link{
-  text-decoration: none;
-  color: black;
-  display: block;
-  width: fit-content; 
-  margin: 0 auto;
-}
+
 

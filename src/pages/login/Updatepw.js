@@ -3,6 +3,8 @@ import './Updatepw.css';
 import axiosApi from "../../AxiosApi";
 import { Link } from 'react-router-dom';
 import { RepeatOneSharp } from '@mui/icons-material';
+import SignUpHeader from '../signUp/SignUpHeader';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 
 const Updatepw = () => {
@@ -49,9 +51,13 @@ const Updatepw = () => {
   };
 
   return (
+    <>
+    <SignUpHeader>
+    </SignUpHeader>
     <div className="update-password-container">
       <form className="update-password-form" onSubmit={handleSubmit}>
-        <div className="update-password-title">비밀번호 재설정</div>
+        <div className="update-password-title">
+        <LockOutlinedIcon fontSize='large' />비밀번호 재설정</div>
         <div className='update-password-description-div'>
             <div className="update-password-description">보안을 위해 비밀번호를 다시 설정해 주세요.</div>
             <div className="update-password-description">8~16자의 영문 대소문자, 숫자, 특수문자를 조합하여 비밀번호를</div>
@@ -115,10 +121,8 @@ const Updatepw = () => {
           비밀번호가 성공적으로 변경되었습니다.
         </div> 
       )}
-      <div>
-        <Link to="/login" className="update-password-login-link">로그인</Link>
-        </div>
     </div>
+    /</>
   );
 };
 

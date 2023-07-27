@@ -1,133 +1,163 @@
 import React, { useState } from 'react';
-import './FindpwForm.css'; // Import FindpwForm.css
+import './FindpwForm.css';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import axiosApi from "../../AxiosApi";
+import SignUpHeader from '../signUp/SignUpHeader';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import emailjs from '@emailjs/browser';
 
-
-const FindpwForm = () => { // Rename the component to FindpwForm
+const FindpwForm = () => {
   const navigate = useNavigate();
-  const [searchOption, setSearchOption] = useState();
-  const [name, setName] = useState('');
+  const [searchOption, setSearchOption] = useState('email');
+  const [id, setId] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [foundpw, setFoundpw] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [showVerificationField, setShowVerificationField] = useState(false);
   const [error, setError] = useState('');
-  const [ispwFound, setIspwFound] = useState(false);
-
-  const test = (e) => {
-    console.log('hihi');
-    console.log({ foundpw });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      let url;
-      let data;
-
-      if (searchOption === 'phone') {
-        url = '/findpw2';
-        data = { t_user_name: name, t_user_phone: phone };
-      } else {
-        url = '/findpw1';
-        data = { t_user_name: name, t_user_email: email };
-      }
-
-      const response = await axiosApi.post(url, data);
-
-      const foundpw = response.data.t_user_password;
-      setFoundpw(foundpw);
-      setError('');
-      setIspwFound(true);
-
-      navigate('/findpwresult', { state: { foundpw } }); // Redirect to the password reset result page
-    } catch (error) {
-      console.error(error);
-      setError('등록된 정보와 일치하지 않습니다');
-      setFoundpw('');
-      setIspwFound(false);
-    }
-  };
 
   const handleSearchOptionChange = (e) => {
     setSearchOption(e.target.value);
+    setError('');
+    setShowVerificationField(false);
+    setVerificationCode('');
+  };
+
+  const handleCancel = () => {
+    window.location.reload();
+  };
+
+  const generateRandomVerificationCode = () => {
+    // 4자리 랜덤 숫자 생성
+    const min = 1000;
+    const max = 9999;
+    const randomCode = Math.floor(Math.random() * (max - min + 1)) + min;
+    return randomCode;
+  };
+
+  const handleSendVerificationCode = () => {
+    const simulatedVerificationCode = generateRandomVerificationCode();
+    setVerificationCode(simulatedVerificationCode);
+    setShowVerificationField(true);
+
+    // 이메일로 인증번호 전송
+    const templateParams = {
+      to_email: email, // 수신자 이메일 주소
+      verification_code: simulatedVerificationCode, // 생성된 인증번호
+    };
+    // EmailJS를 사용하여 이메일 전송
+    emailjs.send(
+      'your_emailjs_service_id',
+      'your_emailjs_template_id',
+      templateParams,
+      'your_emailjs_user_id'
+    )
+    .then((response) => {
+      console.log('이메일 전송 성공:', response.status, response.text);
+    })
+    .catch((error) => {
+      console.error('이메일 전송 오류:', error);
+      // 이메일 전송 중 오류가 발생할 경우 오류 메시지를 설정하거나 필요한 처리를 합니다.
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError('');
+
+    // TODO: Send API request to server for verification of the entered code
+    // Compare the entered code with the code sent to the email.
+    if (verificationCode === '') {
+      setError('인증번호를 입력해주세요.');
+      return;
+    }
+
+    // If verification is successful, navigate to the password update page
+    navigate('/updatepw');
   };
 
   return (
-    <div className="find-pw-container"> {/* Use the class name from FindpwForm.css */}
-      <form className="find-pw-form" onSubmit={handleSubmit}> {/* Use the class name from FindpwForm.css */}
-        <div className="find-pw-title">비밀번호 찾기</div> {/* Use the class name from FindpwForm.css */}
-        <div className="find-pw-description">WEHAGO에 등록된 회원정보로 비밀번호를 찾으실 수 있습니다.</div> {/* Use the class name from FindpwForm.css */}
-        <div className="find-pw-search-option"> {/* Use the class name from FindpwForm.css */}
-          <div className="find-pw-option"> {/* Use the class name from FindpwForm.css */}
-            <input
-              type="radio"
-              id="phone-option"
-              value="phone"
-              checked={searchOption === 'phone'}
-              onChange={handleSearchOptionChange}
-            />
-            <label htmlFor="phone-option">휴대폰 번호로 찾기</label>
+    <>
+      <SignUpHeader />
+      <div className="find-pw-container">
+        <form className="find-pw-form">
+          <div className="find-pw-title">
+            <LockOutlinedIcon fontSize="large" />
+            비밀번호 찾기
           </div>
-          <div className="find-pw-option"> {/* Use the class name from FindpwForm.css */}
-            <input
-              type="radio"
-              id="email-option"
-              value="email"
-              checked={searchOption === 'email'}
-              onChange={handleSearchOptionChange}
-            />
-            <label htmlFor="email-option">이메일로 찾기</label>
+          <div className="find-pw-description">
+            WEHAGO에 등록된 회원정보로 비밀번호를 찾으실 수 있습니다.
           </div>
-        </div>
-        <div className="find-pw-form-group"> {/* Use the class name from FindpwForm.css */}
-          <label className="find-pw-form-label" htmlFor="name">이름</label> {/* Use the class name from FindpwForm.css */}
-          <input
-            className="find-pw-form-input"  
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        {searchOption === 'email' && (
-          <div className="find-pw-form-group"> 
-            <label className="find-pw-form-label" htmlFor="email">이메일</label> {/* Use the class name from FindpwForm.css */}
+          <div className="find-pw-form-group">
+            <label className="find-pw-form-label" htmlFor="name">
+              아이디
+            </label>
             <input
-              className="find-pw-form-input"  
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              className="find-pw-form-input"
+              type="text"
+              id="id"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
               required
             />
           </div>
-        )}
-        {searchOption === 'phone' && (
-          <div className="find-pw-form-group"> 
-            <label className="find-pw-form-label" htmlFor="phone">휴대폰 번호</label> 
-            <input
-              className="find-pw-form-input"  
-              type="tel"
-              id="phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-          </div>
-        )}
-        <button className="find-pw-form-button" type="submit" onClick={test}>비밀번호 찾기</button> {/* Use the class name from FindpwForm.css */}
-        <Link to="/findid" className="find-pw-link">아이디 찾기</Link> {/* Use the class name from FindpwForm.css */}
-      </form>
-      {error && (
-        <div className="find-pw-error"> {/* Use the class name from FindpwForm.css */}
-          {error}
-        </div>
-      )}
-    </div>
+          {searchOption === 'email' && (
+            <div className="find-pw-form-group">
+              <label className="find-pw-form-label" htmlFor="email">
+                이메일
+              </label>
+              <input
+                className="find-pw-form-input"
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+          )}
+          <button
+            type="button"
+            className="find-pw-form-button"
+            onClick={handleSendVerificationCode}
+          >
+            인증번호 발송
+          </button>
+          {showVerificationField && (
+            <div className="find-pw-form-group">
+              <label className="find-pw-form-label" htmlFor="verificationCode">
+                인증번호
+              </label>
+              <input
+                className="find-pw-form-input"
+                type="text"
+                id="verificationCode"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                required
+              />
+              <div className="find-pw-button-group">
+                <button
+                  type="button"
+                  className="find-pw-confirm-button"
+                  onClick={handleSubmit}
+                >
+                  확인
+                </button>
+                <button
+                  type="button"
+                  className="find-id-link"
+                  onClick={handleCancel}
+                >
+                  취소
+                </button>
+              </div>
+            </div>
+          )}
+
+          {error && <div className="find-pw-error">{error}</div>}
+        </form>
+      </div>
+    </>
   );
 };
 
-export default FindpwForm; // Export the component as FindpwForm
+export default FindpwForm;

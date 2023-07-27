@@ -8,7 +8,7 @@
   border: 1px solid rgb(127, 125, 125);
   border-radius: 4px;
   position: absolute;
-  top: 50%;
+  top: 57%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -38,7 +38,7 @@
 .find-id-result-login-button {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #37cfee; /* 파란색 배경색 */
+  background-color: rgb(120, 21, 105);
   color: #ffffff; /* 흰색 글자색 */
   border: none;
   border-radius: 4px;

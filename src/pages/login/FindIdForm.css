@@ -22,7 +22,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 88vh;
 }
 
 .find-id-title {
@@ -30,6 +30,12 @@
   font-weight: bold;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
+}
+
+/* Adjust the width and height of the PortraitIcon to match the font size */
+.find-id-title > PortraitIcon {
+  width: 1em;
+  height: 1em;
 }
 
 .find-id-description {
@@ -68,7 +74,7 @@
 
 .find-id-form-button {
   padding: 10px 15px;
-  background-color: #37cfee;
+  background-color: rgb(120, 21, 105);
   color: white;
   border: none;
   border-radius: 4px;
@@ -119,4 +125,10 @@
 .find-id-link {
   text-decoration: none;
    /* 텍스트에 밑줄 스타일 제거 */
+}
+
+.find-id-error {
+  margin-top: 20px;
+  color: red;
+  font-weight: bold;
 }
