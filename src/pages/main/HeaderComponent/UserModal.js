@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
 const ModalWrapper = styled.div`
@@ -45,6 +46,10 @@ const ProfileWrapper = styled.div`
         margin: 5px;
     }
 
+    .user img {
+        border-radius: 100%;
+    }
+
     .user span {
         margin: 5px 3px;
         font-size: 17px;
@@ -83,7 +88,7 @@ const ButtonWrapper = styled.div`
     justify-content: space-around;
     align-items: center;
 
-    & > a, & > button {
+    & > .a, & > button {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -95,14 +100,14 @@ const ButtonWrapper = styled.div`
         font-size: 12px;
     }
 
-    & > a > img, & > button > img {
+    & > .a > img, & > button > img {
         width: 25px;
         height: 25px;
         border-radius: 100%;
         margin-right: 5px;
     }
 
-    & > a:hover img, & > button:hover img {
+    & > .a:hover img, & > button:hover img {
         background-color: rgba(0, 0, 0, 0.2);
     }
 `;
@@ -141,7 +146,7 @@ function UserModal(props) {
         <ModalWrapper ref={userModalRef}>
             <ProfileWrapper>
                 <div className="user">
-                    <img src="https://cdn-icons-png.flaticon.com/128/309/309492.png" alt="프로필 사진" width="70px" height="70px" />
+                    <img src={user.photo} alt="프로필 사진" width="70px" height="70px" />
                 </div>
                 <div className="user">
                     <span>{user.name}</span>
@@ -157,10 +162,10 @@ function UserModal(props) {
                 </button>
             </ProfileWrapper>
             <ButtonWrapper>
-                <a href="#">
+                <Link className="a" to={'/detailuserinfo'}>
                     <img src="https://cdn-icons-png.flaticon.com/128/126/126472.png" alt="개인설정" />
                     <span>개인설정</span>
-                </a>
+                </Link>
                 <button onClick={logoutHandler}>
                     <img src="https://cdn-icons-png.flaticon.com/128/8367/8367686.png" alt="로그아웃" />
                     <span>로그아웃</span>
