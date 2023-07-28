@@ -258,6 +258,13 @@ function SignUp_package() {
         <h4 className="text-start"><PaymentIcon style={{ fontSize: '40px' }} className="mb-1 me-1"></PaymentIcon>주문/결제</h4>
         <hr />
         <div>
+          <Row style={{ border: '1px dotted #000'}} className="my-4"> 
+            <Col md={6}  >
+        <Form.Label>Range</Form.Label>
+      <Form.Range />
+      </Col>
+      <Col md={5}> 하잇</Col>
+      </Row>
           <Row className="justify-content-center">
             <Col md={5} className=" me-4" style={{ border: '1px dotted #000', background: '#f2f6fc' }}>
               <div className="m-3">
