@@ -188,6 +188,7 @@ function BasicTreeViewList(props) {
           setShowMyThumbnail={setShowMyThumbnail}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          fetchData={props.fetchData}
         />
       </div>
     </TreeViewList>
