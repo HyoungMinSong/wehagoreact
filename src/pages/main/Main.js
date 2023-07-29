@@ -48,9 +48,9 @@ function Main(props) {
                 setLoading(false);
                 const userInfo = 
                 {
-                    "name" : response.data.t_user_name,
-                    "email" : response.data.t_user_email,
-                    "photo" : response.data.t_user_photo_path
+                    "name" : response.data.userDto.t_user_name,
+                    "email" : response.data.userDto.t_user_email,
+                    "photo" : response.data.userDto.t_user_photo_path
                 }
                 const userCompany = response.data.userCompanyDtoList;
                 const userService = response.data.userServiceDtoList;
