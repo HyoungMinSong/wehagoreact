@@ -645,9 +645,10 @@ function Management() {
   };
 
   // 직원 리스트 Select
-  const showMyEmployees = (item, pk, index, list) => {
+  const showMyEmployees = async (item, pk, index, list) => {
     try {
-      const response = axiosApi
+      setLoading(true);
+      const response = await axiosApi
         .get("/showMyEmployees", {
           params: {
             nodeName: item,
@@ -655,15 +656,12 @@ function Management() {
             index: index,
             t_employee_state: list,
           },
-        })
-        .then((res) => {
-          setShowingMyEmployees(res.data);
-        })
-        .catch((error) => {
-          console.error(error);
         });
+          setShowingMyEmployees(response.data);
     } catch (error) {
       console.error(error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -877,7 +875,7 @@ function Management() {
         
           {/* 로딩 스피너 컴포넌트 */}
           <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
-          <div className="mt-3">회원가입이 진행 중입니다.<br />잠시만 기다려주세요.</div>
+          <div className="mt-3">불러오는 중입니다.<br />잠시만 기다려주세요.</div>
         </div>
       )}
           </div>
