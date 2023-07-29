@@ -898,6 +898,7 @@ function Management() {
           selectedListTab={selectedListTab}
           myWorkPlace={myWorkPlace}
           myCompanyInfo={myCompanyInfo}
+          fetchData={fetchData}
         />
       </WrappedTreeView>
     </CsContainer>

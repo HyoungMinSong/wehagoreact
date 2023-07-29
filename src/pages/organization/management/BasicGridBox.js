@@ -4,6 +4,7 @@ import { beTheChosenOnes } from "../../../store";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
+import axiosApi from "../../../AxiosApi";
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   // isexpanded prop를 DOM 요소로 전달합니다.
@@ -365,8 +366,8 @@ function BasicGridBox(props) {
   const [showingMyEmployees, setShowingMyEmployees] = useState([]);  
   // 이미지 등록 참조
   const fileInputRef = useRef(null);
-  
-
+  // 이미지 저장용
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
   useEffect(() => {
@@ -383,6 +384,7 @@ function BasicGridBox(props) {
 
   // 직원 행 클릭 이벤트
   const handleRowClick = (user) => {
+    setSelectedImage(null);
     props.setOperateRegisMode(false);
     props.setSelectedUser(user);
     props.setUpdateSelectedUser(user);
@@ -476,7 +478,8 @@ function BasicGridBox(props) {
   // 개인정보 날짜 수정 이벤트
   const updateOnesDate  = (e) => {
     const editedUpdateSelectedUser = { ...props.updateSelectedUser };
-    editedUpdateSelectedUser.t_employee_date = e.toLocaleDateString().slice(0, -1).replace(/. /gi, "-");
+    editedUpdateSelectedUser.t_employee_date = `${e.getFullYear()}-${("0" + (e.getMonth() + 1)).slice(-2)}-${("0" + e.getDate()).slice(-2)}`;
+    // e.toLocaleDateString().slice(0, -1).replace(/. /gi, "-");
     props.setUpdateSelectedUser(editedUpdateSelectedUser);
   };
 
@@ -487,8 +490,10 @@ function BasicGridBox(props) {
 
   // 사진삭제 버튼 이벤트
   const handleFileResetClick = () => {
+    setSelectedImage(null);
     props.setUpdateSelectedUser({
       ...props.updateSelectedUser,
+      t_user_photo_name: '기본사진',
       t_user_photo_path: 'https://static.wehago.com/imgs/dummy/@dummy_02.jpg',
     });
     props.setShowMyThumbnail('https://static.wehago.com/imgs/dummy/@dummy_02.jpg');
@@ -497,13 +502,12 @@ function BasicGridBox(props) {
   // 파일 변경 이벤트
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
+    if (!selectedFile) return;
     console.log("파일",selectedFile);
-    props.setUpdateSelectedUser({
-      ...props.updateSelectedUser,
-      t_user_photo_path: '/images/'+selectedFile.name,
-    });
+
     // 파일을 선택한 후에 처리할 작업을 수행합니다.
     if (selectedFile) {
+      setSelectedImage(selectedFile);
       const reader = new FileReader();
       reader.onloadend = () => {
         const fileDataUrl = reader.result;
@@ -513,11 +517,59 @@ function BasicGridBox(props) {
     }
   };
 
-  // 저장버튼 이벤트
-  const handleSaveClick = () => {
+  // 저장버튼 이벤트 등록
+const handleSaveClick = async () => {
+  try {
     console.log("props.updateSelectedUser", props.updateSelectedUser);
+    console.log("props.updateSelectedUser date", typeof(props.updateSelectedUser.t_employee_date),props.updateSelectedUser.t_employee_date);
     // 이미지 파일 저장
+    let uploadedImageName = '기본사진';
+    let uploadedImagePath = 'https://static.wehago.com/imgs/dummy/@dummy_02.jpg';
+    // 이미지 파일 저장
+    if (selectedImage) {
+      const formData = new FormData();
+      formData.append("file", selectedImage);
+
+      try {
+        const response = await axiosApi.post("/uploadEmployeePhoto", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log("업로드 완료:", response);
+        console.log("업로드 완료:", response.data);
+        
+        uploadedImageName = response.data.photo_name;
+        uploadedImagePath = response.data.photo_path;
+        
+      } catch (error) {
+        console.error("업로드 실패:", error);
+        return; // 이미지 업로드 실패 시 함수 종료
+      }
+    } 
     
+    // 이미지 업로드가 성공적으로 처리되었으므로 두 번째 요청 수행
+    try {
+      const updatedUser = {
+        ...props.updateSelectedUser,
+        t_user_photo_name: uploadedImageName,
+        t_user_photo_path: uploadedImagePath,
+      };
+      await axiosApi.post("/makeRoomForANewEmployee", updatedUser);
+      await props.fetchData();
+      props.setIsExpanded("false");
+    } catch (error) {
+      console.error(error);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+  // 저장버튼 이벤트 수정
+  const handleUpdateClick = () => {
+    console.log("props.updateSelectedUser", props.updateSelectedUser);
   };
 
   return (
@@ -633,7 +685,7 @@ function BasicGridBox(props) {
                   </div>
                   <img
                     src={props.showMyThumbnail}
-                    alt="프로필사진"
+                    alt="Image"
                     className="detailBoxStaffPhoto"
                   />
                 </div>
@@ -876,13 +928,21 @@ function BasicGridBox(props) {
               >
                 취소
               </button>
-              <button
+              {props.operateRegisMode ? 
+              (<button
                 type="button"
                 className="detailBoxFormSaveButton"
                 onClick={handleSaveClick}
               >
                 저장
-              </button>
+              </button>) : 
+              (<button
+                type="button"
+                className="detailBoxFormSaveButton"
+                onClick={handleUpdateClick}
+              >
+                저장
+              </button>)}
             </div>
           </WrappingDetailBox>
         </div>
