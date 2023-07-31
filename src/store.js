@@ -26,17 +26,44 @@ let areThereAnyChosenOnes = createSlice({
   }
 })
 
+// 로그인한 유저 정보
+let loginUserData = createSlice({
+  name : 'loginUserData',
+  initialState : {
+    user: {},
+    service: [],
+    company: [],
+    companyName: ''
+  },
+  reducers : {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+    setService: (state, action) => {
+      state.service = action.payload;
+    },
+    setCompany: (state, action) => {
+      state.company = action.payload;
+    },
+    setCompanyName: (state, action) => {
+      state.companyName = action.payload;
+    }
+  }
+});
+
   
   // 함수명 추출
   export let { increase } = user.actions 
   export let { beTheChosenOnes } = areThereAnyChosenOnes.actions
   export let { clearChosenOnes } = areThereAnyChosenOnes.actions
+  export let { setUser, setService, setCompany, setCompanyName } = loginUserData.actions;
 
   // 저장소 추출
   export default configureStore({
     reducer: {
       user : user.reducer,
       areThereAnyChosenOnes : areThereAnyChosenOnes.reducer,
+      loginUserData : loginUserData.reducer,
     }
   })
 
