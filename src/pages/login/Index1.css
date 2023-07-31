@@ -1,0 +1,51 @@
+/* 스타일 수정된 부분은 주석으로 표시되어 있습니다. */
+.background-container {
+  /* 부모 요소의 크기를 조정하여 배경 이미지를 감쌀 수 있도록 합니다. */
+  height: 600px;
+  position: relative; /* 부모 요소의 position을 relative로 설정합니다. */
+  /* 아래 코드 추가로 배경 이미지 아래에 50px의 흰색 여백이 생기도록 합니다. */
+  padding-bottom: 800px;
+}
+
+.background-container-index {
+  /* absolute 속성을 지우거나, 상황에 따라 필요한 경우 사용할 수 있습니다. */
+  /* position: absolute; */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  height: 100%;
+  background: url(https://static.wehago.com/html/landing/img/v2/bg_section_idx_05.jpg) no-repeat center bottom;
+  background-size: cover;
+}
+
+/* 아래에 추가된 스타일로 내용을 수직으로 중앙에 정렬시킵니다. */
+.background-container-index {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.title-index1 {
+  font-size: 30px;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.title-index2 {
+  font-size: 50px;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.title-index3 {
+  font-size: 16px;
+  text-align: center;
+  color: white;
+}
+
+
+

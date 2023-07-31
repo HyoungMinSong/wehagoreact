@@ -12,12 +12,14 @@ const LogoImage = styled.img`
   object-fit: contain; /* 이미지가 비율을 유지하면서 div에 맞게 들어가도록 조절됨 */
   margin-left: 20px; /* 이미지 왼쪽에 여백 추가 */
   margin-top: 25px; /* 이미지를 수직으로 가운데 정렬하기 위한 높이 설정 */
+  
 `;
 
 const StyledLink = styled(Link)`
   text-decoration: none; /* 밑줄 없애기 */
   color: white; /* 링크 색깔을 흰색으로 설정 */
 `;
+
 
 // className="border-danger"
 function SignUpHeader() {
