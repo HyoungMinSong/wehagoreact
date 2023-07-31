@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Badge, Button, ButtonGroup, Card,  Col, Container, Form,  ListGroup, Row, Spinner, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import { Badge, Button, ButtonGroup, Card, Col, Container, Form, ListGroup, Row, Spinner, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'; 
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import FaxIcon from '@mui/icons-material/Fax';
 import VideoChatIcon from '@mui/icons-material/VideoChat';
@@ -20,15 +20,21 @@ import axiosApi from "../../AxiosApi";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
+const VerticalLine = styled.div`
+  border-left: 1px solid black;
+  height: 100px; /* 원하는 높이로 설정 */
+`;
 
 // className="border-danger"
 function SignUp_package() {
-  let [packagePrice, setPackagePrice] = useState({servicePrice : 20000, perUserPrice : 3000, selectPackge : 'CLUB'});
+  let [packagePrice, setPackagePrice] = useState({ servicePrice: 20000, perUserPrice: 3000, selectPackge: 'CLUB' });
   let [payPeriod, setPayPeriod] = useState(0); //0 월단위, 1 연단위
   let [loading, setLoading] = useState(false);
+  let [rangeValue, setRangeValue] = useState(1);
 
   let test11 = useSelector((state) => { return state.user });
   let navigate = useNavigate();
+  console.log(rangeValue)
 
   return (
 
@@ -71,7 +77,7 @@ function SignUp_package() {
               <Card.Header className="border-0" style={{
                 height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
                 background: 'linear-gradient(90deg, #e6f5ff, #d5eeff)', paddingLeft: '80px', paddingRight: '30px', paddingBottom: '30px'
-              }}><div className='mt-3' style={{ fontSize: '14px', textAlign: 'left', color: '#133662'}}>기업에서 자주 사용하는 서비스들을 모아서 제공하는 플랜입니다.<br></br>
+              }}><div className='mt-3' style={{ fontSize: '14px', textAlign: 'left', color: '#133662' }}>기업에서 자주 사용하는 서비스들을 모아서 제공하는 플랜입니다.<br></br>
                   저장공간, 사용시간 등의 제약을 줄이고<br></br>
                   <b>합리적인 가격에 효율적인 업무환경</b>을 만나보세요.</div>
                 <ButtonGroup size="sm">
@@ -79,8 +85,8 @@ function SignUp_package() {
                   <Button variant="outline-secondary"><b>자세히보기 &gt;</b></Button>
                 </ButtonGroup>
               </Card.Header>
-              <Button variant="outline-primary" size="sm" onClick={()=>{
-                setPackagePrice({servicePrice : 20000, perUserPrice : 3000, selectPackge : 'CLUB'});
+              <Button variant="outline-primary" size="sm" onClick={() => {
+                setPackagePrice({ servicePrice: 20000, perUserPrice: 3000, selectPackge: 'CLUB' });
               }} >
                 <Card.Body style={{ background: '#1665ec' }}>
                   <div className="text-start">
@@ -164,8 +170,8 @@ function SignUp_package() {
                 height: '180px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
                 background: 'linear-gradient(90deg, #e6f5ff, #d5eeff)', paddingLeft: '80px', paddingRight: '80px'
               }}><img src="https://static.wehago.com/imgs/cw/plan_new_bg04.png" style={{ maxWidth: '100%', maxHeight: '150px' }} alt="이미지 설명" /></Card.Header>
-              <Button variant="outline-info" size="sm" onClick={()=>{
-                setPackagePrice({servicePrice : 30000, perUserPrice : 6000, selectPackge : 'PRO'});
+              <Button variant="outline-info" size="sm" onClick={() => {
+                setPackagePrice({ servicePrice: 30000, perUserPrice: 6000, selectPackge: 'PRO' });
               }}>
                 <Card.Body style={{ background: '#d9f0f9' }}>
                   <div className="text-start">
@@ -258,13 +264,45 @@ function SignUp_package() {
         <h4 className="text-start"><PaymentIcon style={{ fontSize: '40px' }} className="mb-1 me-1"></PaymentIcon>주문/결제</h4>
         <hr />
         <div>
-          <Row style={{ border: '1px dotted #000'}} className="my-4"> 
-            <Col md={6}  >
-        <Form.Label>Range</Form.Label>
-      <Form.Range />
-      </Col>
-      <Col md={5}> 하잇</Col>
-      </Row>
+          <div style={{ border: '1px dotted #000', marginLeft: '31px', marginRight: '31px' }} className="my-4 justify-content-center">
+            {/* <span md={6} className="m-3" > */}
+            <div className="row align-items-center">
+              <div className="col-md-7 m-3">
+                <div className="row">
+
+                  <Form.Label>WEHAGO 사용 직원수</Form.Label>
+                  <div className="col-md-11 mt-1"><Form.Range min={1}
+                    max={100}
+                    step={1}
+                    value={rangeValue} onChange={(e) => setRangeValue(e.target.value)} /></div>
+                  <div className="col-md-1 px-0">
+                    <Form.Control size="sm" type="number" min={1}
+                      max={100}
+                      value={rangeValue} onChange={(e) => {
+                        let value = e.target.value;
+                        if (value < 1) {
+                          value = 1;
+                        } else if (value > 100) {
+                          value = 100;
+                        }
+                        setRangeValue(value);
+                      }} />
+                  </div>
+                </div>
+                <div className="mt-3 text-primary small-text">최대 1만명까지 구매가능</div>
+              </div>
+              {/* </span> */}
+              {/* <span > */}
+              <div className="col-md-4 ps-5 my-4" style={{ height: '100%', borderLeft: '1px dotted #000' }}>
+                <div className="text-muted small-text">
+                  <span className="text-primary" style={{ fontSize: "17px" }}><b>{rangeValue}명</b></span> 사용자 추가설정 = <span style={{ fontSize: "17px" }}><b>{rangeValue}명</b></span> 전체사용직원
+                </div>
+                <hr />
+                <span>{packagePrice.perUserPrice * rangeValue}원/월</span><br /><span className="text-muted small-text">사용자당 {packagePrice.perUserPrice}원</span>
+              </div>
+              {/* </span> */}
+            </div>
+          </div>
           <Row className="justify-content-center">
             <Col md={5} className=" me-4" style={{ border: '1px dotted #000', background: '#f2f6fc' }}>
               <div className="m-3">
@@ -280,21 +318,21 @@ function SignUp_package() {
                   </Row>
                 </div>
                 <hr />
-                <div className="text-start "><b>서비스이용금액 (월)</b></div>
+                <div className="text-start "><b>서비스이용금액 ({payPeriod == 0 ? '월' : '년'})</b></div>
                 <div className="text-start my-1" style={{ fontSize: '14px' }}>
-                  
+
 
 
                   <span>{packagePrice.selectPackge}</span><span style={{ float: 'right' }}><b>
-                    {packagePrice.servicePrice}
+                    {payPeriod == 0 ? packagePrice.servicePrice : packagePrice.servicePrice * 12}
                   </b><span>원</span></span><br />
-                  <span>사용자 추가(1명)</span><span style={{ float: 'right' }}><b>
-                  {packagePrice.perUserPrice}
+                  <span>사용자 추가({rangeValue}명)</span><span style={{ float: 'right' }}><b>
+                    {payPeriod == 0 ? packagePrice.perUserPrice * rangeValue : packagePrice.perUserPrice * rangeValue * 12}
                   </b><span>원</span></span>
                 </div>
                 <hr />
                 <div className="text-start mt-0" style={{ color: "#5ea5e6", fontSize: '14px' }}>
-                  <span>합계</span><span style={{ float: 'right' }}><b>{packagePrice.servicePrice + packagePrice.perUserPrice}</b><span>원</span></span><br />
+                  <span>합계</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue) : packagePrice.servicePrice * 12 + packagePrice.perUserPrice * rangeValue * 12}</b><span>원</span></span><br />
                 </div>
               </div>
             </Col>
@@ -303,13 +341,13 @@ function SignUp_package() {
                 <div className="text-start"><b>납부주기 설정</b></div>
                 <div className="d-grid gap-2 mt-2">
                   <ToggleButtonGroup type="radio" name="options" defaultValue={1}  >
-                    <ToggleButton id="tbg-radio-1" value={1} variant="outline-primary" onClick={()=>{
+                    <ToggleButton id="tbg-radio-1" value={1} variant="outline-primary" onClick={() => {
                       setPayPeriod(0);
-                      
+
                     }}>
                       월단위 결제
                     </ToggleButton>
-                    <ToggleButton id="tbg-radio-2" value={2} variant="outline-primary" onClick={()=>{
+                    <ToggleButton id="tbg-radio-2" value={2} variant="outline-primary" onClick={() => {
                       setPayPeriod(1);
                     }}>
                       연단위 결제
@@ -319,12 +357,12 @@ function SignUp_package() {
                 <hr />
                 <div className="text-start"><b>납부주기 설정</b></div>
                 <div className="text-start my-1" style={{ fontSize: '14px' }}>
-                  <span>총 이용금액</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? packagePrice.servicePrice + packagePrice.perUserPrice : (packagePrice.servicePrice + packagePrice.perUserPrice)*12}</b><span>원</span></span><br />
-                  <span>부가세</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? (packagePrice.servicePrice + packagePrice.perUserPrice)*0.1 : ((packagePrice.servicePrice + packagePrice.perUserPrice)*12)*0.1}</b><span>원</span></span>
+                  <span>총 이용금액</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue) : (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12}</b><span>원</span></span><br />
+                  <span>부가세</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1 : ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1}</b><span>원</span></span>
                 </div>
                 <hr />
                 <div className="text-start mt-0" style={{ fontSize: '21px' }}>
-                  <span><b>최종 결제금액</b></span><span style={{ float: 'right' }}><b style={{ color: "#ff003c" }}>{payPeriod == 0 ? (packagePrice.servicePrice + packagePrice.perUserPrice) + ((packagePrice.servicePrice + packagePrice.perUserPrice)*0.1) : ((packagePrice.servicePrice + packagePrice.perUserPrice)*12) + (((packagePrice.servicePrice + packagePrice.perUserPrice)*12)*0.1)}</b><span>원</span></span><br />
+                  <span><b>최종 결제금액</b></span><span style={{ float: 'right' }}><b style={{ color: "#ff003c" }}>{payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) + ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1) : ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) + (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1)}</b><span>원</span></span><br />
                 </div>
               </div>
             </Col>
@@ -332,8 +370,8 @@ function SignUp_package() {
           <Row className="justify-content-center my-4" style={{ marginLeft: '31px', marginRight: '31px' }}>
             <div style={{ border: '1px dotted #000', background: '#f5f5f5' }} className="">
               <div className="text-start m-3" style={{ fontSize: '14px' }}>
-                <span>다음 결제금액</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? (packagePrice.servicePrice + packagePrice.perUserPrice) + ((packagePrice.servicePrice + packagePrice.perUserPrice)*0.1) : ((packagePrice.servicePrice + packagePrice.perUserPrice)*12) + (((packagePrice.servicePrice + packagePrice.perUserPrice)*12)*0.1)}</b><span>원</span></span><br />
-                <span className="text-muted small-text">결제 예정일 :사용 시작일로부터 1개월</span>
+                <span>다음 결제금액</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) + ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1) : ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) + (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1)}</b><span>원</span></span><br />
+                <span className="text-muted small-text">결제 예정일 :사용 시작일로부터 {payPeriod == 0 ? '1개월' : '1년'}</span>
               </div>
             </div>
             <div className="text-muted small-text text-start my-3">
@@ -344,9 +382,9 @@ function SignUp_package() {
               <div>- 회사생성 후 90일 이내로 결제를 하지 않을 경우, 생성된 회사가 삭제됩니다.</div>
             </div>
             <div className="d-grid gap-2">
-              <Button variant="primary" size="lg" onClick={()=>{
-                let test = payPeriod == 0 ? (packagePrice.servicePrice + packagePrice.perUserPrice) + ((packagePrice.servicePrice + packagePrice.perUserPrice)*0.1) : ((packagePrice.servicePrice + packagePrice.perUserPrice)*12) + (((packagePrice.servicePrice + packagePrice.perUserPrice)*12)*0.1)
-                 Swal.fire({
+              <Button variant="primary" size="lg" onClick={() => {
+                let test = payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) + ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1) : ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) + (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1)
+                Swal.fire({
                   title: " 최종 결제 금액 " + test + "원입니다.",
                   text: "위의 금액으로 최종 결제를 진행합니다.",
                   icon: "warning",
@@ -355,39 +393,42 @@ function SignUp_package() {
                   cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
                   confirmButtonText: "승인", // confirm 버튼 텍스트 지정
                   cancelButtonText: "취소", // cancel 버튼 텍스트 지정
-                  reverseButtons: true, // 버튼 순서 거꾸로
+                  reverseButtons: false, // 버튼 순서 거꾸로
                 }).then((result) => {
-                  // 만약 Promise리턴을 받으면,
-                  setLoading(true);
-                  let finalTest;
                   if (result.isConfirmed) {
-                    console.log('name : ' + test11.name + 'id : ' + test11.id+ 'businessCategory : ' + test11.businessCategory);
-                    if (packagePrice.selectPackge === 'CLUB') {
-                      finalTest={ ...test11, packageNo : 1};
-                    } else {
-                      finalTest={ ...test11, packageNo : 2};
+                    // 만약 Promise리턴을 받으면,
+                    setLoading(true);
+                    let finalTest;
+                    if (result.isConfirmed) {
+                      console.log('name : ' + test11.name + 'id : ' + test11.id + 'businessCategory : ' + test11.businessCategory);
+                      if (packagePrice.selectPackge === 'CLUB') {
+                        finalTest = { ...test11, packageNo: 1, packageCount:rangeValue };
+                      } else {
+                        finalTest = { ...test11, packageNo: 2, packageCount:rangeValue };
+                      }
+
+
+                      axiosApi.post("/signupinsert", finalTest).then((c) => {
+                        console.log(c.data);
+                        navigate('/login');
+                      }).catch(() => {
+                        console.log('실패함');
+                        Swal.fire({
+                          title: "회원 가입 오류",
+                          text: "다시 한번 시도해 주세요.",
+                          icon: "error",
+                          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                        })
+                      }).finally(() => {
+                        setLoading(false);
+                      });
+                      // 만약 모달창에서 confirm 버튼을 눌렀다면
+                      // fetchData();
+                      // setEditingOrganization(false);
                     }
-                    
-                    
-                    axiosApi.post("/signupinsert", finalTest).then((c) => {
-                      console.log(c.data);
-                      navigate('/login');
-                    }).catch(() => {
-                      console.log('실패함');
-                      Swal.fire({
-                        title: "회원 가입 오류",
-                        text: "다시 한번 시도해 주세요.",
-                        icon: "error",
-                        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
-                        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-                      })
-                    }).finally(()=>{
-                      setLoading(false);
-                    });
-                    // 만약 모달창에서 confirm 버튼을 눌렀다면
-                    // fetchData();
-                    // setEditingOrganization(false);
-              }})}}>
+                  }})
+              }}>
                 결제하기
               </Button>
             </div>
@@ -396,8 +437,8 @@ function SignUp_package() {
         </div>
       </Container>
       {loading && (
-            <div className="overlay-loading-box text-center">
-        
+        <div className="overlay-loading-box text-center">
+
           {/* 로딩 스피너 컴포넌트 */}
           <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
           <div className="mt-3">회원가입이 진행 중입니다.<br />잠시만 기다려주세요.</div>
