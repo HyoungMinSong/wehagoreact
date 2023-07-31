@@ -135,11 +135,20 @@ function BasicTreeViewList(props) {
   // 직원 등록 클릭 이벤트
   const handleRegistrationClick = () =>{
     setSelectedDate(new Date());
+    
+    // selectedNodeIndex 값에 따라 t_organization_no에 적절한 값을 대입합니다.
+    let organization_no = null;
+    if (props.selectedNodeIndex === -1) {
+      // myWorkPlace에서 t_company_no가 props.selectedCompanyPk와 같은 배열을 찾습니다.
+      const selectedCompanyData = props.myWorkPlace.find(item => item.t_company_no === props.selectedCompanyPk);
+      organization_no = selectedCompanyData.company_organization_no;
+    } else if (props.selectedNodeIndex === 0) {
+      organization_no = props.selectedNodePk;
+    }
     setUpdateSelectedUser({
-      t_user_no : props.showingMyEmployees[0].t_user_no,
-      t_company_no : props.showingMyEmployees[0].t_company_no,
-      t_organization_name : props.showingMyEmployees[0].t_organization_name,
-      t_organization_no : props.showingMyEmployees[0].t_organization_no,
+      t_company_no : props.selectedCompanyPk,
+      t_organization_name : props.editingItem,
+      t_organization_no : organization_no,
       t_employee_auth : 2,
     });
     setOperateRegisMode(true);
@@ -189,6 +198,7 @@ function BasicTreeViewList(props) {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           fetchData={props.fetchData}
+          setLoading={props.setLoading}
         />
       </div>
     </TreeViewList>
