@@ -352,10 +352,15 @@ function Management() {
     if (isExpanded === "true") {
       setIsExpanded("false");
     }
-    setSelectedNodeIndex(listTab);
+    // index = -1이면 회사이름, 0이면 조직이름
     setEditingItem(name);
-    setSelectedNodeIndex(index);
+    // index = -1이면 회사번호, 0이면 조직번호
     setSelectedNodePk(pk);
+    // -1이면 회사, 0이면 조직
+    setSelectedNodeIndex(index);
+    // 상태
+    setSelectedNodeIndex(listTab);
+    // 회사 번호
     setSelectedCompanyPk(compk);
   };
 
@@ -637,6 +642,15 @@ function Management() {
       setSelectedNodePk(response.data[0].t_company_no);
       setSelectedCompanyPk(response.data[0].t_company_no);
       setProEditiedOrganization([]);
+      //갱신 부분
+      showMyEmployees(
+        response.data[0].t_company_name,
+        response.data[0].t_company_no,
+        -1,
+        0
+      );
+      showMyEmployeeState(response.data[0].t_company_no, -1);
+      dispatch(clearChosenOnes());
     } catch (error) {
       console.error(error);
     } finally {
@@ -897,6 +911,11 @@ function Management() {
           myWorkPlace={myWorkPlace}
           myCompanyInfo={myCompanyInfo}
           fetchData={fetchData}
+          selectedCompanyPk={selectedCompanyPk}
+          editingItem={editingItem}
+          selectedNodePk={selectedNodePk}
+          selectedNodeIndex={selectedNodeIndex}
+          setLoading={setLoading}
         />
       </WrappedTreeView>
     </CsContainer>

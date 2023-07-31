@@ -520,6 +520,7 @@ function BasicGridBox(props) {
   // 저장버튼 이벤트 등록
 const handleSaveClick = async () => {
   try {
+    props.setLoading(true);
     console.log("props.updateSelectedUser", props.updateSelectedUser);
     console.log("props.updateSelectedUser date", typeof(props.updateSelectedUser.t_employee_date),props.updateSelectedUser.t_employee_date);
     // 이미지 파일 저장
