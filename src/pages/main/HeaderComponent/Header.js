@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     align-items: center;
     width: 100%;
     height: 70px;      
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
     position: sticky;
     top: 0;
 `;
@@ -30,7 +30,7 @@ const Button = styled.button`
 const CompanyButton = styled.button`
     display: flex;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.2);
     margin-left: 15px;
     padding-right: 15px;
     border: none;
