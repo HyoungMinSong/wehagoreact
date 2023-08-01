@@ -27,11 +27,14 @@ import SignUpHeader from './pages/signUp/SignUpHeader';
 import Updatepw from './pages/login/Updatepw';
 import LoginRoute from './LoginRoute';
 import SendTest from './pages/signUp/SendTest';
+import Index1 from './pages/login/Index1';
 import UserSetting from './pages/main/UserSetting';
 import SignUpRedirect from './pages/signUp/SignUpRedirect';
 import SignUp_invite from './pages/signUp/SignUp_invite';
 
+
 export let persistor = persistStore(store);
+
 
 const getCookie = (name) => {
   const value = `; ${document.cookie}`;
@@ -69,6 +72,7 @@ root.render(
         <Route path="/test" element={ <Test_up></Test_up>} />
         <Route path="/test2" element={ <SignUpHeader></SignUpHeader>} />
         <Route path="/test3" element={ <SendTest></SendTest>} />
+        <Route path="/index1" element={ <Index1></Index1>} />
         <Route path="/s/:shortLink" element={ <SignUpRedirect></SignUpRedirect> }/>
         <Route path="/signup/invite" element={ <SignUp_invite></SignUp_invite>} />
 
