@@ -6,6 +6,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import store from './store';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore } from 'redux-persist';
 import SignUp_infomation from './pages/signUp/SignUp_infomation';
 import SignUp_company from './pages/signUp/SignUp_company';
 import SignUp_complete from './pages/signUp/SignUp_complete';
@@ -31,6 +33,9 @@ import SignUpRedirect from './pages/signUp/SignUpRedirect';
 import SignUp_invite from './pages/signUp/SignUp_invite';
 
 
+export let persistor = persistStore(store);
+
+
 const getCookie = (name) => {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -41,6 +46,7 @@ console.log("토큰 있는지 확인 : " + accessToken);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
+    <PersistGate persistor={persistor}>
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<App />} />
@@ -70,8 +76,9 @@ root.render(
         <Route path="/s/:shortLink" element={ <SignUpRedirect></SignUpRedirect> }/>
         <Route path="/signup/invite" element={ <SignUp_invite></SignUp_invite>} />
 
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </PersistGate>
   </Provider>
 );
 

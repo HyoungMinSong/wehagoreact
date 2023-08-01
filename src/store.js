@@ -1,4 +1,7 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit'
+import storage from 'redux-persist/lib/storage';
+import { combineReducers } from 'redux';
+import { persistReducer } from 'redux-persist';
 
 // 회원가입
 let user = createSlice({
@@ -26,18 +29,57 @@ let areThereAnyChosenOnes = createSlice({
   }
 })
 
+// 로그인한 유저 정보
+let loginUserData = createSlice({
+  name : 'loginUserData',
+  initialState : {
+    user: {},
+    service: [],
+    company: [],
+    companyName: ''
+  },
+  reducers : {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+    setService: (state, action) => {
+      state.service = action.payload;
+    },
+    setCompany: (state, action) => {
+      state.company = action.payload;
+    },
+    setCompanyName: (state, action) => {
+      state.companyName = action.payload;
+    }
+  }
+});
+
+const reducers = combineReducers({
+  user : user.reducer,
+  areThereAnyChosenOnes : areThereAnyChosenOnes.reducer,
+  loginUserData : loginUserData.reducer,
+  // 여기 밑에 쭉쭉 적기
+});
+
+const persistConfig = {
+  key: 'root',
+  //로컬 스토리지를 사용할 것이기때문에 storage를 적어주었다
+  storage,
+  whitelist: ['loginUserData']
+};
+
+const persistedReducer = persistReducer(persistConfig, reducers);
+
   
   // 함수명 추출
   export let { increase } = user.actions 
   export let { beTheChosenOnes } = areThereAnyChosenOnes.actions
   export let { clearChosenOnes } = areThereAnyChosenOnes.actions
+  export let { setUser, setService, setCompany, setCompanyName } = loginUserData.actions;
 
   // 저장소 추출
   export default configureStore({
-    reducer: {
-      user : user.reducer,
-      areThereAnyChosenOnes : areThereAnyChosenOnes.reducer,
-    }
+    reducer: persistedReducer,
   })
 
   /* 보내는 곳 사용법
