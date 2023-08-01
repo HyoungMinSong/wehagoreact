@@ -20,8 +20,8 @@ let areThereAnyChosenOnes = createSlice({
   name : 'areThereAnyChosenOnes',
   initialState : [],
   reducers : {
-    beTheChosenOnes(state, a){
-        return a.payload
+    beTheChosenOnes(state, action){
+        return action.payload
       },
     clearChosenOnes(state) {
       return [];

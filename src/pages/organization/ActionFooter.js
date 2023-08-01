@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { styled } from "styled-components";
+import axiosApi from "../../AxiosApi";
 
 const ActionFooterBar = styled.div`
     .wrappingActionFooterBarO{
@@ -76,10 +77,23 @@ const ActionFooterBar = styled.div`
     }
   `;
 
-function ActionFooter(){
-  
-
+  function ActionFooter(){
   const dataOfTheChosenOnes = useSelector(state => state.areThereAnyChosenOnes);
+  const fromUser = useSelector((state) => state.loginUserData);
+
+  
+  const handleSendMailButton = () =>{
+    console.log(fromUser.user.name);
+    console.log(JSON.stringify(dataOfTheChosenOnes));
+    console.log(dataOfTheChosenOnes);
+    
+    axiosApi.post("/sendMailToEmployee", {
+      employer: fromUser.user.name,
+    checkedEmployee: dataOfTheChosenOnes,
+    });
+
+  };
+
 
   return(
     <ActionFooterBar>
@@ -95,8 +109,7 @@ function ActionFooter(){
         <div className="buttonBoxOfTheChosen">
           <div className="adjustmentButtonBox">
             <button className="buttonOfTheChosen">직원삭제</button>
-            <button className="buttonOfTheChosen">초대메일 발송</button>
-            <button className="buttonOfTheChosen buttonOfTheHideen">가입승인</button>
+            <button className="buttonOfTheChosen" onClick={handleSendMailButton}>초대메일 발송</button>
           </div>
         </div>
       </div>

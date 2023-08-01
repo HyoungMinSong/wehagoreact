@@ -6,7 +6,7 @@ import BasicListTabs from "./management/BasicListTabs";
 import { useEffect, useState } from "react";
 import axiosApi from "../../AxiosApi";
 import Swal from "sweetalert2";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearChosenOnes } from "../../store";
 import { Spinner } from "react-bootstrap";
 
@@ -271,7 +271,7 @@ const BasicTreeViewDepth = styled.div`
 
 function Management() {
   // 토큰으로 회원번호
-  const [tUserNo, setTUserNo] = useState("1");
+  const [tUserNo, setTUserNo] = useState('');
   // 회원번호로 회사번호, 회사이름
   const [myCompanyInfo, setMyCompanyInfo] = useState([]);
   // 회원번호로 회사, 부서 목록
@@ -304,11 +304,18 @@ function Management() {
   const dispatch = useDispatch();
   // 로딩 스피너
   const[loading, setLoading] = useState(false);
+  // 로그인 유저 정보
+  const loginedUser = useSelector((state) => state.loginUserData);
 
-  // 2번째 파라미터로 빈 배열 배치시 렌더링하는 처음만 실행
+  // loginedUser 값이 변경될 때마다 TUserNo 값을 업데이트
+  useEffect(() => {
+    setTUserNo(loginedUser.user.no);
+  }, [loginedUser]);
+
+  // TUserNo 값이 변경될 때마다 fetchData() 함수 실행
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [tUserNo]);
 
   // 선택 값에 따라 직원 목록 갱신
   useEffect(() => {

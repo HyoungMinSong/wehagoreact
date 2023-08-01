@@ -157,8 +157,10 @@ function UserModal(props) {
                     <span>{user.email}</span>
                 </button>
                 <button className="group">
+                <Link className="a" to={'/organization'}>
                     <img src="https://cdn-icons-png.flaticon.com/128/5126/5126646.png" alt="회사" width="30px" height="30px" />
                     <span>{companyName}</span>
+                </Link>
                 </button>
             </ProfileWrapper>
             <ButtonWrapper>
