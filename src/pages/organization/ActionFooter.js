@@ -1,6 +1,7 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { styled } from "styled-components";
 import axiosApi from "../../AxiosApi";
+import { clearChosenOnes, pushSwitch } from "../../store";
 
 const ActionFooterBar = styled.div`
     .wrappingActionFooterBarO{
@@ -80,28 +81,33 @@ const ActionFooterBar = styled.div`
   function ActionFooter(){
   const dataOfTheChosenOnes = useSelector(state => state.areThereAnyChosenOnes);
   const fromUser = useSelector((state) => state.loginUserData);
-
+  const dispatch = useDispatch();
   
-  const handleSendMailButton = () =>{
-    console.log(fromUser.user.name);
-    console.log(JSON.stringify(dataOfTheChosenOnes));
-    console.log(dataOfTheChosenOnes);
-    
-    axiosApi.post("/sendMailToEmployee", {
-      employer: fromUser.user.name,
-    checkedEmployee: dataOfTheChosenOnes,
-    });
-
+  const handleSendMailButton = async () => {
+    try {
+      dispatch(pushSwitch(true));
+      await axiosApi.post("/sendMailToEmployee", {
+        employer: fromUser.user.name,
+        checkedEmployee: dataOfTheChosenOnes.checkedEmployee,
+      });
+      dispatch(clearChosenOnes());
+    } catch (error) {
+      console.error("메일 전송 중 오류 발생:", error);
+      // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
+    }finally{
+      dispatch(pushSwitch(false));
+    }
   };
+  
 
 
   return(
     <ActionFooterBar>
-      <div className={dataOfTheChosenOnes.length>0 ? "wrappingActionFooterBarO" : "wrappingActionFooterBarX"}>
+      <div className={dataOfTheChosenOnes.checkedEmployee && dataOfTheChosenOnes.checkedEmployee.length>0 ? "wrappingActionFooterBarO" : "wrappingActionFooterBarX"}>
         <div className="howManyHaveBeenChosen">
           <div className="wrappingChosenOnes">
             <span className="chosenOnes">
-              <em>{dataOfTheChosenOnes.length} 명</em>
+              <em>{dataOfTheChosenOnes.checkedEmployee && dataOfTheChosenOnes.checkedEmployee.length} 명</em>
                 선택됨
             </span>
           </div>

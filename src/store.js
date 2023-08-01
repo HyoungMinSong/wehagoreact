@@ -1,4 +1,4 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit'
+import { configureStore, createSlice, getDefaultMiddleware } from '@reduxjs/toolkit'
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
@@ -54,10 +54,22 @@ let loginUserData = createSlice({
   }
 });
 
+// 회원가입
+let spinnerSwitch = createSlice({
+  name : 'spinnerSwitch',
+  initialState : false,
+  reducers : {
+      pushSwitch(state, action){
+        return action.payload
+      }
+  }
+});
+
 const reducers = combineReducers({
   user : user.reducer,
   areThereAnyChosenOnes : areThereAnyChosenOnes.reducer,
   loginUserData : loginUserData.reducer,
+  spinnerSwitch : spinnerSwitch.reducer,
   // 여기 밑에 쭉쭉 적기
 });
 
@@ -76,10 +88,11 @@ const persistedReducer = persistReducer(persistConfig, reducers);
   export let { beTheChosenOnes } = areThereAnyChosenOnes.actions
   export let { clearChosenOnes } = areThereAnyChosenOnes.actions
   export let { setUser, setService, setCompany, setCompanyName } = loginUserData.actions;
-
+  export let { pushSwitch } = spinnerSwitch.actions 
   // 저장소 추출
   export default configureStore({
     reducer: persistedReducer,
+    middleware: [...getDefaultMiddleware({ serializableCheck: false })],
   })
 
   /* 보내는 곳 사용법

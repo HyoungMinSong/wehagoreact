@@ -306,6 +306,18 @@ function Management() {
   const[loading, setLoading] = useState(false);
   // 로그인 유저 정보
   const loginedUser = useSelector((state) => state.loginUserData);
+  // 무선 스피너
+  const pushedSwitch = useSelector((state) => state.spinnerSwitch);
+
+  // 무선 스피너 인식
+  useEffect(() => {
+    console.log("pushedSwitch",pushedSwitch);
+    setLoading(pushedSwitch);
+    if(!pushedSwitch){
+      fetchData();
+      uncheckAllCheckboxes();
+    }
+  },[pushedSwitch]);
 
   // loginedUser 값이 변경될 때마다 TUserNo 값을 업데이트
   useEffect(() => {
@@ -314,7 +326,9 @@ function Management() {
 
   // TUserNo 값이 변경될 때마다 fetchData() 함수 실행
   useEffect(() => {
-    fetchData();
+    if(tUserNo){
+      fetchData();
+    }
   }, [tUserNo]);
 
   // 선택 값에 따라 직원 목록 갱신
@@ -332,6 +346,7 @@ function Management() {
         selectedNodeIndex,
         selectedListTab
       );
+      uncheckAllCheckboxes();
       showMyEmployeeState(selectedNodePk, selectedNodeIndex);
       dispatch(clearChosenOnes());
     }
@@ -628,6 +643,7 @@ function Management() {
   const fetchData = async () => {
     try {
       setLoading(true);
+      dispatch(clearChosenOnes());
       const res = await axiosApi.get("/showMyCompanyInfo", {
         params: {
           t_user_no: tUserNo,
@@ -644,6 +660,7 @@ function Management() {
       setMyCompanyInfo(res.data);
       setMyWorkPlace(response.data);
       setSelectedCompanyIndex(0);
+      setSelectedListTab(-1);
       setEditingItem(response.data[0].t_company_name);
       setSelectedNodeIndex(-1);
       setSelectedNodePk(response.data[0].t_company_no);
@@ -654,7 +671,7 @@ function Management() {
         response.data[0].t_company_name,
         response.data[0].t_company_no,
         -1,
-        0
+        -1
       );
       showMyEmployeeState(response.data[0].t_company_no, -1);
       dispatch(clearChosenOnes());
@@ -712,6 +729,13 @@ function Management() {
     setPrevEditingOrganizationName(e.target.value);
   };
 
+  // 컴포넌트 내의 모든 체크박스의 체크를 해제하는 함수
+  const uncheckAllCheckboxes = () => {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = false;
+    });
+  };
 
   return (
     <CsContainer>
