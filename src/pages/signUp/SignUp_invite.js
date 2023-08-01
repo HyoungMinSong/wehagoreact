@@ -3,7 +3,6 @@ import { useLocation  } from 'react-router-dom'
 import axiosApi from "../../AxiosApi";
 import { Button, Card, Col, Container, Form, Modal, Row, Spinner } from "react-bootstrap";
 import InputMask from 'react-input-mask';
-import { useDispatch } from "react-redux";
 import { increase } from "../../store";
 import { useNavigate } from "react-router-dom";
 import SignUpHeader from "./SignUpHeader";
@@ -16,42 +15,23 @@ function SignUp_invite() {
 let queryParams = new URLSearchParams(location.search);
 let userName = queryParams.get('t_user_name');
 let userPhone = queryParams.get('t_user_phone');
-let userPhotoPath = queryParams.get('t_user_photo_path');
-let userPhotoName = queryParams.get('t_user_photo_name');
+// let userPhotoPath = queryParams.get('t_user_photo_path');
+// let userPhotoName = queryParams.get('t_user_photo_name');
 let userEmail = queryParams.get('t_user_email');
 
-
-
-
-let [name, setName] = useState('');
-let [nameError, setNameError] = useState(false);
-let [phoneNumber, setPhoneNumber] = useState('');
-let [phoneNumberError, setphoneNumberError] = useState(false);
 let [id, setId] = useState('');
 let [idError, setIdError] = useState(false);
 let [password, setPassword] = useState('');
 let [passwordError, setPasswordError] = useState(false);
 let [confirmPassword, setConfirmPassword] = useState('');
 let [confirmPasswordError, setConfirmPasswordError] = useState(false);
-let [email, setEmail] = useState('');
-let [emailError, setEmailError] = useState(false);
 let [loading, setLoading] = useState(false);
 
-let regex = /^[가-힣a-zA-Z]+$/;
-// let numberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
-let numberRegex = /^\d{11}$/;
-// let idRegex = /^[a-z]+[a-z0-9]{5,19}$/g;
 let idRegex = /^[a-zA-Z0-9]*$/;
 let pwRegex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
-let emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+
 
 useEffect(() => {
-  if (name != '') {
-    regex.test(name) ? setNameError(false) : setNameError(true);
-  }
-  if (phoneNumber != '') {
-    numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
-  }
   if (id != '') {
     idRegex.test(id) ? setIdError(false) : setIdError(true);
   }
@@ -61,17 +41,14 @@ useEffect(() => {
   if (confirmPassword != '') {
     password === confirmPassword ? setConfirmPasswordError(false) : setConfirmPasswordError(true);
   }
-  if (email != '') {
-    emailRegex.test(email) ? setEmailError(false) : setEmailError(true);
-  }
-}, [name, phoneNumber, id, password, confirmPassword, email]);
+}, [id, password, confirmPassword]);
+
 
 
 const [show, setShow] = useState(false);
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);
-
-let dispatch = useDispatch();
+const { abc } = location.state || {};
 
 let navigate = useNavigate();
   return (
@@ -104,16 +81,8 @@ let navigate = useNavigate();
 
                       <Form.Label style={{ fontWeight: 'bold' }}>사용자 이름</Form.Label>
 
-                      <Form.Control type="text" placeholder="Enter name" onChange={(e) => {
-                        setName(e.target.value);
-                        // regex.test(name) ? setNameError(false) : setNameError(true);
-                      }} className={nameError ? "border-danger" : ""} />
-                      {nameError ?
-                        <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
-                          한글과 영문만 입력 가능합니다.
-                        </Form.Text>
-                        : ""
-                      }
+                      <Form.Control type="text" placeholder="Enter name" disabled value={userName} />
+
                     </Form.Group>
 
                     <Form.Group className="my-2 " controlId="formBasicPhone">
@@ -121,27 +90,15 @@ let navigate = useNavigate();
                       <InputMask
                         mask="999-9999-9999"
                         maskChar="_"
-                        // className=""
                         placeholder="Enter phone number"
-                        onChange={(e) => {
-                          
-                          setPhoneNumber(e.target.value.replace(/-/g, ''));
-                          // numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
-                        }} className={phoneNumberError ? "form-control border-danger" : "form-control"}
-
-
+                        disabled
+                        value={userPhone}
+                        className= "form-control"
                       />
-                      {phoneNumberError ?
-                        <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
-                          휴대전화번호 11자리를 입력하세요.
-                        </Form.Text>
-                        : <Form.Text className="text-muted" style={{ fontSize: '11px' }}   >
+                        <Form.Text className="text-muted" style={{ fontSize: '11px' }}   >
                           * 입력된 휴대전화번호는 아이디, 비밀번호 찾기 등 본인 확인 용도 또는 WEHAGO로부터 알림
                           을 받을 때 사용됩니다.
                         </Form.Text>
-                      }
-
-
                     </Form.Group>
 
                     <Form.Group className="my-2" controlId="formBasicEmail" >
@@ -163,9 +120,7 @@ let navigate = useNavigate();
                     </Form.Group>
 
                     <Form.Group className="my-2" controlId="formBasicPassword" >
-
                       <Form.Label style={{ fontWeight: 'bold' }}>Password</Form.Label>
-
                       <Form.Control type="password" placeholder="Password" onChange={(e) => {
                         setPassword(e.target.value);
                         // pwRegex.test(password) ? setPasswordError(false) : setPasswordError(true);
@@ -177,10 +132,8 @@ let navigate = useNavigate();
                         : <Form.Text className="text-muted" style={{ fontSize: '11px' }} >
                           * 비밀번호는 8자~16자의 영문 대문자, 소문자, 숫자 및 특수문자 중 2가지 이상의 조합으로
                           입력해주세요
-
                         </Form.Text>
                       }
-
                     </Form.Group>
 
                     <Form.Group className="my-2" controlId="formBasicPassword2" >
@@ -198,19 +151,11 @@ let navigate = useNavigate();
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicEmail" >
                       <Form.Label style={{ fontWeight: 'bold' }}>이메일 주소</Form.Label>
-                      <Form.Control type="email" placeholder="Enter email" onChange={(e) => {
-                        setEmail(e.target.value);
-                        // emailRegex.test(email) ? setEmailError(false) : setEmailError(true);
-                      }} className={emailError ? "border-danger" : ""} />
-                      {emailError ?
-                        <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
-                          이메일 형식이 아닙니다.
-                        </Form.Text>
-                        : <Form.Text className="text-muted" style={{ fontSize: '11px' }} >
+                      <Form.Control type="email" placeholder="Enter email" disabled
+                        value={userEmail} />
+                      <Form.Text className="text-muted" style={{ fontSize: '11px' }} >
                           * 아이디, 비밀번호 찾기 등 본인확인이 필요한 경우 사용할 이메일 주소입니다.
-
                         </Form.Text>
-                      }
 
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
@@ -230,18 +175,21 @@ let navigate = useNavigate();
                     </Button>
                     <Button variant="primary" className="mx-3" onClick={() => {
                       setLoading(true);
-                      if (name != '' && nameError == false && phoneNumber != '' && phoneNumberError == false && id != ''
-                        && idError == false && password != '' && passwordError == false && confirmPassword != '' && confirmPasswordError == false &&
-                        email != '' && emailError == false) {
+                      if ( id != '' && idError == false && password != '' && passwordError == false && confirmPassword != '' && confirmPasswordError == false) {
                         axiosApi.post("/idcheck", {
                           id: id
                         }).then((c) => {
                           if (c.data === id) {
                             handleShow();
                           }else{
-                            dispatch(increase({name : name, phoneNumber : phoneNumber, id : id,
-                               password : password, email : email}))
-                               navigate('/signup/company')
+                            axiosApi.post("/signupinviteupdate", {
+                              empNo: abc, userId : id, userPw : password
+                            }).then((d) => {
+                              console.log(d.data)
+                               navigate('/signup/complete')
+                            }).catch(()=>{
+                              console.log('두번째 엑시오스 실패.')
+                            })
                           }
                           console.log(c.data);
                           

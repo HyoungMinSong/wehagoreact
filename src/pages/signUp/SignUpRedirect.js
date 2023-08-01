@@ -8,11 +8,13 @@ function SignUpRedirect() {
     let navigate = useNavigate();
     console.log(shortLink)
     axiosApi.get("/s/"+shortLink).then((c) => {
-        if (c.data === "오류") {
+        if (c.data === null ) {
         //   handleShow();
         console.log('백엔드오류리턴')
         } else {
-          navigate(c.date)
+          console.log(c.data);
+          let abc= c.data.empNo;
+          navigate(c.data.shortLink, { state: {abc}  })
         }
         console.log(c.data);
 
