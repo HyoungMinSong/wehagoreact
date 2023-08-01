@@ -37,7 +37,7 @@ const Navbar = styled.nav `
 const HeadLine = styled.div`
     display: flex;
     align-items: center;
-    margin: 30px;
+    margin: 30px 100px;
     border-bottom: 1px solid #dddddd;
 
     & > span {
@@ -47,7 +47,7 @@ const HeadLine = styled.div`
 `;
 
 const TableWrapper = styled.div`
-    padding: 30px;
+    padding: 30px 100px;
 
     & > span {
         font-weight: bold;
@@ -75,6 +75,7 @@ const LeftTd = styled.td`
 `;
 
 const RightTd = styled.td`
+    display: flex;
     padding: 15px;
     font-size: 13px;
 
@@ -87,11 +88,15 @@ const RightTd = styled.td`
 
 function UserSetting(props) {
     const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
-    const [loading, setLoading] = useState(true);
+    const [editClick, setEditClick] = useState(false);
 
-    useEffect(() => {
-        setLoading(false);
-    }, []);
+    const editHandler = () => {
+        if(editClick) {
+            setEditClick(false);
+        } else {
+            setEditClick(true);
+        }
+    }
 
     return(
         <div>
@@ -99,7 +104,7 @@ function UserSetting(props) {
             <Navbar>
                 <h4>개인설정</h4>
                 <div>
-                    <button>수정</button>
+                    {editClick ? '' : <button onClick={editHandler}>수정</button>}
                     <button>비밀번호 변경</button>
                 </div>
             </Navbar>
@@ -107,78 +112,101 @@ function UserSetting(props) {
                 <h3>개인정보관리</h3>
                 <span>소중한 내 정보를 최신으로 관리하세요.</span>
             </HeadLine>
-            <TableWrapper>
-                <span>기본 정보</span>
-                <InfoTable>
-                    <Tr>
-                        <LeftTd>프로필 사진</LeftTd>
-                        <RightTd>
-                            <img src={user.photo} alt="프로필 사진"/>
-                        </RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>이름</LeftTd>
-                        <RightTd>{user.name}</RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>아이디</LeftTd>
-                        <RightTd>{user.id}</RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>이메일주소</LeftTd>
-                        <RightTd>{user.email}</RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>휴대전화번호</LeftTd>
-                        <RightTd>{user.phone}</RightTd>
-                    </Tr>
-                </InfoTable>
-            </TableWrapper>
-            <TableWrapper>
-                <span>직장 정보</span>
-                <InfoTable>
-                    <Tr>
-                        <LeftTd>소속</LeftTd>
-                        <RightTd>{companyName}</RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>직급</LeftTd>
-                        <RightTd>{company.length > 0 ? company[0].t_employee_position : ''}</RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>직책</LeftTd>
-                        <RightTd>{company.length > 0 ? company[0].t_employee_duty : ''}</RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>직장 전화번호</LeftTd>
-                        <RightTd>{company.length > 0 ? company[0].t_company_call_num : ''}</RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>내선번호</LeftTd>
-                        <RightTd></RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>직장 팩스번호</LeftTd>
-                        <RightTd></RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>직장 주소</LeftTd>
-                        <RightTd></RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>담당업무</LeftTd>
-                        <RightTd></RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>사원번호</LeftTd>
-                        <RightTd></RightTd>
-                    </Tr>
-                    <Tr>
-                        <LeftTd>입사일</LeftTd>
-                        <RightTd>{company.length > 0 ? company[0].t_employee_date : ''}</RightTd>
-                    </Tr>
-                </InfoTable>
-            </TableWrapper>
+            <form>
+                <TableWrapper>
+                    <span>기본 정보</span>
+                    <InfoTable>
+                        <Tr>
+                            <LeftTd>프로필 사진</LeftTd>
+                            <RightTd>
+                                <img src={user.photo} alt="프로필 사진"/>
+                                {editClick ? 
+                                    <div style={{height: "70px"}}>
+                                        <ul>
+                                            <li>프로필 사진을 등록해주세요.</li>
+                                            <li>이미지 파일 최대 크기 2MB 미만</li>
+                                            <div style={{marginTop: "5px"}}>
+                                                <button style={{border: "1px solid #dddddd", width: "50px", height: "25px"}}>등록</button>
+                                                <button style={{border: "1px solid #dddddd", width: "50px", height: "25px", marginLeft: "5px"}}>삭제</button> 
+                                            </div>
+                                            
+                                        </ul>
+                                    </div>
+                                    : ''}
+                            </RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>이름</LeftTd>
+                            <RightTd>{user.name}</RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>아이디</LeftTd>
+                            <RightTd>{user.id}</RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>이메일주소</LeftTd>
+                            <RightTd>{editClick ? <input type="email" style={{width: "250px"}}/> : user.email}</RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>휴대전화번호</LeftTd>
+                            <RightTd>{editClick ? <input type="phone" style={{width: "250px"}}/> : user.phone}</RightTd>
+                        </Tr>
+                    </InfoTable>
+                </TableWrapper>
+                <TableWrapper>
+                    <span>직장 정보</span>
+                    <InfoTable>
+                        <Tr>
+                            <LeftTd>소속</LeftTd>
+                            <RightTd>{companyName}</RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>직급</LeftTd>
+                            <RightTd>{company.length > 0 ? company[0].t_employee_position : ''}</RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>직책</LeftTd>
+                            <RightTd>{company.length > 0 ? company[0].t_employee_duty : ''}</RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>직장 전화번호</LeftTd>
+                            <RightTd>{company.length > 0 ? company[0].t_company_call_num : ''}</RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>내선번호</LeftTd>
+                            <RightTd></RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>직장 팩스번호</LeftTd>
+                            <RightTd></RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>직장 주소</LeftTd>
+                            <RightTd></RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>담당업무</LeftTd>
+                            <RightTd></RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>사원번호</LeftTd>
+                            <RightTd></RightTd>
+                        </Tr>
+                        <Tr>
+                            <LeftTd>입사일</LeftTd>
+                            <RightTd>{company.length > 0 ? company[0].t_employee_date : ''}</RightTd>
+                        </Tr>
+                    </InfoTable>
+                </TableWrapper>
+                {editClick ? 
+                    <div style={{display:"flex", justifyContent:"center", marginBottom:"30px"}}>
+                        <button onClick={editHandler} style={{border:"1px solid #dddddd", width:"80px", height:"50px"}}>취소</button>
+                        <button type="submit" style={{border:"1px solid #dddddd", width:"80px", height:"50px", background:"#1c90fb", color:"white", marginLeft:"10px"}}>저장</button>
+                    </div>
+                    :
+                    ''
+                }
+            </form>
         </div>
     );
 }
