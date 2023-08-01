@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 
 function Main(props) {
   const dispatch = useDispatch();
+  const prefixImgUrl = "http://localhost:8080/images/";
   const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +52,7 @@ function Main(props) {
                   "id" : response.data.userDto.t_user_id,
                   "name" : response.data.userDto.t_user_name,
                   "email" : response.data.userDto.t_user_email,
-                  "photo" : response.data.userDto.t_user_photo_path,
+                  "photo" : prefixImgUrl + response.data.userDto.t_user_photo_path,
                   "phone" : response.data.userDto.t_user_phone
               }
               const userCompany = response.data.userCompanyDtoList;
