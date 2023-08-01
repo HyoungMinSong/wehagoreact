@@ -352,10 +352,15 @@ function Management() {
     if (isExpanded === "true") {
       setIsExpanded("false");
     }
-    setSelectedNodeIndex(listTab);
+    // index = -1이면 회사이름, 0이면 조직이름
     setEditingItem(name);
-    setSelectedNodeIndex(index);
+    // index = -1이면 회사번호, 0이면 조직번호
     setSelectedNodePk(pk);
+    // -1이면 회사, 0이면 조직
+    setSelectedNodeIndex(index);
+    // 상태
+    setSelectedNodeIndex(listTab);
+    // 회사 번호
     setSelectedCompanyPk(compk);
   };
 
@@ -637,6 +642,15 @@ function Management() {
       setSelectedNodePk(response.data[0].t_company_no);
       setSelectedCompanyPk(response.data[0].t_company_no);
       setProEditiedOrganization([]);
+      //갱신 부분
+      showMyEmployees(
+        response.data[0].t_company_name,
+        response.data[0].t_company_no,
+        -1,
+        0
+      );
+      showMyEmployeeState(response.data[0].t_company_no, -1);
+      dispatch(clearChosenOnes());
     } catch (error) {
       console.error(error);
     } finally {
@@ -645,9 +659,10 @@ function Management() {
   };
 
   // 직원 리스트 Select
-  const showMyEmployees = (item, pk, index, list) => {
+  const showMyEmployees = async (item, pk, index, list) => {
     try {
-      const response = axiosApi
+      setLoading(true);
+      const response = await axiosApi
         .get("/showMyEmployees", {
           params: {
             nodeName: item,
@@ -655,15 +670,12 @@ function Management() {
             index: index,
             t_employee_state: list,
           },
-        })
-        .then((res) => {
-          setShowingMyEmployees(res.data);
-        })
-        .catch((error) => {
-          console.error(error);
         });
+          setShowingMyEmployees(response.data);
     } catch (error) {
       console.error(error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -877,7 +889,7 @@ function Management() {
         
           {/* 로딩 스피너 컴포넌트 */}
           <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
-          <div className="mt-3">회원가입이 진행 중입니다.<br />잠시만 기다려주세요.</div>
+          <div className="mt-3">불러오는 중입니다.<br />잠시만 기다려주세요.</div>
         </div>
       )}
           </div>
@@ -898,6 +910,12 @@ function Management() {
           selectedListTab={selectedListTab}
           myWorkPlace={myWorkPlace}
           myCompanyInfo={myCompanyInfo}
+          fetchData={fetchData}
+          selectedCompanyPk={selectedCompanyPk}
+          editingItem={editingItem}
+          selectedNodePk={selectedNodePk}
+          selectedNodeIndex={selectedNodeIndex}
+          setLoading={setLoading}
         />
       </WrappedTreeView>
     </CsContainer>
