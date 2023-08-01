@@ -414,11 +414,26 @@ function BasicGridBox(props) {
   const chosenOnes = (e, user) => {
     console.log(e.target.checked);
     console.log(user);
+    const checkedEmployee = Array.isArray(dataOfTheChosenOnes.checkedEmployee)
+    ? dataOfTheChosenOnes.checkedEmployee
+    : [];
+
     if (e.target.checked) {
-      const updateDataOfTheChosenOnes = [
+      const updateDataOfTheChosenOnes = {
         ...dataOfTheChosenOnes,
-        { t_user_no: user.t_user_no },
-      ];
+        checkedEmployee: [
+          ...checkedEmployee,
+          { 
+            t_user_no: user.t_user_no,
+            t_user_name: user.t_user_name, 
+            t_company_name: user.t_company_name, 
+            t_organization_name: user.t_organization_name, 
+            t_employee_duty: user.t_employee_duty, 
+            t_employee_position: user.t_employee_position, 
+            t_employee_no: user.t_employee_no
+          },
+        ],
+      };
       dispatch(beTheChosenOnes(updateDataOfTheChosenOnes));
     } else if (!e.target.checked) {
       const updateDataOfTheChosenOnes = [...dataOfTheChosenOnes];
