@@ -1,5 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
+import { useSelector, useDispatch } from 'react-redux';
 
 const Item = styled.button`
     display: flex;
@@ -27,10 +28,11 @@ const Item = styled.button`
 `;
 
 function CompanyListItem(props) {
+    const dispatch = useDispatch();
     const {item, setCompanyModalOpen, companyName, setCompanyName} = props;
 
     const handleCompanyItemClick = () => {
-        setCompanyName(item.t_company_name);
+        dispatch(setCompanyName(item.t_company_name));
         setCompanyModalOpen(false);
     };
 
