@@ -5,11 +5,7 @@ import { useLocation } from "react-router";
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser, setService, setCompany, setCompanyName } from '../../store'
 import axiosApi from "../../AxiosApi";
-
-const StyledHeader = styled(Header)`
-    background: black !important;
-    width: 100%;
-`;
+import { Link } from "react-router-dom";
 
 const Navbar = styled.nav `
     display: flex;
@@ -28,15 +24,16 @@ const Navbar = styled.nav `
         font-size: 22px;
     }
 
-    & > div > button {
+    & > div > button, & > div > a > button {
         width: 125px;
         height: 70px;
         background: none;
         border: none;
         color: white;
+        font-size: 15px;
     }
 
-    & > div > button:hover {
+    & > div > button:hover, & > div > a > button:hover {
         background: blue;
     }
 `;
@@ -181,78 +178,49 @@ function UserSetting(props) {
 
         const file = imgInputRef.current.files[0]; // 선택한 파일 가져오기
         const formData = new FormData();
-        if (file) {
-            formData.append("profileImage", file); // 새 파일이 있으면 formData에 추가
-            formData.append("id", userIdRef.current.innerText); // 식별 할 유저 아이디
-            formData.append("name", e.target.name.value); // 이름 추가
-            formData.append("email", e.target.email.value); // 이메일 추가
-            formData.append("phone", e.target.phone.value); // 전화번호 추가
+        
+        formData.append("profileImage", file); // 새 파일이 있으면 formData에 추가
+        formData.append("id", userIdRef.current.innerText); // 식별 할 유저 아이디
+        formData.append("name", e.target.name.value); // 이름 추가
+        formData.append("email", e.target.email.value); // 이메일 추가
+        formData.append("phone", e.target.phone.value); // 전화번호 추가
 
-            try {
-                const response = await axiosApi.post("/api/update/change_image", formData, {
-                    headers: {
-                      "Content-Type": "multipart/form-data",
-                    },
-                  });
-    
-                if(response.status === 200) {
-                    alert('정보가 수정되었습니다!');
-                    const userInfo = 
-                    {
-                      "id" : userIdRef.current.innerText,
-                      "name" : e.target.name.value,
-                      "email" : e.target.email.value,
-                      "photo" : prefixImgUrl + response.data.photo_path,
-                      "phone" : e.target.phone.value
-                    }
-                    dispatch(setUser(userInfo));
-                    window.location.reload(); // 새로고침
-                } else {
-                    alert('정보 수정에 실패했습니다..');
+        try {
+            const response = await axiosApi.post("/api/update/change_image", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                });
+
+            if(response.status === 200) {
+                alert('정보가 수정되었습니다!');
+                const userInfo = 
+                {
+                    "id" : userIdRef.current.innerText,
+                    "name" : e.target.name.value,
+                    "email" : e.target.email.value,
+                    "photo" : prefixImgUrl + response.data.photo_path,
+                    "phone" : e.target.phone.value
                 }
-            } catch (error) {
-                console.error("업로드 실패:", error);
-                return;
+                dispatch(setUser(userInfo));
+                window.location.reload(); // 새로고침
+            } else {
+                alert('정보 수정에 실패했습니다..');
             }
-        } else {
-            formData.append("id", userIdRef.current.innerText); // 식별 할 유저 아이디
-            formData.append("name", e.target.name.value); // 이름 추가
-            formData.append("email", e.target.email.value); // 이메일 추가
-            formData.append("phone", e.target.phone.value); // 전화번호 추가
-            
-            try {
-                const response = await axiosApi.post("/api/update/keep_image", formData);
-                
-                if(response.status === 200) {
-                    alert('정보가 수정되었습니다!');
-                    const userInfo = 
-                    {
-                      "id" : userIdRef.current.innerText,
-                      "name" : e.target.name.value,
-                      "email" : e.target.email.value,
-                      "photo" : prefixImgUrl + user.photo,
-                      "phone" : e.target.phone.value
-                    }
-                    dispatch(setUser(userInfo));
-                    window.location.reload(); // 새로고침
-                } else {
-                    alert('정보 수정에 실패했습니다..');
-                }
-            } catch (error) {
-                console.error("이미지 유지 실패:", error);
-                return;
-            }
+        } catch (error) {
+            console.error("업로드 실패:", error);
+            return;
         }
     }
 
     return(
         <div>
-            <StyledHeader user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
+            <Header user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
             <Navbar>
-                <a href="/detailuserinfo">개인설정</a>
+                <Link to="/detailuserinfo">개인설정</Link>
                 <div>
                     {editClick ? '' : <button onClick={editBtnHandler}>수정</button>}
-                    <button>비밀번호 변경</button>
+                    <Link to="/changepassword"><button>비밀번호 변경</button></Link>
                 </div>
             </Navbar>
             <HeadLine>
