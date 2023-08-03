@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 import { useSelector } from "react-redux";
 import { setUser, setService, setCompany, setCompanyName } from '../../store'
+import axiosApi from "../../AxiosApi";
 
 const Navbar = styled.nav `
     display: flex;
@@ -112,20 +113,15 @@ function UserChangePassword() {
     const [newPasswordApproval, setNewPasswordApproval] = useState(false);
     const [newPasswordCheckError, setNewPasswordCheckError] = useState(false);
     const [newPasswordCheckApproval, setNewPasswordCheckApproval] = useState(false);
+    const [newPasswordCheckRegError, setNewPasswordCheckRegError] = useState(false);
     const pwRegex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
     
-    const changepasswordSubmitHandler = (e) => {
+    const changepasswordSubmitHandler = async (e) => {
         e.preventDefault();
         
         const currentPassword = e.target.currentPassword.value;
         const newPassword = e.target.newPassword.value;
         const newPasswordCheck = e.target.newPasswordCheck.value;
-        
-        if(!pwRegex.test(currentPassword)) {
-            alert("현재 비밀번호 정규식 에러!");
-            e.target.currentPassword.focus();
-            return;
-        }
         
         if(!pwRegex.test(newPassword)) {
             alert("새 비밀번호 정규식 에러!");
@@ -150,6 +146,25 @@ function UserChangePassword() {
             e.target.newPasswordCheck.focus();
             return;
         }
+
+        const formData = new FormData();
+
+        formData.append("id", user.id);
+        formData.append("currentPassword", currentPassword);
+        formData.append("newPassword", newPassword);
+        
+        const response = await axiosApi.post("/api/update_password", formData, {
+            headers: {
+                "Content-Type": "form-data",
+            },
+        });
+
+        if(response.data) {
+            alert("비밀번호 변경 되었습니다.");
+            window.location.reload();
+        } else {
+            alert("현재 비밀번호가 일치하지 않습니다.");
+        }
     }
 
     const inputCurrentPasswordHandler = (e) => {
@@ -168,34 +183,64 @@ function UserChangePassword() {
 
         if(newPassword === '') {
             e.target.style = "border: 1px solid #dddddd";
-        } else if(!pwRegex.test(newPassword)) {
+            setNewPasswordError(false);
+            setNewPasswordApproval(false);
+        } else if(!pwRegex.test(newPassword)) { // 정규식에 맞지 않다면
             e.target.style = "border: 1px solid red";
-        } else {
+            setNewPasswordError(true);
+            setNewPasswordApproval(false);
+        } else { // 정규식에 맞으면
             e.target.style = "border: 1px solid green";
-            if(newPassword === newPasswordCheck.value) {
-                e.target.style = "border: 1px solid blue";
-                newPasswordCheck.style = "border: 1px solid blue";
+            setNewPasswordError(false);
+            setNewPasswordApproval(true);
+            if(!pwRegex.test(newPasswordCheck.value)) { // 새 비밀번호 확인의 정규식이 맞지 않으면
+                if(newPasswordCheck.value !== '') {
+                    newPasswordCheck.style = "border: 1px solid red";
+                    setNewPasswordCheckError(false);
+                    setNewPasswordCheckApproval(false);
+                    setNewPasswordCheckRegError(true);
+                }
             } else {
-                e.target.style = "border: 1px solid yellow";
+                if(newPassword === newPasswordCheck.value) { // 새 비밀번호 확인과 일치하면
+                    newPasswordCheck.style = "border: 1px solid green";
+                    setNewPasswordCheckError(false);
+                    setNewPasswordCheckApproval(true);
+                    setNewPasswordCheckRegError(false);
+                } else {
+                    newPasswordCheck.style = "border: 1px solid red";
+                    setNewPasswordCheckError(true);
+                    setNewPasswordCheckApproval(false);
+                    setNewPasswordCheckRegError(false);
+                }
             }
         }
     }
 
     const inputNewPasswordCheckHandler = (e) => {
-        const newPassword = document.getElementById("newPassword");
+        const newPassword = document.getElementById("newPassword").value;
         const newPasswordCheck = e.target.value;
         
         if(newPasswordCheck === '') {
             e.target.style = "border: 1px solid #dddddd";
+            setNewPasswordCheckError(false);
+            setNewPasswordCheckApproval(false);
+            setNewPasswordCheckRegError(false);
         } else if(!pwRegex.test(newPasswordCheck)) {
             e.target.style = "border: 1px solid red";
+            setNewPasswordCheckError(false);
+            setNewPasswordCheckApproval(false);
+            setNewPasswordCheckRegError(true);
         } else {
-            e.target.style = "border: 1px solid green";
-            if(newPassword.value === newPasswordCheck) {
-                e.target.style = "border: 1px solid blue";
-                newPassword.style = "border: 1px solid blue";
+            if(newPassword !== newPasswordCheck) {
+                e.target.style = "border: 1px solid red";
+                setNewPasswordCheckError(true);
+                setNewPasswordCheckApproval(false);
+                setNewPasswordCheckRegError(false);
             } else {
-                e.target.style = "border: 1px solid yellow";
+                e.target.style = "border: 1px solid green";
+                setNewPasswordCheckError(false);
+                setNewPasswordCheckApproval(true);
+                setNewPasswordCheckRegError(false);
             }
         }
     }
@@ -216,30 +261,33 @@ function UserChangePassword() {
             <form onSubmit={changepasswordSubmitHandler}>
                 <ContentWrapper>
                     <Table>
-                        <Tr style={{height:"30px"}}/>
-                        <Tr>
-                            <LeftTd><label>현재 비밀번호</label></LeftTd>
-                            <RightTd>
-                                <input type="password" id="currentPassword" name="currentPassword" placeholder="현재 비밀번호를 입력하세요." onChange={inputCurrentPasswordHandler} required/>
-                            </RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd><label>새 비밀번호</label></LeftTd>
-                            <RightTd>
-                                <input type="password" id="newPassword" name="newPassword" placeholder="새 비밀번호를 입력하세요." onChange={inputNewPasswordHandler} required/>
-                                {newPasswordError ? <small style={{color:"red"}}>사용할 수 없는 비밀번호 유형입니다.</small> : ''}
-                                {newPasswordApproval ? <small style={{color:"green"}}>안전하게 사용할 수 있는 비밀번호입니다.</small> : ''}
-                            </RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd><label>새 비밀번호 확인</label></LeftTd>
-                            <RightTd>
-                                <input type="password" id="newPasswordCheck" name="newPasswordCheck" placeholder="새 비밀번호를 한번 더 입력하세요." onChange={inputNewPasswordCheckHandler} required/>
-                                {newPasswordCheckError ? <small style={{color:"red"}}>새 비밀번호와 일치하지 않습니다.</small> : ''}
-                                {newPasswordCheckApproval ? <small style={{color:"green"}}>새 비밀번호와 일치합니다.</small> : ''}
-                            </RightTd>
-                        </Tr>
-                        <Tr style={{height:"30px"}}/>
+                        <tbody>
+                            <Tr style={{height:"30px"}}/>
+                            <Tr>
+                                <LeftTd><label>현재 비밀번호</label></LeftTd>
+                                <RightTd>
+                                    <input type="password" id="currentPassword" name="currentPassword" placeholder="현재 비밀번호를 입력하세요." onChange={inputCurrentPasswordHandler} required/>
+                                </RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd><label>새 비밀번호</label></LeftTd>
+                                <RightTd>
+                                    <input type="password" id="newPassword" name="newPassword" placeholder="새 비밀번호를 입력하세요." onChange={inputNewPasswordHandler} required/>
+                                    {newPasswordError ? <small style={{color:"red", marginLeft:"10px"}}>사용할 수 없는 비밀번호 유형입니다.</small> : ''}
+                                    {newPasswordApproval ? <small style={{color:"green", marginLeft:"10px"}}>안전하게 사용할 수 있는 비밀번호입니다.</small> : ''}
+                                </RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd><label>새 비밀번호 확인</label></LeftTd>
+                                <RightTd>
+                                    <input type="password" id="newPasswordCheck" name="newPasswordCheck" placeholder="새 비밀번호를 한번 더 입력하세요." onChange={inputNewPasswordCheckHandler} required/>
+                                    {newPasswordCheckError ? <small style={{color:"red", marginLeft:"10px"}}>새 비밀번호와 일치하지 않습니다.</small> : ''}
+                                    {newPasswordCheckApproval ? <small style={{color:"green", marginLeft:"10px"}}>새 비밀번호와 일치합니다.</small> : ''}
+                                    {newPasswordCheckRegError ? <small style={{color:"red", marginLeft:"10px"}}>비밀번호 유형을 확인하세요.</small> : ''}
+                                </RightTd>
+                            </Tr>
+                            <Tr style={{height:"30px"}}/>
+                        </tbody>
                     </Table>
                 </ContentWrapper>
                 <ContentWrapper>

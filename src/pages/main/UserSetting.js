@@ -237,92 +237,96 @@ function UserSetting(props) {
                 <TableWrapper>
                     <span>기본 정보</span>
                     <InfoTable>
-                        <Tr>
-                            <LeftTd>프로필 사진</LeftTd>
-                            <RightTd>
-                                <img src={user.photo} alt="프로필 사진" id="profileImg" ref={profileImgRef}/>
-                                {editClick ? 
-                                    <div style={{height: "70px"}}>
-                                        <ul>
-                                            <li>프로필 사진을 등록해주세요.</li>
-                                            <li>이미지 파일 최대 크기 2MB 미만</li>
-                                            <div style={{display: "flex", marginTop: "5px"}}>
-                                                <div>
-                                                    <label for="file">
-                                                        <UploadBtn>등록</UploadBtn>
-                                                    </label>
-                                                    <input type="file" name="file" id="file" 
-                                                        ref={imgInputRef} accept="image/jpeg, image/jpg, image/png" 
-                                                        style={{display: "none"}} onChange={uploadBtnHandler} />
+                        <tbody>
+                            <Tr>
+                                <LeftTd>프로필 사진</LeftTd>
+                                <RightTd>
+                                    <img src={user.photo} alt="프로필 사진" id="profileImg" ref={profileImgRef}/>
+                                    {editClick ? 
+                                        <div style={{height: "70px"}}>
+                                            <ul>
+                                                <li>프로필 사진을 등록해주세요.</li>
+                                                <li>이미지 파일 최대 크기 2MB 미만</li>
+                                                <div style={{display: "flex", marginTop: "5px"}}>
+                                                    <div>
+                                                        <label htmlFor="file">
+                                                            <UploadBtn>등록</UploadBtn>
+                                                        </label>
+                                                        <input type="file" name="file" id="file" 
+                                                            ref={imgInputRef} accept="image/jpeg, image/jpg, image/png" 
+                                                            style={{display: "none"}} onChange={uploadBtnHandler} />
+                                                    </div>
+                                                    <DeleteBtn onClick={deleteBtnHandler}>삭제</DeleteBtn> 
                                                 </div>
-                                                <DeleteBtn onClick={deleteBtnHandler}>삭제</DeleteBtn> 
-                                            </div>
-                                        </ul>
-                                    </div>
-                                    : ''}
-                            </RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>이름</LeftTd>
-                            <RightTd>{editClick ? <input type="text" name="name" required/> : user.name}</RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>아이디</LeftTd>
-                            <RightTd ref={userIdRef}>{user.id}</RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>이메일주소</LeftTd>
-                            <RightTd>{editClick ? <input type="email" name="email" required/> : user.email}</RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>휴대전화번호</LeftTd>
-                            <RightTd>{editClick ? <input type="phone" name="phone" required/> : user.phone}</RightTd>
-                        </Tr>
+                                            </ul>
+                                        </div>
+                                        : ''}
+                                </RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>이름</LeftTd>
+                                <RightTd>{editClick ? <input type="text" name="name" required/> : user.name}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>아이디</LeftTd>
+                                <RightTd ref={userIdRef}>{user.id}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>이메일주소</LeftTd>
+                                <RightTd>{editClick ? <input type="email" name="email" required/> : user.email}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>휴대전화번호</LeftTd>
+                                <RightTd>{editClick ? <input type="phone" name="phone" required/> : user.phone}</RightTd>
+                            </Tr>
+                        </tbody>
                     </InfoTable>
                 </TableWrapper>
                 <TableWrapper>
                     <span>직장 정보</span>
                     <InfoTable>
-                        <Tr>
-                            <LeftTd>소속</LeftTd>
-                            <RightTd>{companyName}</RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>직급</LeftTd>
-                            <RightTd>{company.length > 0 ? company[index].t_employee_position : ''}</RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>직책</LeftTd>
-                            <RightTd>{company.length > 0 ? company[index].t_employee_duty : ''}</RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>직장 전화번호</LeftTd>
-                            <RightTd>{company.length > 0 ? company[index].t_company_call_num : ''}</RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>내선번호</LeftTd>
-                            <RightTd></RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>직장 팩스번호</LeftTd>
-                            <RightTd></RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>직장 주소</LeftTd>
-                            <RightTd></RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>담당업무</LeftTd>
-                            <RightTd></RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>사원번호</LeftTd>
-                            <RightTd></RightTd>
-                        </Tr>
-                        <Tr>
-                            <LeftTd>입사일</LeftTd>
-                            <RightTd>{company.length > 0 ? company[0].t_employee_date : ''}</RightTd>
-                        </Tr>
+                        <tbody>
+                            <Tr>
+                                <LeftTd>소속</LeftTd>
+                                <RightTd>{companyName}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>직급</LeftTd>
+                                <RightTd>{company.length > 0 ? company[index].t_employee_position : ''}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>직책</LeftTd>
+                                <RightTd>{company.length > 0 ? company[index].t_employee_duty : ''}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>직장 전화번호</LeftTd>
+                                <RightTd>{company.length > 0 ? company[index].t_company_call_num : ''}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>내선번호</LeftTd>
+                                <RightTd></RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>직장 팩스번호</LeftTd>
+                                <RightTd></RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>직장 주소</LeftTd>
+                                <RightTd></RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>담당업무</LeftTd>
+                                <RightTd></RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>사원번호</LeftTd>
+                                <RightTd></RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>입사일</LeftTd>
+                                <RightTd>{company.length > 0 ? company[0].t_employee_date : ''}</RightTd>
+                            </Tr>
+                        </tbody>
                     </InfoTable>
                 </TableWrapper>
                 {editClick ? 
