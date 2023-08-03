@@ -143,7 +143,7 @@ const IndexBackground = () => {
                           <QuestionAnswerOutlinedIcon style={{ fontSize: '80px', marginBottom: '10px' }}className='text-primary' ></QuestionAnswerOutlinedIcon>
                           <div className='index11-1 mb-4'><b style={{ fontSize: '18px' }}>WEHAGO 컨텐츠 공유</b></div>
                         </div>
-                        <div className="title-index12 text-muted">연락처, 거래처 등<br></br>WEHAGO 서비스 컨텐츠를<br></br>공유하며 협업할 수 있습니다.
+                        <div className="title-index12 text-muted" style={{ marginBottom: '300px' }}>연락처, 거래처 등<br></br>WEHAGO 서비스 컨텐츠를<br></br>공유하며 협업할 수 있습니다.
                         </div>
                         </div>
                       </div>
