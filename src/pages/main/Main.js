@@ -46,13 +46,15 @@ function Main(props) {
             
             if(response.status == 200) {
               setLoading(false);
+              const photo = response.data.userDto.t_user_photo_path.startsWith('http') ? response.data.userDto.t_user_photo_path : prefixImgUrl + response.data.userDto.t_user_photo_path;
+              
               const userInfo = 
               {
                   "no" : response.data.userDto.t_user_no,
                   "id" : response.data.userDto.t_user_id,
                   "name" : response.data.userDto.t_user_name,
                   "email" : response.data.userDto.t_user_email,
-                  "photo" : prefixImgUrl + response.data.userDto.t_user_photo_path,
+                  "photo" : photo,
                   "phone" : response.data.userDto.t_user_phone
               }
               const userCompany = response.data.userCompanyDtoList;
