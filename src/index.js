@@ -31,6 +31,7 @@ import Index1 from './pages/login/Index1';
 import UserSetting from './pages/main/UserSetting';
 import SignUpRedirect from './pages/signUp/SignUpRedirect';
 import SignUp_invite from './pages/signUp/SignUp_invite';
+import UserChangePassword from './pages/main/UserChangePassword';
 
 
 export let persistor = persistStore(store);
@@ -69,6 +70,7 @@ root.render(
         <Route path="/updatepw" element={ <Updatepw></Updatepw> } />
         <Route path='/main' element={<PrivateRoute component={<Main />} isLogin={accessToken} />}/>
         <Route path='/detailuserinfo' element={<PrivateRoute component={<UserSetting />} isLogin={accessToken} />}/>
+        <Route path='/changepassword' element={<PrivateRoute component={<UserChangePassword />} isLogin={accessToken} />}/>
         <Route path="/test" element={ <Test_up></Test_up>} />
         <Route path="/test2" element={ <SignUpHeader></SignUpHeader>} />
         <Route path="/test3" element={ <SendTest></SendTest>} />
