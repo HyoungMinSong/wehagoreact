@@ -272,6 +272,8 @@ const BasicTreeViewDepth = styled.div`
 function Management() {
   // 토큰으로 회원번호
   const [tUserNo, setTUserNo] = useState('');
+  // 헤더의 선택 회사
+  const [tCompanyNo, setTCompanyNo] = useState('');
   // 회원번호로 회사번호, 회사이름
   const [myCompanyInfo, setMyCompanyInfo] = useState([]);
   // 회원번호로 회사, 부서 목록
@@ -314,22 +316,32 @@ function Management() {
     console.log("pushedSwitch",pushedSwitch);
     setLoading(pushedSwitch);
     if(!pushedSwitch){
-      fetchData();
+      // fetchData();
       uncheckAllCheckboxes();
     }
   },[pushedSwitch]);
 
-  // loginedUser 값이 변경될 때마다 TUserNo 값을 업데이트
+  // 맨처음 TUserNo 값을 업데이트
   useEffect(() => {
     setTUserNo(loginedUser.user.no);
-  }, [loginedUser]);
+    const lastCompanyNo = loginedUser.company && loginedUser.company.length > 0 ? loginedUser.company.find((item) => item.t_company_name === loginedUser.companyName).t_company_no : loginedUser.company[0].t_company_no;
+    setTCompanyNo(lastCompanyNo);
+  }, []);
+
+  // 회사 변경마다 회사 업데이트
+  useEffect(() => {
+    const lastCompanyNo = loginedUser.company && loginedUser.company.length > 0 ? loginedUser.company.find((item) => item.t_company_name === loginedUser.companyName).t_company_no : loginedUser.company[0].t_company_no;
+    setTCompanyNo(lastCompanyNo);
+  }, [loginedUser.companyName]);
 
   // TUserNo 값이 변경될 때마다 fetchData() 함수 실행
   useEffect(() => {
-    if(tUserNo){
+    if(tCompanyNo){
+      console.log("TUserNo",tUserNo);
+      console.log("tCompanyNo",tCompanyNo);
       fetchData();
     }
-  }, [tUserNo]);
+  }, [tCompanyNo]);
 
   // 선택 값에 따라 직원 목록 갱신
   useEffect(() => {
@@ -364,6 +376,7 @@ function Management() {
       // showMyEmployeeState(selectedCompanyPk, selectedNodeIndex);
       dispatch(clearChosenOnes());
     }
+
   }, [selectedCompanyPk]);
 
   // 아코디언 오프너 버튼
@@ -652,11 +665,13 @@ function Management() {
       const res = await axiosApi.get("/showMyCompanyInfo", {
         params: {
           t_user_no: tUserNo,
+          t_company_no: tCompanyNo,
         },
       });
       const response = await axiosApi.get("/showMyWorkPlace", {
         params: {
           t_user_no: tUserNo,
+          t_company_no: tCompanyNo,
         },
       });
       console.log("response", response);
