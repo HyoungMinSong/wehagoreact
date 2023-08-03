@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axiosApi from "../../../AxiosApi";
+import BasicGridBoxItem from "./BasicGridBoxItem";
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   // isexpanded prop를 DOM 요소로 전달합니다.
@@ -692,38 +693,16 @@ function BasicGridBox(props) {
                 </tr>
               </thead>
               <tbody>
-                {showingMyEmployees.map((user) => (
-                  <tr
-                    key={user.t_user_no}
-                    onClick={() => handleRowClick(user)}
-                    className={props.selectedUser === user ? "selectedRow" : ""}
-                  >
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <input
-                        type="checkbox"
-                        name="theChosenOnes"
-                        onChange={(e) => chosenOnes(e, user)}
-                        disabled={
-                          user.t_employee_state !== 0 &&
-                          user.t_employee_state !== 1
-                        }
-                      />
-                    </td>
-                    <td>{user.t_user_name}</td>
-                    <td>{user.t_organization_name}</td>
-                    <td>{user.t_employee_position}</td>
-                    <td>{user.t_user_email}</td>
-                    <td>{user.t_user_phone}</td>
-                    <td>{user.t_employee_date}</td>
-                    <td>
-                      {user.t_employee_state === 0 && "미가입"}
-                      {user.t_employee_state === 1 && "가입대기"}
-                      {user.t_employee_state === 2 && "사용중"}
-                      {user.t_employee_state === 3 && "사용중지"}
-                      {user.t_employee_state === -1 && "퇴사"}
-                    </td>
-                  </tr>
-                ))}
+                {showingMyEmployees.map((user) => {
+                  return(
+                  <BasicGridBoxItem 
+                    user={user}
+                    handleRowClick={handleRowClick}
+                    chosenOnes={chosenOnes}
+                  />
+                  );
+                }
+                )}
               </tbody>
             </table>
           </div>
