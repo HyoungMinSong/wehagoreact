@@ -4,7 +4,7 @@ import CompanyListItem from "./CompanyListItem";
 
 const Wrapper = styled.div`
     max-height: 154px;
-    padding: ${props => (props.exceedMaxHeight ? '3px 5px 10px 10px' : '3px 10px 10px 10px')} ;
+    padding: ${props => (props.exceedmaxheight === 'true' ? '3px 5px 10px 10px' : '3px 10px 10px 10px')} ;
 
     overflow-x: hidden;
     overflow-y: auto;
@@ -26,13 +26,13 @@ const Wrapper = styled.div`
 
 function CompanyList(props) {
     const {setCompanyModalOpen, company, companyName, setCompanyName} = props;
-    const exceedMaxHeight = company.length * (45 + 7) > 154;
+    const exceedmaxheight = (company.length * (45 + 7) > 154).toString();
 
     return(
-        <Wrapper exceedMaxHeight={exceedMaxHeight}>
+        <Wrapper exceedmaxheight={exceedmaxheight}>
             {company.map((item) => {
                 return (
-                    <CompanyListItem item={item} setCompanyModalOpen={setCompanyModalOpen} companyName={companyName} setCompanyName={setCompanyName} />
+                    <CompanyListItem item={item} setCompanyModalOpen={setCompanyModalOpen} companyName={companyName} setCompanyName={setCompanyName} key={item.t_company_name} />
                 );
             })}
         </Wrapper>

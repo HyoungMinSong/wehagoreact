@@ -1,7 +1,9 @@
 import { Link, Outlet, Route, Routes } from "react-router-dom";
 import { styled } from "styled-components";
 import ActionFooter from "./ActionFooter";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser, setService, setCompany, setCompanyName } from '../../store'
+import Header from "../main/HeaderComponent/Header";
 
 const SectionTag = styled.div`
     display:block;
@@ -16,7 +18,7 @@ const SectionTag = styled.div`
     right: 0;
     .organizationSectionContainerX{
       position: absolute;
-      top: 48px;
+      top: 118px;
       bottom: 0;
       left: 0;
       right: 0;
@@ -24,7 +26,7 @@ const SectionTag = styled.div`
     }
     .organizationSectionContainerO{
       position: absolute;
-      top: 48px;
+      top: 118px;
       bottom: 44px;
       left: 0;
       right: 0;
@@ -93,19 +95,15 @@ const SubHeader = styled.div`
       vertical-align: top;
     }
 `;
-const SectionContainer = styled.div`
-    position: absolute;
-    top: 48px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-`;
 
 function Organization() {
 
   const dataOfTheChosenOnes = useSelector(state => state.areThereAnyChosenOnes);
+  const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
+
   return(
     <SectionTag>
+      <Header user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
       <SubHeader>
         <h1>조직도</h1>
         <div className="organizationHeaderButton">
