@@ -1,6 +1,8 @@
 import { Col, Container, ListGroup, Modal, Row, Tab, Table } from "react-bootstrap";
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { useState } from "react";
+import axiosApi from "../../AxiosApi";
+import { useSelector } from "react-redux";
 
 // const Feature = ({ icon, title, description, cta }) => (
 //   <div className=" col " >
@@ -21,6 +23,24 @@ import { useState } from "react";
 function Services() {
 
   const [show, setShow] = useState(false);
+  let [companySerivces, setCompanyServices] = useState('');
+
+  // 로그인 유저 정보
+  const loginedUser = useSelector((state) => state.loginUserData);
+  // let comNo = loginedUser.company.t_company_no;
+  console.log(loginedUser);
+  let comNo = loginedUser.company && loginedUser.company.length > 0 ? loginedUser.company.find((item) => item.t_company_name === loginedUser.companyName).t_company_no : loginedUser.company[0].t_company_no;
+  console.log("comNo" + comNo)
+
+  // axiosApi.post("/findservicelistbycomno", {
+  //   comNo: comNo
+  // }).then((c) => {
+  //   setCompanyServices(c.data);
+  //   console.log(c.data);
+  // }).catch(() => {console.log('실패실패')})
+
+  // 모달창 띄우기 유무
+  
 
   return (
     <>
