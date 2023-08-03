@@ -12,7 +12,7 @@ const Navbar = styled.nav `
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 70px;
+    height: 60px;
     background: #1c90fb;
     color: white;
     padding: 0px 100px;
@@ -26,7 +26,7 @@ const Navbar = styled.nav `
 
     & > div > button, & > div > a > button {
         width: 125px;
-        height: 70px;
+        height: 60px;
         background: none;
         border: none;
         color: white;
@@ -87,6 +87,12 @@ const RightTd = styled.td`
         width: 70px;
         height: 70px;
         border-radius: 100%;
+    }
+
+    & > input {
+        width: 300px;
+        border: 1px solid #dddddd;
+        padding: 3px 3px 3px 5px;
     }
 `;
 
@@ -258,7 +264,7 @@ function UserSetting(props) {
                         </Tr>
                         <Tr>
                             <LeftTd>이름</LeftTd>
-                            <RightTd>{editClick ? <input type="text" name="name" style={{width: "250px"}} required/> : user.name}</RightTd>
+                            <RightTd>{editClick ? <input type="text" name="name" required/> : user.name}</RightTd>
                         </Tr>
                         <Tr>
                             <LeftTd>아이디</LeftTd>
@@ -266,11 +272,11 @@ function UserSetting(props) {
                         </Tr>
                         <Tr>
                             <LeftTd>이메일주소</LeftTd>
-                            <RightTd>{editClick ? <input type="email" name="email" style={{width: "250px"}} required/> : user.email}</RightTd>
+                            <RightTd>{editClick ? <input type="email" name="email" required/> : user.email}</RightTd>
                         </Tr>
                         <Tr>
                             <LeftTd>휴대전화번호</LeftTd>
-                            <RightTd>{editClick ? <input type="phone" name="phone" style={{width: "250px"}} required/> : user.phone}</RightTd>
+                            <RightTd>{editClick ? <input type="phone" name="phone" required/> : user.phone}</RightTd>
                         </Tr>
                     </InfoTable>
                 </TableWrapper>
