@@ -272,6 +272,8 @@ const BasicTreeViewDepth = styled.div`
 function Management() {
   // 토큰으로 회원번호
   const [tUserNo, setTUserNo] = useState('');
+  // 헤더의 선택 회사
+  const [tCompanyNo, setTCompanyNo] = useState('');
   // 회원번호로 회사번호, 회사이름
   const [myCompanyInfo, setMyCompanyInfo] = useState([]);
   // 회원번호로 회사, 부서 목록
@@ -319,10 +321,16 @@ function Management() {
     }
   },[pushedSwitch]);
 
-  // loginedUser 값이 변경될 때마다 TUserNo 값을 업데이트
+  // 맨처음 TUserNo 값을 업데이트
   useEffect(() => {
     setTUserNo(loginedUser.user.no);
-  }, [loginedUser]);
+    setTCompanyNo(loginedUser.company.t_company_no);
+  }, []);
+
+  // 회사 변경마다 회사 업데이트
+  useEffect(() => {
+    setTCompanyNo(loginedUser.company.t_company_no);
+  }, [loginedUser.company]);
 
   // TUserNo 값이 변경될 때마다 fetchData() 함수 실행
   useEffect(() => {
@@ -364,6 +372,7 @@ function Management() {
       // showMyEmployeeState(selectedCompanyPk, selectedNodeIndex);
       dispatch(clearChosenOnes());
     }
+
   }, [selectedCompanyPk]);
 
   // 아코디언 오프너 버튼

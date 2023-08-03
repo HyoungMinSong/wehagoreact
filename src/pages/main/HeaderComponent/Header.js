@@ -13,6 +13,7 @@ const Wrapper = styled.div`
     background-color: rgba(0, 0, 0, 0.2);
     position: sticky;
     top: 0;
+    z-index:10;
 `;
 
 const Area = styled.div`
