@@ -71,6 +71,8 @@ function Header(props) {
     const {user, company, companyName, setCompanyName} = props;
     const [companyModalOpen, setCompanyModalOpen] = useState(false);
     const [userModalOpen, setUserModalOpen] = useState(false);
+    console.log("companyName",companyName);
+    console.log("company",company);
     const selectedCompanyRank = company && company.length > 0 ? company.find((item) => item.t_company_name === companyName).t_employee_position : '';
 
     const showCompanyModal = () => {

@@ -316,7 +316,7 @@ function Management() {
     console.log("pushedSwitch",pushedSwitch);
     setLoading(pushedSwitch);
     if(!pushedSwitch){
-      fetchData();
+      // fetchData();
       uncheckAllCheckboxes();
     }
   },[pushedSwitch]);
@@ -324,20 +324,24 @@ function Management() {
   // 맨처음 TUserNo 값을 업데이트
   useEffect(() => {
     setTUserNo(loginedUser.user.no);
-    setTCompanyNo(loginedUser.company.t_company_no);
+    const lastCompanyNo = loginedUser.company && loginedUser.company.length > 0 ? loginedUser.company.find((item) => item.t_company_name === loginedUser.companyName).t_company_no : loginedUser.company[0].t_company_no;
+    setTCompanyNo(lastCompanyNo);
   }, []);
 
   // 회사 변경마다 회사 업데이트
   useEffect(() => {
-    setTCompanyNo(loginedUser.company.t_company_no);
-  }, [loginedUser.company]);
+    const lastCompanyNo = loginedUser.company && loginedUser.company.length > 0 ? loginedUser.company.find((item) => item.t_company_name === loginedUser.companyName).t_company_no : loginedUser.company[0].t_company_no;
+    setTCompanyNo(lastCompanyNo);
+  }, [loginedUser.companyName]);
 
   // TUserNo 값이 변경될 때마다 fetchData() 함수 실행
   useEffect(() => {
-    if(tUserNo){
+    if(tCompanyNo){
+      console.log("TUserNo",tUserNo);
+      console.log("tCompanyNo",tCompanyNo);
       fetchData();
     }
-  }, [tUserNo]);
+  }, [tCompanyNo]);
 
   // 선택 값에 따라 직원 목록 갱신
   useEffect(() => {
@@ -661,11 +665,13 @@ function Management() {
       const res = await axiosApi.get("/showMyCompanyInfo", {
         params: {
           t_user_no: tUserNo,
+          t_company_no: tCompanyNo,
         },
       });
       const response = await axiosApi.get("/showMyWorkPlace", {
         params: {
           t_user_no: tUserNo,
+          t_company_no: tCompanyNo,
         },
       });
       console.log("response", response);
