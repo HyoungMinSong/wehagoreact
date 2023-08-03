@@ -333,23 +333,27 @@ function Management() {
 
   // 선택 값에 따라 직원 목록 갱신
   useEffect(() => {
-    if (
-      editingItem != null &&
-      selectedNodePk != null &&
-      selectedNodeIndex != null &&
-      selectedListTab != null &&
-      editingOrganization === false
-    ) {
-      showMyEmployees(
-        editingItem,
-        selectedNodePk,
-        selectedNodeIndex,
-        selectedListTab
-      );
-      uncheckAllCheckboxes();
-      showMyEmployeeState(selectedNodePk, selectedNodeIndex);
-      dispatch(clearChosenOnes());
-    }
+    const fetchMyEmpl = async () => {
+      if (
+        editingItem != null &&
+        selectedNodePk != null &&
+        selectedNodeIndex != null &&
+        selectedListTab != null &&
+        editingOrganization === false
+      ) {
+        await showMyEmployees(
+          editingItem,
+          selectedNodePk,
+          selectedNodeIndex,
+          selectedListTab
+        );
+        uncheckAllCheckboxes();
+        showMyEmployeeState(selectedNodePk, selectedNodeIndex);
+        dispatch(clearChosenOnes());
+      }
+    };
+  
+    fetchMyEmpl();
 
     
   }, [editingItem, selectedNodePk, selectedNodeIndex, selectedListTab]);
@@ -374,6 +378,7 @@ function Management() {
     if (isExpanded === "true") {
       setIsExpanded("false");
     }
+    console.log("name, pk, index, listTab, compk",name, pk, index, listTab, compk);
     // index = -1이면 회사이름, 0이면 조직이름
     setEditingItem(name);
     // index = -1이면 회사번호, 0이면 조직번호
@@ -686,6 +691,7 @@ function Management() {
   const showMyEmployees = async (item, pk, index, list) => {
     try {
       setLoading(true);
+      console.log("item, pk, index, list",item, pk, index, list);
       const response = await axiosApi
         .get("/showMyEmployees", {
           params: {
