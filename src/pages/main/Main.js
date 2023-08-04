@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 
 function Main(props) {
   const dispatch = useDispatch();
+  const prefixImgUrl = "http://localhost:8080/images/";
   const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
   const [loading, setLoading] = useState(true);
 
@@ -45,23 +46,31 @@ function Main(props) {
             
             if(response.status == 200) {
               setLoading(false);
+              const photo = response.data.userDto.t_user_photo_path.startsWith('http') ? response.data.userDto.t_user_photo_path : prefixImgUrl + response.data.userDto.t_user_photo_path;
+              
               const userInfo = 
               {
                   "no" : response.data.userDto.t_user_no,
                   "id" : response.data.userDto.t_user_id,
                   "name" : response.data.userDto.t_user_name,
                   "email" : response.data.userDto.t_user_email,
-                  "photo" : response.data.userDto.t_user_photo_path,
+                  "photo" : photo,
                   "phone" : response.data.userDto.t_user_phone
               }
               const userCompany = response.data.userCompanyDtoList;
               const userService = response.data.userServiceDtoList;
-
+              // 쿠키 불러오기
+              let lastCompanyId = getCompanyCookie(response.data.userDto.t_user_id+'lastCompanyId');
+              if(!lastCompanyId){
+                lastCompanyId = userCompany[0].t_company_name; // 예시로 첫 번째 회사의 t_company_no를 가져옴
+                setCompanyCookie(response.data.userDto.t_user_id+'lastCompanyId', lastCompanyId, 30); // 30일 동안 쿠키에 저장
+              }
               // Redux의 액션을 호출해 데이터 업데이트
               dispatch(setUser(userInfo));
               dispatch(setService(userService));
               dispatch(setCompany(userCompany));
-              dispatch(setCompanyName(userCompany[0].t_company_name));
+              dispatch(setCompanyName(lastCompanyId));
+              console.log("userCompany",userCompany);
             } else {
               alert('로그인 시간이 만료되어 재로그인이 필요합니다.');
               window.location.replace('/login');
@@ -73,6 +82,20 @@ function Main(props) {
         fetchData();
     }, []);
     
+    // 쿠키에 데이터 저장
+    function setCompanyCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+    }
+
+    // 쿠키에서 데이터 불러오기
+    function getCompanyCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
     return(
         <Wrapper>
             {loading && (

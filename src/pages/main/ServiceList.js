@@ -17,6 +17,7 @@ function ServiceList(props) {
                 return (
                     <ServiceListItem
                         item={item}
+                        key={item.t_service_name}
                         onClick={() => {
                             onClickItem(item);
                         }}

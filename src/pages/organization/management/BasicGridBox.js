@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axiosApi from "../../../AxiosApi";
+import BasicGridBoxItem from "./BasicGridBoxItem";
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   // isexpanded prop를 DOM 요소로 전달합니다.
@@ -385,15 +386,12 @@ function BasicGridBox(props) {
 
   // 직원 행 클릭 이벤트
   const handleRowClick = (user) => {
+    clearAllInputFiles();
     setSelectedImage(null);
     props.setOperateRegisMode(false);
     props.setSelectedUser(user);
-    props.setUpdateSelectedUser(user);
-    if (user.t_user_photo_path.startsWith("http")) {
-      props.setShowMyThumbnail(user.t_user_photo_path);
-    } else {
-      props.setShowMyThumbnail(process.env.PUBLIC_URL + user.t_user_photo_path);
-    }
+    props.setUpdateSelectedUser({ ...user, t_user_photo_path_prev: user.t_user_photo_path });
+    props.setShowMyThumbnail(user.t_user_photo_path);
     console.log("dsdsd", props.updateSelectedUser);
     props.setIsExpanded("true");
     props.setSelectedDate(new Date(JSON.stringify(user.t_employee_date)));
@@ -533,8 +531,10 @@ function BasicGridBox(props) {
   // 파일 변경 이벤트
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
-    if (!selectedFile) return;
     console.log("파일", selectedFile);
+    if (!selectedFile){
+      return;
+    } 
 
     // 파일을 선택한 후에 처리할 작업을 수행합니다.
     if (selectedFile) {
@@ -552,12 +552,6 @@ function BasicGridBox(props) {
   const handleSaveClick = async () => {
     try {
       props.setLoading(true);
-      console.log("props.updateSelectedUser", props.updateSelectedUser);
-      console.log(
-        "props.updateSelectedUser date",
-        typeof props.updateSelectedUser.t_employee_date,
-        props.updateSelectedUser.t_employee_date
-      );
       // 이미지 파일 저장
       let uploadedImageName = "기본사진";
       let uploadedImagePath =
@@ -610,13 +604,68 @@ function BasicGridBox(props) {
   };
 
   // 저장버튼 이벤트 수정
-  const handleUpdateClick = () => {
+  const handleUpdateClick = async () => {
     console.log("props.updateSelectedUser", props.updateSelectedUser);
+    try {
+      props.setLoading(true);
+      // 이미지 파일 저장
+      let uploadedImagePath = "";
+      // 이미지 파일 저장
+      if (selectedImage) {
+        const formData = new FormData();
+        formData.append("file", selectedImage);
+
+        try {
+          const response = await axiosApi.post(
+            "/uploadEmployeePhoto",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          console.log("업로드 완료:", response);
+          console.log("업로드 완료:", response.data);
+
+          uploadedImagePath = response.data.photo_path;
+        } catch (error) {
+          console.error("업로드 실패:", error);
+          return; // 이미지 업로드 실패 시 함수 종료
+        }
+      }
+
+      // 이미지 업로드가 성공적으로 처리되었으므로 두 번째 요청 수행
+      try {
+        const updatedUser = {
+          ...props.updateSelectedUser,
+          ...(uploadedImagePath !== "" ? { t_user_photo_path: uploadedImagePath } : {})
+        };
+        await axiosApi.post("/modifyRoomForAOldEmployee", updatedUser);
+        await props.fetchData();
+        props.setIsExpanded("false");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ""; // 파일 입력 요소의 값을 비움
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   // 상세 정보 버튼 이벤트
   const handleDetailButtonClick = () => {
 
+  };
+
+  // 컴포넌트 내의 모든 체크박스의 체크를 해제하는 함수
+  const clearAllInputFiles = () => {
+    const inputFiles = document.querySelectorAll('input[type="file"]');
+    inputFiles.forEach((inputFile) => {
+      inputFile.value = null;
+    });
   };
 
   return (
@@ -651,38 +700,16 @@ function BasicGridBox(props) {
                 </tr>
               </thead>
               <tbody>
-                {showingMyEmployees.map((user) => (
-                  <tr
-                    key={user.t_user_no}
-                    onClick={() => handleRowClick(user)}
-                    className={props.selectedUser === user ? "selectedRow" : ""}
-                  >
-                    <td onClick={(e) => e.stopPropagation()}>
-                      <input
-                        type="checkbox"
-                        name="theChosenOnes"
-                        onChange={(e) => chosenOnes(e, user)}
-                        disabled={
-                          user.t_employee_state !== 0 &&
-                          user.t_employee_state !== 1
-                        }
-                      />
-                    </td>
-                    <td>{user.t_user_name}</td>
-                    <td>{user.t_organization_name}</td>
-                    <td>{user.t_employee_position}</td>
-                    <td>{user.t_user_email}</td>
-                    <td>{user.t_user_phone}</td>
-                    <td>{user.t_employee_date}</td>
-                    <td>
-                      {user.t_employee_state === 0 && "미가입"}
-                      {user.t_employee_state === 1 && "가입대기"}
-                      {user.t_employee_state === 2 && "사용중"}
-                      {user.t_employee_state === 3 && "사용중지"}
-                      {user.t_employee_state === -1 && "퇴사"}
-                    </td>
-                  </tr>
-                ))}
+                {showingMyEmployees.map((user) => {
+                  return(
+                  <BasicGridBoxItem 
+                    user={user}
+                    handleRowClick={handleRowClick}
+                    chosenOnes={chosenOnes}
+                  />
+                  );
+                }
+                )}
               </tbody>
             </table>
           </div>
@@ -895,17 +922,6 @@ function BasicGridBox(props) {
                     </td>
                   </tr>
                   <tr>
-                    <th>유선전화번호</th>
-                    <td>
-                      <input
-                        type="text"
-                        name="su-usphon"
-                        value={props.updateSelectedUser.t_user_phone || ""}
-                        onChange={(e) => updateOnes(e)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
                     <th>입사일</th>
                     <td>
                       <DatePicker
@@ -914,18 +930,38 @@ function BasicGridBox(props) {
                         selected={props.selectedDate}
                         defaultValue
                         onChange={(date) => props.setSelectedDate(date)}
-                      />
+                        />
                     </td>
                   </tr>
+                        <tr>
+                          <th>유선전화번호</th>
+                          <td>
+                          {props.operateRegisMode ? (
+                            <input
+                            type="text"
+                            name="su-usphon"
+                            value={props.updateSelectedUser.t_user_phone || ""}
+                            onChange={(e) => updateOnes(e)}
+                          />
+                          ) :
+                            (
+                              <label>{props.updateSelectedUser.t_user_phone || ""}</label>
+                            )}
+                          </td>
+                        </tr>
                   <tr>
                     <th>이메일주소</th>
                     <td>
+                    {props.operateRegisMode ? (
                       <input
                         type="text"
                         name="su-usemai"
                         value={props.updateSelectedUser.t_user_email || ""}
                         onChange={(e) => updateOnes(e)}
                       />
+                    ):(
+                      <label>{props.updateSelectedUser.t_user_email || ""}</label>
+                    )}
                     </td>
                   </tr>
                   {props.operateRegisMode ? (

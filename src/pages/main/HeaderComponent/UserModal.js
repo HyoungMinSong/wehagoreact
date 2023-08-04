@@ -80,6 +80,13 @@ const ProfileWrapper = styled.div`
     .email span, .group span {
         margin-left: 5px;
     }
+
+    .group .a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: black;
+    }
 `;
 
 const ButtonWrapper = styled.div`
@@ -157,7 +164,7 @@ function UserModal(props) {
                     <span>{user.email}</span>
                 </button>
                 <button className="group">
-                <Link className="a" to={'/organization'}>
+                <Link className="a" to={'/organization/management'}>
                     <img src="https://cdn-icons-png.flaticon.com/128/5126/5126646.png" alt="회사" width="30px" height="30px" />
                     <span>{companyName}</span>
                 </Link>

@@ -272,6 +272,8 @@ const BasicTreeViewDepth = styled.div`
 function Management() {
   // 토큰으로 회원번호
   const [tUserNo, setTUserNo] = useState('');
+  // 헤더의 선택 회사
+  const [tCompanyNo, setTCompanyNo] = useState('');
   // 회원번호로 회사번호, 회사이름
   const [myCompanyInfo, setMyCompanyInfo] = useState([]);
   // 회원번호로 회사, 부서 목록
@@ -314,42 +316,55 @@ function Management() {
     console.log("pushedSwitch",pushedSwitch);
     setLoading(pushedSwitch);
     if(!pushedSwitch){
-      fetchData();
       uncheckAllCheckboxes();
     }
   },[pushedSwitch]);
 
-  // loginedUser 값이 변경될 때마다 TUserNo 값을 업데이트
+  // 맨처음 TUserNo 값을 업데이트
   useEffect(() => {
     setTUserNo(loginedUser.user.no);
-  }, [loginedUser]);
+    const lastCompanyNo = loginedUser.company && loginedUser.company.length > 0 ? loginedUser.company.find((item) => item.t_company_name === loginedUser.companyName).t_company_no : loginedUser.company[0].t_company_no;
+    setTCompanyNo(lastCompanyNo);
+  }, []);
+
+  // 회사 변경마다 회사 업데이트
+  useEffect(() => {
+    const lastCompanyNo = loginedUser.company && loginedUser.company.length > 0 ? loginedUser.company.find((item) => item.t_company_name === loginedUser.companyName).t_company_no : loginedUser.company[0].t_company_no;
+    setTCompanyNo(lastCompanyNo);
+  }, [loginedUser.companyName]);
 
   // TUserNo 값이 변경될 때마다 fetchData() 함수 실행
   useEffect(() => {
-    if(tUserNo){
+    if(tCompanyNo){
+      console.log("TUserNo",tUserNo);
+      console.log("tCompanyNo",tCompanyNo);
       fetchData();
     }
-  }, [tUserNo]);
+  }, [tCompanyNo]);
 
   // 선택 값에 따라 직원 목록 갱신
   useEffect(() => {
-    if (
-      editingItem != null &&
-      selectedNodePk != null &&
-      selectedNodeIndex != null &&
-      selectedListTab != null &&
-      editingOrganization === false
-    ) {
-      showMyEmployees(
-        editingItem,
-        selectedNodePk,
-        selectedNodeIndex,
-        selectedListTab
-      );
-      uncheckAllCheckboxes();
-      showMyEmployeeState(selectedNodePk, selectedNodeIndex);
-      dispatch(clearChosenOnes());
-    }
+    const fetchMyEmpl = async () => {
+      if (
+        editingItem != null &&
+        selectedNodePk != null &&
+        selectedNodeIndex != null &&
+        selectedListTab != null &&
+        editingOrganization === false
+      ) {
+        await showMyEmployees(
+          editingItem,
+          selectedNodePk,
+          selectedNodeIndex,
+          selectedListTab
+        );
+        uncheckAllCheckboxes();
+        showMyEmployeeState(selectedNodePk, selectedNodeIndex);
+        dispatch(clearChosenOnes());
+      }
+    };
+  
+    fetchMyEmpl();
 
     
   }, [editingItem, selectedNodePk, selectedNodeIndex, selectedListTab]);
@@ -360,6 +375,7 @@ function Management() {
       // showMyEmployeeState(selectedCompanyPk, selectedNodeIndex);
       dispatch(clearChosenOnes());
     }
+
   }, [selectedCompanyPk]);
 
   // 아코디언 오프너 버튼
@@ -374,6 +390,7 @@ function Management() {
     if (isExpanded === "true") {
       setIsExpanded("false");
     }
+    console.log("name, pk, index, listTab, compk",name, pk, index, listTab, compk);
     // index = -1이면 회사이름, 0이면 조직이름
     setEditingItem(name);
     // index = -1이면 회사번호, 0이면 조직번호
@@ -644,35 +661,49 @@ function Management() {
     try {
       setLoading(true);
       dispatch(clearChosenOnes());
+      // 회사번호,이름,직원수
       const res = await axiosApi.get("/showMyCompanyInfo", {
         params: {
           t_user_no: tUserNo,
+          t_company_no: tCompanyNo,
         },
       });
+      // 회사번호,이름,부서번호,이름,회사직원수,부서직원수,인덱스,회사의부서번호
       const response = await axiosApi.get("/showMyWorkPlace", {
         params: {
           t_user_no: tUserNo,
+          t_company_no: tCompanyNo,
         },
       });
       console.log("response", response);
       console.log("showMyWorkPlace",response.data);
       console.log("showMyCompanyInfo",res.data);
+      // 회사번호,이름,직원수
       setMyCompanyInfo(res.data);
+      // 회사번호,이름,부서번호,이름,회사직원수,부서직원수,인덱스,회사의부서번호
       setMyWorkPlace(response.data);
+      // 아코디언 오프너용 인덱스
       setSelectedCompanyIndex(0);
+      // 탭 초기값 갱신용
       setSelectedListTab(-1);
+      // 조직도 선택 갱신용
       setEditingItem(response.data[0].t_company_name);
+      // 조직도 선택 인덱스 회사로 갱신
       setSelectedNodeIndex(-1);
+      // 조직도 선택 회사 번호
       setSelectedNodePk(response.data[0].t_company_no);
+      // 조직도 선택 회사 번호
       setSelectedCompanyPk(response.data[0].t_company_no);
+      // 조직도 편집사항 초기화
       setProEditiedOrganization([]);
-      //갱신 부분
+      // 직원 갱신 초기화
       showMyEmployees(
         response.data[0].t_company_name,
         response.data[0].t_company_no,
         -1,
         -1
       );
+      // 직원 수 상태 초기화
       showMyEmployeeState(response.data[0].t_company_no, -1);
       dispatch(clearChosenOnes());
     } catch (error) {
@@ -686,6 +717,7 @@ function Management() {
   const showMyEmployees = async (item, pk, index, list) => {
     try {
       setLoading(true);
+      console.log("item, pk, index, list",item, pk, index, list);
       const response = await axiosApi
         .get("/showMyEmployees", {
           params: {
