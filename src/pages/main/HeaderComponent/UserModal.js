@@ -80,6 +80,13 @@ const ProfileWrapper = styled.div`
     .email span, .group span {
         margin-left: 5px;
     }
+
+    .group .a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: black;
+    }
 `;
 
 const ButtonWrapper = styled.div`

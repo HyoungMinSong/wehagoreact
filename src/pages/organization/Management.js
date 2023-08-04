@@ -316,7 +316,6 @@ function Management() {
     console.log("pushedSwitch",pushedSwitch);
     setLoading(pushedSwitch);
     if(!pushedSwitch){
-      // fetchData();
       uncheckAllCheckboxes();
     }
   },[pushedSwitch]);
@@ -662,12 +661,14 @@ function Management() {
     try {
       setLoading(true);
       dispatch(clearChosenOnes());
+      // 회사번호,이름,직원수
       const res = await axiosApi.get("/showMyCompanyInfo", {
         params: {
           t_user_no: tUserNo,
           t_company_no: tCompanyNo,
         },
       });
+      // 회사번호,이름,부서번호,이름,회사직원수,부서직원수,인덱스,회사의부서번호
       const response = await axiosApi.get("/showMyWorkPlace", {
         params: {
           t_user_no: tUserNo,
@@ -677,22 +678,32 @@ function Management() {
       console.log("response", response);
       console.log("showMyWorkPlace",response.data);
       console.log("showMyCompanyInfo",res.data);
+      // 회사번호,이름,직원수
       setMyCompanyInfo(res.data);
+      // 회사번호,이름,부서번호,이름,회사직원수,부서직원수,인덱스,회사의부서번호
       setMyWorkPlace(response.data);
+      // 아코디언 오프너용 인덱스
       setSelectedCompanyIndex(0);
+      // 탭 초기값 갱신용
       setSelectedListTab(-1);
+      // 조직도 선택 갱신용
       setEditingItem(response.data[0].t_company_name);
+      // 조직도 선택 인덱스 회사로 갱신
       setSelectedNodeIndex(-1);
+      // 조직도 선택 회사 번호
       setSelectedNodePk(response.data[0].t_company_no);
+      // 조직도 선택 회사 번호
       setSelectedCompanyPk(response.data[0].t_company_no);
+      // 조직도 편집사항 초기화
       setProEditiedOrganization([]);
-      //갱신 부분
+      // 직원 갱신 초기화
       showMyEmployees(
         response.data[0].t_company_name,
         response.data[0].t_company_no,
         -1,
         -1
       );
+      // 직원 수 상태 초기화
       showMyEmployeeState(response.data[0].t_company_no, -1);
       dispatch(clearChosenOnes());
     } catch (error) {
