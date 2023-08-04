@@ -470,7 +470,14 @@ function BasicGridBox(props) {
       editedUpdateSelectedUser.t_employee_duty = e.target.value;
       props.setUpdateSelectedUser(editedUpdateSelectedUser);
     }
-
+    if (e.target.name === "su-usphon") {
+      editedUpdateSelectedUser.t_user_phone = e.target.value;
+      props.setUpdateSelectedUser(editedUpdateSelectedUser);
+    }
+    if (e.target.name === "su-usemai") {
+      editedUpdateSelectedUser.t_user_email = e.target.value;
+      props.setUpdateSelectedUser(editedUpdateSelectedUser);
+    }
   };
 
   // 권한 선택 이벤트
