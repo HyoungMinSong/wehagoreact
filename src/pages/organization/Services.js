@@ -1,4 +1,4 @@
-import { Col, Container, ListGroup, Modal, Row, Tab, Table } from "react-bootstrap";
+import { Col, Container, ListGroup, Modal, Row, Tab, Table, Tabs } from "react-bootstrap";
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { useState } from "react";
 import axiosApi from "../../AxiosApi";
@@ -6,21 +6,6 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 
-// const Feature = ({ icon, title, description, cta }) => (
-//   <div className=" col " >
-//     <div style={{ backgroundColor: '#f5f7f9' }} className="py-5 rounded " onClick={() => setShow(true)}>
-//       <div className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
-//         <CategoryOutlinedIcon style={{ fontSize: '80px' }} />
-//       </div>
-//       <h3 className="fs-2 text-body-emphasis">메신저</h3>
-//       <p>사용자의 수 [1/10]</p>
-//       <a href="#" className="icon-link">
-//         Call to action
-//         &gt;
-//       </a>
-//     </div>
-//   </div>
-// );
 
 function Services() {
 
@@ -28,7 +13,8 @@ function Services() {
   let [companySerivces, setCompanyServices] = useState('');
   let [packageCount, setPackageCount] = useState(0);
   let [serviceName, setServiceName] = useState('서비스');
-  let [unPublishedUserList, setUnPublishedUserList] =useState('');
+  let [unPublishedUserList, setUnPublishedUserList] = useState('');
+  let [publishedUserList, setPublishedUserList] = useState('');
   let [checkedService, setCheckedService] = useState(0);
   let [showListAfterConfirm, setShowListAfterConfirm] = useState(false);
 
@@ -39,47 +25,61 @@ function Services() {
   let comNo = loginedUser.company && loginedUser.company.length > 0 ? loginedUser.company.find((item) => item.t_company_name === loginedUser.companyName).t_company_no : loginedUser.company[0].t_company_no;
   console.log("comNo : " + comNo)
 
-  useEffect(()=>{
+  useEffect(() => {
     // return () => {
-      if(!show){
-  axiosApi.post("/findservicelistbycomno", {
-    comNo: comNo
-  }).then((c) => {
-    setCompanyServices(c.data);
-    console.log(c.data);
-  }).catch(() => {console.log('실패실패')});
-  axiosApi.post("/findpackagecount", {
-    comNo: comNo
-  }).then((c) => {
-    setPackageCount(c.data);
-    console.log(c.data);
-  }).catch(() => {console.log('실패실패2')})
-// }
-}}, [show])
+    if (!show) {
+      axiosApi.post("/findservicelistbycomno", {
+        comNo: comNo
+      }).then((c) => {
+        setCompanyServices(c.data);
+        console.log(c.data);
+      }).catch(() => { console.log('실패실패') });
+      axiosApi.post("/findpackagecount", {
+        comNo: comNo
+      }).then((c) => {
+        setPackageCount(c.data);
+        console.log(c.data);
+      }).catch(() => { console.log('실패실패2') })
+      // }
+    }
+  }, [show])
   // 모달창 띄우기 유무
 
 
 
-  useEffect(()=>{
-    if(showListAfterConfirm){
+  useEffect(() => {
+    if (showListAfterConfirm) {
       console.log("이건가 ?")
-    getUnpublishedUser(comNo, checkedService);
+      getUnpublishedUser(comNo, checkedService);
+      getPublishedUser(comNo, checkedService);
     }
   }, [showListAfterConfirm])
-  
-  let getUnpublishedUser = (cn,sn) => {
+
+  let getUnpublishedUser = (cn, sn) => {
     axiosApi.post("/findunpublisheduser", {
       comNo: cn, serviceNo: sn
     }).then((c) => {
       console.log(c.data);
       setUnPublishedUserList(c.data);
-  }).catch(()=>{
-    console.log('실패실패3');
-  })};
+    }).catch(() => {
+      console.log('실패실패3');
+    })
+  };
+
+  let getPublishedUser = (cn, sn) => {
+    axiosApi.post("/findpublisheduser", {
+      comNo: cn, serviceNo: sn
+    }).then((c) => {
+      console.log(c.data);
+      setPublishedUserList(c.data);
+    }).catch(() => {
+      console.log('실패실패3');
+    })
+  };
 
   let confirmPublish = (sn, un, cs, en) => {
     Swal.fire({
-      title: un+"에게 "+ sn + "을 배포하시겠습니까 ?",
+      title: un + "에게 " + sn + "을 배포하시겠습니까 ?",
       text: "승인을 누르면 해당 직원에게 서비스가 배포됩니다.",
       icon: "warning",
       showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
@@ -97,9 +97,36 @@ function Services() {
         }).then((c) => {
           console.log(c.data);
           setShowListAfterConfirm(true);
-      }).catch(()=>{
-        console.log('실패실패3');
-      })
+        }).catch(() => {
+          console.log('실패실패3');
+        })
+      }
+    });
+  }
+
+  let confirmUnPublish = (sn, un, cs, en) => {
+    Swal.fire({
+      title: un + "의 " + sn + "을 배포 해제하시겠습니까 ?",
+      text: "승인을 누르면 해당 직원의 서비스가 배포 해제됩니다.",
+      icon: "warning",
+      showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+      confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+      cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+      confirmButtonText: "승인", // confirm 버튼 텍스트 지정
+      cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      // reverseButtons: true, // 버튼 순서 거꾸로
+    }).then((result) => {
+      // 만약 Promise리턴을 받으면,
+      if (result.isConfirmed) {
+        // 만약 모달창에서 confirm 버튼을 눌렀다면
+        axiosApi.post("/updateunpublish", {
+          empNo: en, serviceNo: cs
+        }).then((c) => {
+          console.log(c.data);
+          setShowListAfterConfirm(true);
+        }).catch(() => {
+          console.log('실패실패4');
+        })
       }
     });
   }
@@ -129,30 +156,32 @@ function Services() {
                   <Tab.Pane eventKey="#link1">
                     <div className="row g-4  row-cols-1 row-cols-lg-3">
                       {companySerivces &&
-                    companySerivces.map(function(a){
-                      return (<div className=" col " >
-                      <div style={{ backgroundColor: '#f5f7f9' }} className="py-5 rounded " onClick={() => {
-                        
-                        setServiceName(a.serviceName); 
-                      setCheckedService(a.serviceNo);
-                        getUnpublishedUser(comNo, a.serviceNo);
-                        setShowListAfterConfirm(false);
-                        setShow(true);}}>
-                        <div className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
-                          {/* <CategoryOutlinedIcon style={{ fontSize: '80px' }} />
+                        companySerivces.map(function (a) {
+                          return (<div className=" col " >
+                            <div style={{ backgroundColor: '#f5f7f9' }} className="py-5 rounded " onClick={() => {
+
+                              setServiceName(a.serviceName);
+                              setCheckedService(a.serviceNo);
+                              getUnpublishedUser(comNo, a.serviceNo);
+                              getPublishedUser(comNo, a.serviceNo);
+                              setShowListAfterConfirm(false);
+                              setShow(true);
+                            }}>
+                              <div className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                                {/* <CategoryOutlinedIcon style={{ fontSize: '80px' }} />
                            */}
-                           <img src={a.serviceMainIconPath} alt="서비스 이미지" width="80px" height="80px"/>
-                        </div>
-                        <h3 className="fs-2 text-body-emphasis">{a.serviceName}</h3>
-                        <p>사용자의 수 [{a.count}/{packageCount}]</p>
-                        <a href="#" className="icon-link">
-                          Call to action
-                          &gt;
-                        </a>
-                      </div>
-                    </div>)
-                    })
-                  }
+                                <img src={a.serviceMainIconPath} alt="서비스 이미지" width="80px" height="80px" />
+                              </div>
+                              <h3 className="fs-2 text-body-emphasis">{a.serviceName}</h3>
+                              <p>사용자의 수 [{a.count}/{packageCount}]</p>
+                              <a href="#" className="icon-link">
+                                Call to action
+                                &gt;
+                              </a>
+                            </div>
+                          </div>)
+                        })
+                      }
                     </div></Tab.Pane>
                   <Tab.Pane eventKey="#link2">Tab pane content 2</Tab.Pane>
                 </Tab.Content>
@@ -165,55 +194,80 @@ function Services() {
         <Modal.Header closeButton>
           <Modal.Title>{serviceName}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-        <Table bordered hover>
-      <thead>
-        <tr>
-          <th>이름</th>
-          <th>아이디</th>
-          <th>소속</th>
-          <th>직급</th>
-        </tr>
-      </thead>
-      <tbody>
-        {unPublishedUserList &&
-        unPublishedUserList.map(function(a){
-          return (
-        <tr onClick={()=>{
-          confirmPublish(serviceName, a.userName, checkedService, a.empNo)
-        }}>
-          <td>{a.userName}</td>
-          <td>{a.userId}</td>
-          <td>{a.empDuty}</td>
-          <td>{a.empPosition}</td>
-        </tr>
+        <Tabs
+          defaultActiveKey="profile"
+          id="fill-tab-example"
+          className="mb-3"
+          fill
+        >
+          <Tab eventKey="home" title="배포">
+            <Modal.Body>
 
-          )
-        
-        })
+              <Table bordered hover>
+                <thead>
+                  <tr>
+                    <th>이름</th>
+                    <th>아이디</th>
+                    <th>소속</th>
+                    <th>직급</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {unPublishedUserList &&
+                    unPublishedUserList.map(function (a) {
+                      return (
+                        <tr onClick={() => {
+                          confirmPublish(serviceName, a.userName, checkedService, a.empNo)
+                        }}>
+                          <td>{a.userName}</td>
+                          <td>{a.userId}</td>
+                          <td>{a.empDuty}</td>
+                          <td>{a.empPosition}</td>
+                        </tr>
+                      )
+                    })
+                  }
+                </tbody>
+              </Table>
+            </Modal.Body>
+          </Tab>
+          <Tab eventKey="profile" title="배포 해제">
+            <Modal.Body>
 
-        }
-        {/* <tr>
-          <td>송형민</td>
-          <td>shmin11</td>
-          <td>3조</td>
-          <td>직급없음</td>
-        </tr>
-        <tr>
-          <td>이주용</td>
-          <td>Jacob</td>
-          <td>3조</td>
-          <td>직급없음</td>
-        </tr>
-        <tr>
-          <td>최종원</td>
-          <td>twitter</td>
-          <td>3조</td>
-          <td>직급없음</td>
-        </tr> */}
-      </tbody>
-    </Table>
-        </Modal.Body>
+              <Table bordered hover>
+                <thead>
+                  <tr>
+                    <th>이름</th>
+                    <th>아이디</th>
+                    <th>소속</th>
+                    <th>직급</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {publishedUserList &&
+                    publishedUserList.map(function (a) {
+                      return (
+                        <tr onClick={() => {
+                          confirmUnPublish(serviceName, a.userName, checkedService, a.empNo);
+                        }}>
+
+                            <td>{a.userName}</td>
+                            <td>{a.userId}</td>
+                            <td>{a.empDuty}</td>
+                            <td>{a.empPosition}</td>
+                          </tr>
+                          )
+                    })
+                  }
+                        </tbody>
+              </Table>
+            </Modal.Body>
+          </Tab>
+
+        </Tabs>
+
+
+
       </Modal>
     </>
   );
