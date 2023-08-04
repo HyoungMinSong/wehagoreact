@@ -29,10 +29,19 @@ const Item = styled.button`
 
 function CompanyListItem(props) {
     const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.loginUserData);
     const {item, setCompanyModalOpen, companyName, setCompanyName} = props;
+
+    // 쿠키에 데이터 저장
+    function setCompanyCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+    }
 
     const handleCompanyItemClick = () => {
         dispatch(setCompanyName(item.t_company_name));
+        setCompanyCookie(user.id + 'LastSelectedCompanyId', item.t_company_no, 30);
         setCompanyModalOpen(false);
     };
 
