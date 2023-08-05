@@ -14,6 +14,7 @@ const Updatepw = () => {
   const [error, setError] = useState('');
   const [isPasswordChanged, setIsPasswordChanged] = useState(false);
   const [userId, setUserId] = useState('');
+  const pwRegex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,6 +25,14 @@ const Updatepw = () => {
       }
 
       if(userId == null) {
+        return;
+      }
+
+      if(!pwRegex.test(newPassword)) {
+        return;
+      }
+
+      if(!pwRegex.test(confirmNewPassword)) {
         return;
       }
 
