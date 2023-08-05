@@ -1,7 +1,8 @@
 import { styled } from "styled-components";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import BasicGridBox from "./BasicGridBox";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
 
 const TreeViewList = styled.div`
   position: absolute;
@@ -120,7 +121,6 @@ const TreeViewList = styled.div`
 `;
 
 function BasicTreeViewList(props) {
-
   // 선택한 직원 정보
   const [selectedUser, setSelectedUser] = useState(null);
   // 업데이트 할 유저 정보
@@ -130,30 +130,28 @@ function BasicTreeViewList(props) {
   // 직원등록 On/Off
   const [operateRegisMode, setOperateRegisMode] = useState(false);
   // 기본 이미지
-  const [showMyThumbnail, setShowMyThumbnail] = useState('https://static.wehago.com/imgs/dummy/@dummy_02.jpg');
+  const [showMyThumbnail, setShowMyThumbnail] = useState(
+    "https://static.wehago.com/imgs/dummy/@dummy_02.jpg"
+  );
+  // 스크롤 참조
+  const scrollRef = useRef(null);
+  // 로그인 유저 정보
+  const loginedUser = useSelector((state) => state.loginUserData);
 
   // 직원 등록 클릭 이벤트
-  const handleRegistrationClick = () =>{
+  const handleRegistrationClick = () => {
     setSelectedDate(new Date());
-    
-    // selectedNodeIndex 값에 따라 t_organization_no에 적절한 값을 대입합니다.
-    let organization_no = null;
-    if (props.selectedNodeIndex === -1) {
-      // myWorkPlace에서 t_company_no가 props.selectedCompanyPk와 같은 배열을 찾습니다.
-      const selectedCompanyData = props.myWorkPlace.find(item => item.t_company_no === props.selectedCompanyPk);
-      organization_no = selectedCompanyData.company_organization_no;
-    } else if (props.selectedNodeIndex === 0) {
-      organization_no = props.selectedNodePk;
-    }
     setUpdateSelectedUser({
-      t_company_no : props.selectedCompanyPk,
-      t_organization_name : props.editingItem,
-      t_organization_no : organization_no,
-      t_employee_auth : 2,
+      t_company_no: props.tCompanyNo,
+      t_organization_name: loginedUser.companyName,
+      t_organization_no: -1,
+      t_employee_auth: 2,
     });
     setOperateRegisMode(true);
-    setShowMyThumbnail('https://static.wehago.com/imgs/dummy/@dummy_02.jpg');
+    setShowMyThumbnail("https://static.wehago.com/imgs/dummy/@dummy_02.jpg");
     props.setIsExpanded("true");
+    // 페이지를 최상단으로 스크롤
+    scrollRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -175,29 +173,35 @@ function BasicTreeViewList(props) {
               </button>
             </div>
           </div>
-          <button className="registerEmployeeButton" onClick={handleRegistrationClick}>직원등록</button>
+          <button
+            className="registerEmployeeButton"
+            onClick={handleRegistrationClick}
+          >
+            직원등록
+          </button>
         </div>
       </div>
       <div className="tblGridBox">
         <BasicGridBox
-          showingMyEmployees={props.showingMyEmployees}
+          employeeList={props.employeeList}
+          organizationList={props.organizationList}
+          scrollRef={scrollRef}
+          selectedOrgaName={props.selectedOrgaName}
           isExpanded={props.isExpanded}
           setIsExpanded={props.setIsExpanded}
           editingOrganization={props.editingOrganization}
           selectedListTab={props.selectedListTab}
-          selectedUser={selectedUser} 
+          selectedUser={selectedUser}
           setSelectedUser={setSelectedUser}
           updateSelectedUser={updateSelectedUser}
           setUpdateSelectedUser={setUpdateSelectedUser}
-          myWorkPlace={props.myWorkPlace}
-          myCompanyInfo={props.myCompanyInfo}
           operateRegisMode={operateRegisMode}
           setOperateRegisMode={setOperateRegisMode}
           showMyThumbnail={showMyThumbnail}
           setShowMyThumbnail={setShowMyThumbnail}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
-          fetchData={props.fetchData}
+          fetchEmployeeList={props.fetchEmployeeList}
           setLoading={props.setLoading}
         />
       </div>
