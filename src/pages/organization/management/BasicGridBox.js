@@ -790,7 +790,7 @@ function BasicGridBox(props) {
                   <input type="file" className="hiddingInput" />
                 </div>
                 <img
-                  // src={props.showMyThumbnail}
+                  src={props.showMyThumbnail.startsWith("https") ? (props.showMyThumbnail) : '' }
                   alt="Image"
                   id="target-img"
                   className="detailBoxStaffPhoto"
