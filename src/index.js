@@ -12,7 +12,6 @@ import SignUp_infomation from './pages/signUp/SignUp_infomation';
 import SignUp_company from './pages/signUp/SignUp_company';
 import SignUp_complete from './pages/signUp/SignUp_complete';
 import Organization from './pages/organization/Organization';
-import Administrator from './pages/organization/Administrator';
 import Services from './pages/organization/Services';
 import Management from './pages/organization/Management';
 import LoginPage from './pages/login/LoginPage';
@@ -58,7 +57,6 @@ root.render(
         <Route path="/detail" element={<div>라우트 테스트임</div>} />
         <Route path='/organization/*' element={<Organization />} >
           <Route path="management" element={<Management />} />
-          <Route path="administrator" element={<Administrator />} />
           <Route path="services" element={<Services />} />
         </Route>
         <Route path="/about" element={ <div>라우트 테스트임2222</div> } />

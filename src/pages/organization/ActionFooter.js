@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { styled } from "styled-components";
 import axiosApi from "../../AxiosApi";
 import { clearChosenOnes, pushSwitch } from "../../store";
+import Swal from "sweetalert2";
 
 const ActionFooterBar = styled.div`
     .wrappingActionFooterBarO{
@@ -83,23 +84,77 @@ const ActionFooterBar = styled.div`
   const fromUser = useSelector((state) => state.loginUserData);
   const dispatch = useDispatch();
   
-  const handleSendMailButton = async () => {
+  // 메일 발송 버튼 이벤트
+  const handleSendMailButton = () => {
     try {
-      dispatch(pushSwitch(true));
-      await axiosApi.post("/sendMailToEmployee", {
-        employer: fromUser.user.name,
-        checkedEmployee: dataOfTheChosenOnes.checkedEmployee,
+      Swal.fire({
+        title: "메일을 발송합니다.",
+        text: "선택한 직원들에게 메일을 보내시겠습니까?",
+        icon: "question",
+        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+          requestSendMailToEmployee();
+        }
       });
-      dispatch(clearChosenOnes());
     } catch (error) {
       console.error("메일 전송 중 오류 발생:", error);
       // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
-    }finally{
-      dispatch(pushSwitch(false));
     }
   };
   
+  // 직원 삭제 요청 메서드
+  const requestSendMailToEmployee = async () => {
+    dispatch(pushSwitch(true));
+    await axiosApi.post("/sendMailToEmployee", {
+      employer: fromUser.user.name,
+      checkedEmployee: dataOfTheChosenOnes.checkedEmployee,
+    });
+    dispatch(clearChosenOnes());
+    dispatch(pushSwitch(false));
+  };
 
+  // 직원 삭제 버튼
+  const handleDeleteEmployeesButton = () => {
+    try {
+      Swal.fire({
+        title: "직원을 삭제합니다.",
+        text: "선택한 직원들을 정말로 삭제하시겠습니까?",
+        icon: "warning",
+        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+          requestUpdateEmployeeState();
+        }
+      });
+    } catch (error) {
+      console.error("메일 전송 중 오류 발생:", error);
+      // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
+    }
+  };
+
+  // 직원 삭제 요청 메서드
+  const requestUpdateEmployeeState = async () => {
+    dispatch(pushSwitch(true));
+    await axiosApi.put("/updateEmployeeState", {
+      t_employee_state: -1,
+      checkedEmployee: dataOfTheChosenOnes.checkedEmployee,
+    });
+    dispatch(clearChosenOnes());
+    dispatch(pushSwitch(false));
+  };
 
   return(
     <ActionFooterBar>
@@ -114,7 +169,7 @@ const ActionFooterBar = styled.div`
         </div>
         <div className="buttonBoxOfTheChosen">
           <div className="adjustmentButtonBox">
-            <button className="buttonOfTheChosen">직원삭제</button>
+            <button className="buttonOfTheChosen" onClick={handleDeleteEmployeesButton}>직원삭제</button>
             <button className="buttonOfTheChosen" onClick={handleSendMailButton}>초대메일 발송</button>
           </div>
         </div>

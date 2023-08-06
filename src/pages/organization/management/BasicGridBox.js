@@ -1,11 +1,12 @@
 import { styled, css } from "styled-components";
 import React, { useEffect, useRef, useState } from "react";
-import { beTheChosenOnes } from "../../../store";
+import { beTheChosenOnes, clearChosenOnes, pushSwitch } from "../../../store";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axiosApi from "../../../AxiosApi";
 import BasicGridBoxItem from "./BasicGridBoxItem";
+import Swal from "sweetalert2";
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   // isexpanded prop를 DOM 요소로 전달합니다.
@@ -371,19 +372,6 @@ function BasicGridBox(props) {
   // 로그인 유저 정보
   const loginedUser = useSelector((state) => state.loginUserData);
 
-  axiosApi
-    .get(props.showMyThumbnail, {
-      responseType: "blob",
-    })
-    .then((response) => {
-      document.getElementById("target-img").src = window.URL.createObjectURL(
-        response.data
-      );
-    })
-    .catch((error) => {
-      console.error("이미지 요청 실패:", error);
-    });
-
   useEffect(() => {
     updateOnesDate(props.selectedDate);
   }, [props.selectedDate]);
@@ -512,7 +500,6 @@ function BasicGridBox(props) {
       "0" +
       (e.getMonth() + 1)
     ).slice(-2)}-${("0" + e.getDate()).slice(-2)}`;
-    // e.toLocaleDateString().slice(0, -1).replace(/. /gi, "-");
     props.setUpdateSelectedUser(editedUpdateSelectedUser);
   };
 
@@ -615,6 +602,19 @@ function BasicGridBox(props) {
     console.log("props.updateSelectedUser", props.updateSelectedUser);
     try {
       props.setLoading(true);
+      // 이전 이미지 경로를 만듭니다.
+      const prevImagePath = props.updateSelectedUser.t_user_photo_path_prev;
+      console.log("여까진 오는가벼",prevImagePath);
+      // 이전 이미지 경로가 'http:'로 시작하는지 확인합니다.
+      if (prevImagePath && prevImagePath.startsWith("http:")) {
+        console.log("여까진 못 오는가벼");
+        // '...images/' 뒷부분만 추출하여 파일명으로 사용합니다.
+        const fileName = prevImagePath.substring(prevImagePath.lastIndexOf("images/") + 7);
+        console.log("fileName",fileName);
+        // 이미지 삭제 함수 호출
+        await deleteEmployeePhoto(fileName);
+      }
+
       // 이미지 파일 저장
       let uploadedImagePath = "";
       // 이미지 파일 저장
@@ -661,12 +661,114 @@ function BasicGridBox(props) {
     }
   };
 
+  // 이미지 삭제 함수
+  const deleteEmployeePhoto = async (fileName) => {
+    try {
+      await axiosApi.post("/deleteEmployeePhoto", fileName);
+      console.log("이미지 삭제 성공");
+      // 이미지 삭제 후 필요한 처리를 수행할 수 있습니다.
+    } catch (error) {
+      console.error("이미지 삭제 실패:", error);
+      // 이미지 삭제에 실패했을 경우 필요한 처리를 수행할 수 있습니다.
+    }
+  };
+
   // 컴포넌트 내의 모든 체크박스의 체크를 해제하는 함수
   const clearAllInputFiles = () => {
     const inputFiles = document.querySelectorAll('input[type="file"]');
     inputFiles.forEach((inputFile) => {
       inputFile.value = null;
     });
+  };
+
+  // Detail 메일 발송 버튼
+  const handleSendMailButton = async () => {
+    try {
+      Swal.fire({
+        title: "메일을 발송합니다.",
+        text: "선택한 직원에게 메일을 보내시겠습니까?",
+        icon: "question",
+        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+      dispatch(pushSwitch(true));
+      let myCheckedEmployee = [{
+        t_employee_no: props.updateSelectedUser.t_employee_no,
+      }]
+      axiosApi.post("/sendMailToEmployee", {
+        employer: loginedUser.user.name,
+        checkedEmployee: myCheckedEmployee,
+      });
+      dispatch(clearChosenOnes());
+        }
+      });
+    } catch (error) {
+      console.error("메일 전송 중 오류 발생:", error);
+      // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
+    }finally{
+      dispatch(pushSwitch(false));
+    }
+  };
+
+  // 직원 상태 수정 이벤트
+  const handleUpdateEmployeeStateButton = (empState) => {
+    try {
+      let alertText = "";
+
+    // state에 따라 다른 문구 설정
+    switch (empState) {
+      case 3:
+        alertText = "선택한 직원을 정말로 사용중지 하시겠습니까?";
+        break;
+      case 2:
+        alertText = "선택한 직원을 정말로 중지해제 하시겠습니까?";
+        break;
+      default: // -1
+        alertText = "선택한 직원을 정말로 내보내시겠습니까?";
+        break;
+    }
+
+      Swal.fire({
+        title: "직원을 관리합니다.",
+        text: alertText,
+        icon: "warning",
+        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+          requestUpdateEmployeeState(empState);
+        }
+      });
+    } catch (error) {
+      console.error("메일 전송 중 오류 발생:", error);
+      // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
+    }
+    // detail 닫고, updateempl 초기화 
+  };
+
+  // 상태 수정 요청 함수
+  const requestUpdateEmployeeState = async (empState) => {
+    dispatch(pushSwitch(true));
+    let myCheckedEmployee = [{
+      t_employee_no: props.updateSelectedUser.t_employee_no,
+    }]
+    await axiosApi.put("/updateEmployeeState", {
+      t_employee_state: empState,
+      checkedEmployee: myCheckedEmployee,
+    });
+    dispatch(clearChosenOnes());
+    dispatch(pushSwitch(false));
   };
 
   return (
@@ -731,13 +833,13 @@ function BasicGridBox(props) {
         <WrappingDetailBox ref={props.scrollRef}>
           <div className="detailBoxTit">
             <h2>직원정보</h2>
-            {props.operateRegisMode ||
+            {(props.operateRegisMode || props.updateSelectedUser.t_employee_auth === 0) ||
               (props.updateSelectedUser.t_employee_state === 3 ? (
                 <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(2)}>
                     중지해제
                   </button>
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(-1)}>
                     퇴사
                   </button>
                   <button
@@ -751,10 +853,10 @@ function BasicGridBox(props) {
               ) : props.operateRegisMode ||
                 props.updateSelectedUser.t_employee_state === 2 ? (
                 <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(3)}>
                     사용중지
                   </button>
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(-1)}>
                     퇴사
                   </button>
                   <button
@@ -767,10 +869,10 @@ function BasicGridBox(props) {
                 </div>
               ) : (
                 <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={handleSendMailButton}>
                     메일발송
                   </button>
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(-1)}>
                     직원삭제
                   </button>
                   <button
@@ -790,7 +892,7 @@ function BasicGridBox(props) {
                   <input type="file" className="hiddingInput" />
                 </div>
                 <img
-                  src={props.showMyThumbnail.startsWith("https") ? (props.showMyThumbnail) : '' }
+                  src={props.showMyThumbnail}
                   alt="Image"
                   id="target-img"
                   className="detailBoxStaffPhoto"
