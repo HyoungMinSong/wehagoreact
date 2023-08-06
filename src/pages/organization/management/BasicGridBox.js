@@ -1,11 +1,12 @@
 import { styled, css } from "styled-components";
 import React, { useEffect, useRef, useState } from "react";
-import { beTheChosenOnes } from "../../../store";
+import { beTheChosenOnes, clearChosenOnes, pushSwitch } from "../../../store";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axiosApi from "../../../AxiosApi";
 import BasicGridBoxItem from "./BasicGridBoxItem";
+import Swal from "sweetalert2";
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   // isexpanded prop를 DOM 요소로 전달합니다.
@@ -669,6 +670,96 @@ function BasicGridBox(props) {
     });
   };
 
+  // Detail 메일 발송 버튼
+  const handleSendMailButton = async () => {
+    try {
+      Swal.fire({
+        title: "메일을 발송합니다.",
+        text: "선택한 직원에게 메일을 보내시겠습니까?",
+        icon: "question",
+        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+      dispatch(pushSwitch(true));
+      let myCheckedEmployee = [{
+        t_employee_no: props.updateSelectedUser.t_employee_no,
+      }]
+      axiosApi.post("/sendMailToEmployee", {
+        employer: loginedUser.user.name,
+        checkedEmployee: myCheckedEmployee,
+      });
+      dispatch(clearChosenOnes());
+        }
+      });
+    } catch (error) {
+      console.error("메일 전송 중 오류 발생:", error);
+      // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
+    }finally{
+      dispatch(pushSwitch(false));
+    }
+  };
+
+  // 직원 상태 수정 이벤트
+  const handleUpdateEmployeeStateButton = (empState) => {
+    try {
+      let alertText = "";
+
+    // state에 따라 다른 문구 설정
+    switch (empState) {
+      case 3:
+        alertText = "선택한 직원을 정말로 사용중지 하시겠습니까?";
+        break;
+      case 2:
+        alertText = "선택한 직원을 정말로 중지해제 하시겠습니까?";
+        break;
+      default: // -1
+        alertText = "선택한 직원을 정말로 내보내시겠습니까?";
+        break;
+    }
+
+      Swal.fire({
+        title: "직원을 관리합니다.",
+        text: alertText,
+        icon: "warning",
+        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+          requestUpdateEmployeeState(empState);
+        }
+      });
+    } catch (error) {
+      console.error("메일 전송 중 오류 발생:", error);
+      // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
+    }
+    // detail 닫고, updateempl 초기화 
+  };
+
+  // 상태 수정 요청 함수
+  const requestUpdateEmployeeState = async (empState) => {
+    dispatch(pushSwitch(true));
+    let myCheckedEmployee = [{
+      t_employee_no: props.updateSelectedUser.t_employee_no,
+    }]
+    await axiosApi.put("/updateEmployeeState", {
+      t_employee_state: empState,
+      checkedEmployee: myCheckedEmployee,
+    });
+    dispatch(clearChosenOnes());
+    dispatch(pushSwitch(false));
+  };
+
   return (
     <WrappingGridBox $isexpanded={props.isExpanded}>
       <div className="realMovingTable">
@@ -731,13 +822,13 @@ function BasicGridBox(props) {
         <WrappingDetailBox ref={props.scrollRef}>
           <div className="detailBoxTit">
             <h2>직원정보</h2>
-            {props.operateRegisMode ||
+            {(props.operateRegisMode || props.updateSelectedUser.t_employee_auth === 0) ||
               (props.updateSelectedUser.t_employee_state === 3 ? (
                 <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(2)}>
                     중지해제
                   </button>
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(-1)}>
                     퇴사
                   </button>
                   <button
@@ -751,10 +842,10 @@ function BasicGridBox(props) {
               ) : props.operateRegisMode ||
                 props.updateSelectedUser.t_employee_state === 2 ? (
                 <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(3)}>
                     사용중지
                   </button>
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(-1)}>
                     퇴사
                   </button>
                   <button
@@ -767,10 +858,10 @@ function BasicGridBox(props) {
                 </div>
               ) : (
                 <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={handleSendMailButton}>
                     메일발송
                   </button>
-                  <button type="button" className="detailBoxBB">
+                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(-1)}>
                     직원삭제
                   </button>
                   <button

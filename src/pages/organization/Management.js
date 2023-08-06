@@ -271,21 +271,19 @@ const BasicTreeViewDepth = styled.div`
 `;
 
 function Management() {
-  // 로그인 유저 정보
+  // 로그인 유저 정보 리덕스에서 추출
   const loginedUser = useSelector((state) => state.loginUserData);
-  // 토큰으로 회원번호
-  const [tUserNo, setTUserNo] = useState("");
   // 헤더의 선택 회사
   const [tCompanyNo, setTCompanyNo] = useState("");
   // 직원 목록
   const [employeeList, setEmployeeList] = useState([]);
   // 부서 목록
   const [organizationList, setOrganizationList] = useState([]);
-  // 부서 복제 목록
+  // 부서 복제 목록 (조직도 수정 취소시 롤백용)
   const [copyOrganizationList, setCopyOrganizationList] = useState([]);
-  // 조직 선택 구분
+  // 조직 선택 구분 (선택한 인덱스 구분)
   const [selectedRowNum, setSelectedRowNum] = useState(0);
-  // 조직 이름 선택 구분
+  // 조직 이름 선택 구분 (직원 목록 조건)
   const [selectedOrgaName, setSelectedOrgaName] = useState("");
   // 조직도 편집 모드 (직원리스트 가리기)
   const [editingOrganization, setEditingOrganization] = useState(false);
@@ -307,9 +305,9 @@ function Management() {
   // 무선 스피너
   const pushedSwitch = useSelector((state) => state.spinnerSwitch);
 
-  // 맨처음 TUserNo 값을 업데이트
+  // 로그인한 회사로 첫 렌더링
   useEffect(() => {
-    setTUserNo(loginedUser.user.no);
+    // 유저의 회사 중에 헤더의 회사이름과 같은 회사의 PK추출
     const lastCompanyNo =
       loginedUser.company && loginedUser.company.length > 0
         ? loginedUser.company.find(
@@ -317,10 +315,11 @@ function Management() {
           ).t_company_no
         : loginedUser.company[0].t_company_no;
     setTCompanyNo(lastCompanyNo);
-  }, []);
+  }, []); // 첫 렌더링
 
   // 회사 변경마다 회사 업데이트
   useEffect(() => {
+    // 유저의 회사 중에 헤더의 회사이름과 같은 회사의 PK추출
     const lastCompanyNo =
       loginedUser.company && loginedUser.company.length > 0
         ? loginedUser.company.find(
@@ -328,25 +327,31 @@ function Management() {
           ).t_company_no
         : loginedUser.company[0].t_company_no;
     setTCompanyNo(lastCompanyNo);
+    // 조직도 선택 값 회사로 초기화
+    setSelectedRowNum(0);
     setSelectedOrgaName(loginedUser.companyName);
-  }, [loginedUser.companyName]);
+  }, [loginedUser.companyName]); // 헤더의 선택된 회사이름
 
   // tCompanyNo 값이 변경될 때마다 fetchEmployeeList() 함수 실행
   useEffect(() => {
+    // null이 아닐때만 하기 위함
     if (tCompanyNo) {
+      // 부서목록 get
       fetchOrganizationList();
+      // 직원목록 get
       fetchEmployeeList();
     }
-  }, [tCompanyNo]);
+  }, [tCompanyNo]); // 컴포넌트에 적용된 회사PK
 
   // 무선 스피너 인식
   useEffect(() => {
     setLoading(pushedSwitch);
     if (!pushedSwitch) {
+      // 체크박스 모두 해제
       uncheckAllCheckboxes();
       fetchEmployeeList();
     }
-  }, [pushedSwitch]);
+  }, [pushedSwitch]); // 푸터의 로딩 스위치
 
   // 아코디언 오프너 버튼
   const handleCompanyClick = () => {
@@ -374,17 +379,20 @@ function Management() {
     setSelectedOrgaName(orgaName);
   };
 
-  // 수정, 취소 버튼 클릭
+  // 편집, 취소 버튼 클릭
   const handleEditClick = (e) => {
+    // 편집 버튼 클릭시
     if (e.target.name == "EditB") {
       setEditingOrganization(true);
       dispatch(clearChosenOnes());
       if (isExpanded === "true") {
         setIsExpanded("false");
       }
+      // 기존 부서 목록 백업
       const backupList = _.cloneDeep(organizationList);
       setCopyOrganizationList(backupList);
     } else {
+      // 취소 버튼 클릭시
       Swal.fire({
         title: "정말로 그렇게 하시겠습니까?",
         text: "다시 되돌릴 수 없습니다. 신중하세요.",
@@ -401,7 +409,6 @@ function Management() {
           // 만약 모달창에서 confirm 버튼을 눌렀다면
           const rollbackList = _.cloneDeep(copyOrganizationList);
           setOrganizationList(rollbackList);
-          // fetchEmployeeList();
           setEditingOrganization(false);
         }
       });
@@ -416,9 +423,10 @@ function Management() {
         ? false
         : item.t_organization_name.trim() === ""
     );
-
     if (!isExistEmptyOrganization) {
+      // 부서 목록에 빈 부서 추가
       const newOrganization = {
+        // 부서의 행번호는 1부터 시작, 인덱스는 0부터 시작이므로, 맨 뒤 행의 rownum의 +1
         rownum: organizationList[organizationList.length - 1].rownum + 1,
         t_organization_name: "",
         t_organization_no: "",
