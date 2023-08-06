@@ -372,19 +372,6 @@ function BasicGridBox(props) {
   // 로그인 유저 정보
   const loginedUser = useSelector((state) => state.loginUserData);
 
-  axiosApi
-    .get(props.showMyThumbnail, {
-      responseType: "blob",
-    })
-    .then((response) => {
-      document.getElementById("target-img").src = window.URL.createObjectURL(
-        response.data
-      );
-    })
-    .catch((error) => {
-      console.error("이미지 요청 실패:", error);
-    });
-
   useEffect(() => {
     updateOnesDate(props.selectedDate);
   }, [props.selectedDate]);
@@ -513,7 +500,6 @@ function BasicGridBox(props) {
       "0" +
       (e.getMonth() + 1)
     ).slice(-2)}-${("0" + e.getDate()).slice(-2)}`;
-    // e.toLocaleDateString().slice(0, -1).replace(/. /gi, "-");
     props.setUpdateSelectedUser(editedUpdateSelectedUser);
   };
 
@@ -616,6 +602,19 @@ function BasicGridBox(props) {
     console.log("props.updateSelectedUser", props.updateSelectedUser);
     try {
       props.setLoading(true);
+      // 이전 이미지 경로를 만듭니다.
+      const prevImagePath = props.updateSelectedUser.t_user_photo_path_prev;
+      console.log("여까진 오는가벼",prevImagePath);
+      // 이전 이미지 경로가 'http:'로 시작하는지 확인합니다.
+      if (prevImagePath && prevImagePath.startsWith("http:")) {
+        console.log("여까진 못 오는가벼");
+        // '...images/' 뒷부분만 추출하여 파일명으로 사용합니다.
+        const fileName = prevImagePath.substring(prevImagePath.lastIndexOf("images/") + 7);
+        console.log("fileName",fileName);
+        // 이미지 삭제 함수 호출
+        await deleteEmployeePhoto(fileName);
+      }
+
       // 이미지 파일 저장
       let uploadedImagePath = "";
       // 이미지 파일 저장
@@ -659,6 +658,18 @@ function BasicGridBox(props) {
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  // 이미지 삭제 함수
+  const deleteEmployeePhoto = async (fileName) => {
+    try {
+      await axiosApi.post("/deleteEmployeePhoto", fileName);
+      console.log("이미지 삭제 성공");
+      // 이미지 삭제 후 필요한 처리를 수행할 수 있습니다.
+    } catch (error) {
+      console.error("이미지 삭제 실패:", error);
+      // 이미지 삭제에 실패했을 경우 필요한 처리를 수행할 수 있습니다.
     }
   };
 
@@ -881,7 +892,7 @@ function BasicGridBox(props) {
                   <input type="file" className="hiddingInput" />
                 </div>
                 <img
-                  src={props.showMyThumbnail.startsWith("https") ? (props.showMyThumbnail) : '' }
+                  src={props.showMyThumbnail}
                   alt="Image"
                   id="target-img"
                   className="detailBoxStaffPhoto"

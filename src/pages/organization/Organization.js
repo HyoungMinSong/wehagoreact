@@ -113,9 +113,6 @@ function Organization() {
                 <Link to={'/organization/management'}><h2>조직관리</h2></Link>
               </li>
               <li className="tabsListLi">
-                <Link to={'/organization/administrator'}><h2>관리자설정</h2></Link>
-              </li>
-              <li className="tabsListLi">
                 <Link to={'/organization/services'}><h2>서비스관리</h2></Link>
               </li>
             </ul>

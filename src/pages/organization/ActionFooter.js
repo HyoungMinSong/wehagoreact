@@ -84,6 +84,7 @@ const ActionFooterBar = styled.div`
   const fromUser = useSelector((state) => state.loginUserData);
   const dispatch = useDispatch();
   
+  // 메일 발송 버튼 이벤트
   const handleSendMailButton = () => {
     try {
       Swal.fire({
@@ -99,22 +100,26 @@ const ActionFooterBar = styled.div`
         // 만약 Promise리턴을 받으면,
         if (result.isConfirmed) {
           // 만약 모달창에서 confirm 버튼을 눌렀다면
-          dispatch(pushSwitch(true));
-          axiosApi.post("/sendMailToEmployee", {
-            employer: fromUser.user.name,
-            checkedEmployee: dataOfTheChosenOnes.checkedEmployee,
-          });
-          dispatch(clearChosenOnes());
+          requestSendMailToEmployee();
         }
       });
     } catch (error) {
       console.error("메일 전송 중 오류 발생:", error);
       // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
-    }finally{
-      dispatch(pushSwitch(false));
     }
   };
   
+  // 직원 삭제 요청 메서드
+  const requestSendMailToEmployee = async () => {
+    dispatch(pushSwitch(true));
+    await axiosApi.post("/sendMailToEmployee", {
+      employer: fromUser.user.name,
+      checkedEmployee: dataOfTheChosenOnes.checkedEmployee,
+    });
+    dispatch(clearChosenOnes());
+    dispatch(pushSwitch(false));
+  };
+
   // 직원 삭제 버튼
   const handleDeleteEmployeesButton = () => {
     try {
