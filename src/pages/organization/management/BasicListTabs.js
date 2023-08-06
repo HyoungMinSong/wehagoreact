@@ -47,23 +47,35 @@ const ListTabs = styled.div`
 `;
 
 function BasicListTabs(props) {
-  // 선택한 리스트 탭의 인덱스를 저장할 state
-  const [selectedListTab, setSelectedListTab] = useState(props.selectedListTab);
-
-  // 리스트 탭 상태 전송
-  useEffect(() => {
-    props.setSelectedListTab(selectedListTab);
-  }, [selectedListTab]);
-  useEffect(() => {
-    setSelectedListTab(props.selectedListTab);
-  }, [props.selectedListTab]);
-
   // 커서 정보 저장
   const handleListTabClick = (index) => {
-    setSelectedListTab(index);
+    props.setSelectedListTab(index);
     if (props.isExpanded === "true") {
       props.setIsExpanded("false");
     }
+  };
+
+  // 상태별 인원수 세기 조직도,직원 변화때
+  const countingEmplFromOrga = (state) => {
+    if (props.selectedRowNum === 0) {
+      if (state === -1) {
+        return props.employeeList.length;
+      }
+      return props.employeeList.filter((emp) => emp.t_employee_state === state)
+        .length;
+    }
+    let orgaName = props.organizationList.find(
+      (org) => org.rownum === props.selectedRowNum
+    ).t_organization_name;
+    if (state === -1) {
+      return props.employeeList.filter(
+        (emp) => emp.t_organization_name === orgaName
+      ).length;
+    }
+    return props.employeeList.filter(
+      (emp) =>
+        emp.t_organization_name === orgaName && emp.t_employee_state === state
+    ).length;
   };
 
   return (
@@ -73,7 +85,7 @@ function BasicListTabs(props) {
           <ul className="basicTabsUl">
             <li
               className={`${
-                selectedListTab === -1
+                props.selectedListTab === -1
                   ? "basicTabsLiSelected"
                   : "basicTabsLiNot"
               }`}
@@ -81,61 +93,59 @@ function BasicListTabs(props) {
             >
               <span>
                 전체
-                <span className="num">
-                  {props.selectedEmployeeState.count_state_all}
-                </span>
+                <span className="num">{countingEmplFromOrga(-1)}</span>
               </span>
             </li>
             <li
               className={`${
-                selectedListTab === 0 ? "basicTabsLiSelected" : "basicTabsLiNot"
+                props.selectedListTab === 0
+                  ? "basicTabsLiSelected"
+                  : "basicTabsLiNot"
               }`}
               onClick={() => handleListTabClick(0)}
             >
               <span>
                 미가입
-                <span className="num">
-                  {props.selectedEmployeeState.count_state_0}
-                </span>
+                <span className="num">{countingEmplFromOrga(0)}</span>
               </span>
             </li>
             <li
               className={`${
-                selectedListTab === 1 ? "basicTabsLiSelected" : "basicTabsLiNot"
+                props.selectedListTab === 1
+                  ? "basicTabsLiSelected"
+                  : "basicTabsLiNot"
               }`}
               onClick={() => handleListTabClick(1)}
             >
               <span>
                 가입대기
-                <span className="num">
-                  {props.selectedEmployeeState.count_state_1}
-                </span>
+                <span className="num">{countingEmplFromOrga(1)}</span>
               </span>
             </li>
             <li
               className={`${
-                selectedListTab === 2 ? "basicTabsLiSelected" : "basicTabsLiNot"
+                props.selectedListTab === 2
+                  ? "basicTabsLiSelected"
+                  : "basicTabsLiNot"
               }`}
               onClick={() => handleListTabClick(2)}
             >
               <span>
                 사용중
-                <span className="num">
-                  {props.selectedEmployeeState.count_state_2}
-                </span>
+                <span className="num">{countingEmplFromOrga(2)}</span>
               </span>
             </li>
             <li
               className={`${
-                selectedListTab === 3 ? "basicTabsLiSelected" : "basicTabsLiNot"
+                props.selectedListTab === 3
+                  ? "basicTabsLiSelected"
+                  : "basicTabsLiNot"
               }`}
               onClick={() => handleListTabClick(3)}
             >
               <span>
                 사용중지
-                <span className="num">
-                  {props.selectedEmployeeState.count_state_3}
-                </span>
+                <span className="num">{countingEmplFromOrga(3)}</span>
               </span>
             </li>
           </ul>

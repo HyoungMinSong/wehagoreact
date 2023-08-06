@@ -364,21 +364,25 @@ const WrappingDetailBox = styled.div`
 `;
 
 function BasicGridBox(props) {
-  // 회사, 조직에 해당하는 유저들의 목록
-  const [showingMyEmployees, setShowingMyEmployees] = useState([]);
   // 이미지 등록 참조
   const fileInputRef = useRef(null);
   // 이미지 저장용
   const [selectedImage, setSelectedImage] = useState(null);
+  // 로그인 유저 정보
+  const loginedUser = useSelector((state) => state.loginUserData);
 
-  // 유효성 검사: 배열인지 확인하여, 배열이 아니면 빈 배열로 초기화
-  useEffect(() => {
-    if (Array.isArray(props.showingMyEmployees)) {
-      setShowingMyEmployees(props.showingMyEmployees);
-    } else {
-      setShowingMyEmployees([]);
-    }
-  }, [props.showingMyEmployees, props.isExpanded]);
+  axiosApi
+    .get(props.showMyThumbnail, {
+      responseType: "blob",
+    })
+    .then((response) => {
+      document.getElementById("target-img").src = window.URL.createObjectURL(
+        response.data
+      );
+    })
+    .catch((error) => {
+      console.error("이미지 요청 실패:", error);
+    });
 
   useEffect(() => {
     updateOnesDate(props.selectedDate);
@@ -390,11 +394,16 @@ function BasicGridBox(props) {
     setSelectedImage(null);
     props.setOperateRegisMode(false);
     props.setSelectedUser(user);
-    props.setUpdateSelectedUser({ ...user, t_user_photo_path_prev: user.t_user_photo_path });
+    props.setUpdateSelectedUser({
+      ...user,
+      t_user_photo_path_prev: user.t_user_photo_path,
+    });
     props.setShowMyThumbnail(user.t_user_photo_path);
     console.log("dsdsd", props.updateSelectedUser);
     props.setIsExpanded("true");
     props.setSelectedDate(new Date(JSON.stringify(user.t_employee_date)));
+    // 페이지를 최상단으로 스크롤
+    props.scrollRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   // Detail X버튼 클릭 이벤트
@@ -532,9 +541,9 @@ function BasicGridBox(props) {
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     console.log("파일", selectedFile);
-    if (!selectedFile){
+    if (!selectedFile) {
       return;
-    } 
+    }
 
     // 파일을 선택한 후에 처리할 작업을 수행합니다.
     if (selectedFile) {
@@ -571,9 +580,7 @@ function BasicGridBox(props) {
               },
             }
           );
-          console.log("업로드 완료:", response);
           console.log("업로드 완료:", response.data);
-
           uploadedImageName = response.data.photo_name;
           uploadedImagePath = response.data.photo_path;
         } catch (error) {
@@ -590,7 +597,7 @@ function BasicGridBox(props) {
           t_user_photo_path: uploadedImagePath,
         };
         await axiosApi.post("/makeRoomForANewEmployee", updatedUser);
-        await props.fetchData();
+        await props.fetchEmployeeList();
         props.setIsExpanded("false");
         if (fileInputRef.current) {
           fileInputRef.current.value = ""; // 파일 입력 요소의 값을 비움
@@ -614,7 +621,6 @@ function BasicGridBox(props) {
       if (selectedImage) {
         const formData = new FormData();
         formData.append("file", selectedImage);
-
         try {
           const response = await axiosApi.post(
             "/uploadEmployeePhoto",
@@ -625,9 +631,7 @@ function BasicGridBox(props) {
               },
             }
           );
-          console.log("업로드 완료:", response);
           console.log("업로드 완료:", response.data);
-
           uploadedImagePath = response.data.photo_path;
         } catch (error) {
           console.error("업로드 실패:", error);
@@ -639,10 +643,12 @@ function BasicGridBox(props) {
       try {
         const updatedUser = {
           ...props.updateSelectedUser,
-          ...(uploadedImagePath !== "" ? { t_user_photo_path: uploadedImagePath } : {})
+          ...(uploadedImagePath !== ""
+            ? { t_user_photo_path: uploadedImagePath }
+            : {}),
         };
         await axiosApi.post("/modifyRoomForAOldEmployee", updatedUser);
-        await props.fetchData();
+        await props.fetchEmployeeList();
         props.setIsExpanded("false");
         if (fileInputRef.current) {
           fileInputRef.current.value = ""; // 파일 입력 요소의 값을 비움
@@ -653,11 +659,6 @@ function BasicGridBox(props) {
     } catch (error) {
       console.error(error);
     }
-  };
-
-  // 상세 정보 버튼 이벤트
-  const handleDetailButtonClick = () => {
-
   };
 
   // 컴포넌트 내의 모든 체크박스의 체크를 해제하는 함수
@@ -700,76 +701,87 @@ function BasicGridBox(props) {
                 </tr>
               </thead>
               <tbody>
-                {showingMyEmployees.map((user) => {
-                  return(
-                  <BasicGridBoxItem 
-                    user={user}
-                    handleRowClick={handleRowClick}
-                    chosenOnes={chosenOnes}
-                  />
-                  );
-                }
-                )}
+                {props.employeeList.map((user) => {
+                  const isStateMatched =
+                    props.selectedListTab === -1 ||
+                    user.t_employee_state === props.selectedListTab;
+                  const isOrgaNameMatched =
+                    props.selectedOrgaName === loginedUser.companyName ||
+                    props.selectedOrgaName === user.t_organization_name;
+                  if (isStateMatched && isOrgaNameMatched) {
+                    return (
+                      <BasicGridBoxItem
+                        key={user.t_user_no} // 유니크한 key를 반드시 지정해줘야 합니다.
+                        user={user}
+                        handleRowClick={handleRowClick}
+                        chosenOnes={chosenOnes}
+                        selectedListTab={props.selectedListTab}
+                      />
+                    );
+                  } else {
+                    return null; // 조건에 맞지 않는 경우 컴포넌트를 반환하지 않습니다.
+                  }
+                })}
               </tbody>
             </table>
           </div>
         </div>
       </div>
       <div className="user-detail">
-        <WrappingDetailBox>
+        <WrappingDetailBox ref={props.scrollRef}>
           <div className="detailBoxTit">
             <h2>직원정보</h2>
             {props.operateRegisMode ||
-            props.updateSelectedUser.t_employee_state === 3 ? (
-              <div className="detailBoxButtonBox">
-                <button type="button" className="detailBoxBB">
-                  중지해제
-                </button>
-                <button type="button" className="detailBoxBB">
-                  퇴사
-                </button>
-                <button
-                  type="button"
-                  className="detailBoxBX"
-                  onClick={handleXClick}
-                >
-                  Ｘ
-                </button>
-              </div>
-            ) : props.operateRegisMode ||
-              props.updateSelectedUser.t_employee_state === 2 ? (
-              <div className="detailBoxButtonBox">
-                <button type="button" className="detailBoxBB">
-                  사용중지
-                </button>
-                <button type="button" className="detailBoxBB">
-                  퇴사
-                </button>
-                <button
-                  type="button"
-                  className="detailBoxBX"
-                  onClick={handleXClick}
-                >
-                  Ｘ
-                </button>
-              </div>
-            ) : (
-              <div className="detailBoxButtonBox">
-                <button type="button" className="detailBoxBB">
-                  메일발송
-                </button>
-                <button type="button" className="detailBoxBB">
-                  직원삭제
-                </button>
-                <button
-                  type="button"
-                  className="detailBoxBX"
-                  onClick={handleXClick}
-                >
-                  Ｘ
-                </button>
-              </div>
-            )}
+              (props.updateSelectedUser.t_employee_state === 3 ? (
+                <div className="detailBoxButtonBox">
+                  <button type="button" className="detailBoxBB">
+                    중지해제
+                  </button>
+                  <button type="button" className="detailBoxBB">
+                    퇴사
+                  </button>
+                  <button
+                    type="button"
+                    className="detailBoxBX"
+                    onClick={handleXClick}
+                  >
+                    Ｘ
+                  </button>
+                </div>
+              ) : props.operateRegisMode ||
+                props.updateSelectedUser.t_employee_state === 2 ? (
+                <div className="detailBoxButtonBox">
+                  <button type="button" className="detailBoxBB">
+                    사용중지
+                  </button>
+                  <button type="button" className="detailBoxBB">
+                    퇴사
+                  </button>
+                  <button
+                    type="button"
+                    className="detailBoxBX"
+                    onClick={handleXClick}
+                  >
+                    Ｘ
+                  </button>
+                </div>
+              ) : (
+                <div className="detailBoxButtonBox">
+                  <button type="button" className="detailBoxBB">
+                    메일발송
+                  </button>
+                  <button type="button" className="detailBoxBB">
+                    직원삭제
+                  </button>
+                  <button
+                    type="button"
+                    className="detailBoxBX"
+                    onClick={handleXClick}
+                  >
+                    Ｘ
+                  </button>
+                </div>
+              ))}
           </div>
           <div className="detailBoxInBox">
             <div className="detailBoxStaffInfo">
@@ -778,8 +790,9 @@ function BasicGridBox(props) {
                   <input type="file" className="hiddingInput" />
                 </div>
                 <img
-                  src={props.showMyThumbnail}
+                  src={props.showMyThumbnail.startsWith("https") ? (props.showMyThumbnail) : '' }
                   alt="Image"
+                  id="target-img"
                   className="detailBoxStaffPhoto"
                 />
               </div>
@@ -855,44 +868,31 @@ function BasicGridBox(props) {
                   <tr>
                     <th>소속</th>
                     <td>
-                      {props.myCompanyInfo.map((companyName, companyIndex) => {
-                        const departments = props.myWorkPlace.filter(
-                          (company) =>
-                            company.t_company_no === companyName.t_company_no
-                        );
-                        return (
-                          <select
-                            name="su-orname"
-                            key={companyIndex}
-                            onChange={(e) => updateOnes(e)}
-                            value={
-                              props.updateSelectedUser.t_organization_name || ""
-                            }
-                          >
+                      <select
+                        name="su-orname"
+                        onChange={(e) => updateOnes(e)}
+                        value={
+                          props.updateSelectedUser.t_organization_name || ""
+                        }
+                      >
+                        <option value={loginedUser.companyName} data-label="-1">
+                          {loginedUser.companyName}
+                        </option>
+                        {props.organizationList.map((department) => {
+                          if (department.t_organization_no === null) {
+                            return null; // null을 반환하여 해당 div를 출력하지 않음
+                          }
+                          return (
                             <option
-                              key={companyName.t_organization_no}
-                              value={companyName.t_company_name}
-                              data-label="-1"
+                              key={department.t_organization_no}
+                              value={department.t_organization_name}
+                              data-label={department.t_organization_no}
                             >
-                              {companyName.t_company_name}
+                              {department.t_organization_name}
                             </option>
-                            {departments.map((department) => {
-                              if (department.t_organization_no === null) {
-                                return null; // null을 반환하여 해당 div를 출력하지 않음
-                              }
-                              return (
-                                <option
-                                  key={department.t_organization_no}
-                                  value={department.t_organization_name}
-                                  data-label={department.t_organization_no}
-                                >
-                                  {department.t_organization_name}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        );
-                      })}
+                          );
+                        })}
+                      </select>
                     </td>
                   </tr>
                   <tr>
@@ -930,38 +930,41 @@ function BasicGridBox(props) {
                         selected={props.selectedDate}
                         defaultValue
                         onChange={(date) => props.setSelectedDate(date)}
-                        />
+                      />
                     </td>
                   </tr>
-                        <tr>
-                          <th>유선전화번호</th>
-                          <td>
-                          {props.operateRegisMode ? (
-                            <input
-                            type="text"
-                            name="su-usphon"
-                            value={props.updateSelectedUser.t_user_phone || ""}
-                            onChange={(e) => updateOnes(e)}
-                          />
-                          ) :
-                            (
-                              <label>{props.updateSelectedUser.t_user_phone || ""}</label>
-                            )}
-                          </td>
-                        </tr>
+                  <tr>
+                    <th>유선전화번호</th>
+                    <td>
+                      {props.operateRegisMode ? (
+                        <input
+                          type="text"
+                          name="su-usphon"
+                          value={props.updateSelectedUser.t_user_phone || ""}
+                          onChange={(e) => updateOnes(e)}
+                        />
+                      ) : (
+                        <label>
+                          {props.updateSelectedUser.t_user_phone || ""}
+                        </label>
+                      )}
+                    </td>
+                  </tr>
                   <tr>
                     <th>이메일주소</th>
                     <td>
-                    {props.operateRegisMode ? (
-                      <input
-                        type="text"
-                        name="su-usemai"
-                        value={props.updateSelectedUser.t_user_email || ""}
-                        onChange={(e) => updateOnes(e)}
-                      />
-                    ):(
-                      <label>{props.updateSelectedUser.t_user_email || ""}</label>
-                    )}
+                      {props.operateRegisMode ? (
+                        <input
+                          type="text"
+                          name="su-usemai"
+                          value={props.updateSelectedUser.t_user_email || ""}
+                          onChange={(e) => updateOnes(e)}
+                        />
+                      ) : (
+                        <label>
+                          {props.updateSelectedUser.t_user_email || ""}
+                        </label>
+                      )}
                     </td>
                   </tr>
                   {props.operateRegisMode ? (
