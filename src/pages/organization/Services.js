@@ -1,4 +1,4 @@
-import { Col, Container, ListGroup, Modal, Row, Tab, Table, Tabs } from "react-bootstrap";
+import { Col, Container, ListGroup, Modal, Row, Spinner, Tab, Table, Tabs } from "react-bootstrap";
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { useState } from "react";
 import axiosApi from "../../AxiosApi";
@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 
 
 function Services() {
+  let [loading, setLoading] = useState(false);
 
   const [show, setShow] = useState(false);
   let [companySerivces, setCompanyServices] = useState('');
@@ -17,6 +18,7 @@ function Services() {
   let [publishedUserList, setPublishedUserList] = useState('');
   let [checkedService, setCheckedService] = useState(0);
   let [showListAfterConfirm, setShowListAfterConfirm] = useState(false);
+  let [stateAssociatedConfirm, setStateAssociatedConfirm] =useState(false);
 
   // 로그인 유저 정보
   const loginedUser = useSelector((state) => state.loginUserData);
@@ -24,34 +26,44 @@ function Services() {
   console.log(loginedUser);
   let comNo = loginedUser.company && loginedUser.company.length > 0 ? loginedUser.company.find((item) => item.t_company_name === loginedUser.companyName).t_company_no : loginedUser.company[0].t_company_no;
   console.log("comNo : " + comNo)
+  console.log("과연 " + loginedUser.companyName);
 
   useEffect(() => {
     // return () => {
-    if (!show) {
-      axiosApi.post("/findservicelistbycomno", {
-        comNo: comNo
-      }).then((c) => {
-        setCompanyServices(c.data);
-        console.log(c.data);
-      }).catch(() => { console.log('실패실패') });
-      axiosApi.post("/findpackagecount", {
-        comNo: comNo
-      }).then((c) => {
-        setPackageCount(c.data);
-        console.log(c.data);
-      }).catch(() => { console.log('실패실패2') })
-      // }
-    }
+      showCompanySerivces();
   }, [show])
   // 모달창 띄우기 유무
 
-
+const showCompanySerivces = async() => {
+  setLoading(true);
+  if (!show && !stateAssociatedConfirm) {
+    
+    await axiosApi.post("/findservicelistbycomno", {
+      comNo: comNo
+    }).then((c) => {
+      setCompanyServices(c.data);
+      console.log(c.data);
+    }).catch(() => { console.log('실패실패') });
+    await axiosApi.post("/findpackagecount", {
+      comNo: comNo
+    }).then((c) => {
+      setPackageCount(c.data);
+      console.log(c.data);
+    }).catch(() => { console.log('실패실패2') })
+    // }
+  }
+  setLoading(false);
+}
 
   useEffect(() => {
     if (showListAfterConfirm) {
       console.log("이건가 ?")
       getUnpublishedUser(comNo, checkedService);
       getPublishedUser(comNo, checkedService);
+    }return ()=>{
+      
+
+
     }
   }, [showListAfterConfirm])
 
@@ -68,7 +80,7 @@ function Services() {
 
   let getPublishedUser = (cn, sn) => {
     axiosApi.post("/findpublisheduser", {
-      comNo: cn, serviceNo: sn
+      comNo: cn, serviceNo: sn, comNo:comNo, packCt : packageCount
     }).then((c) => {
       console.log(c.data);
       setPublishedUserList(c.data);
@@ -95,8 +107,24 @@ function Services() {
         axiosApi.post("/saveinvitedemployeepublish", {
           serviceNo: cs, employeeNo: en
         }).then((c) => {
+          if(c.data === 0){
           console.log(c.data);
           setShowListAfterConfirm(true);
+          setStateAssociatedConfirm(false);
+          }else if(c.data ===1 ){
+            console.log("와이")
+            Swal.fire({
+              icon: 'error',
+              title: '배포 실패',
+              text: '구매한 패키지를 초과하셨습니다.',
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: '배포 실패',
+              text: '서비스 배포에 실패했습니다.',
+            });
+          }
         }).catch(() => {
           console.log('실패실패3');
         })
@@ -123,7 +151,9 @@ function Services() {
           empNo: en, serviceNo: cs
         }).then((c) => {
           console.log(c.data);
+          
           setShowListAfterConfirm(true);
+          setStateAssociatedConfirm(false);
         }).catch(() => {
           console.log('실패실패4');
         })
@@ -144,10 +174,34 @@ function Services() {
               <Col sm={4}>
                 <ListGroup>
                   <ListGroup.Item action href="#link1">
-                    Link 1
+                    {loginedUser.companyName}
                   </ListGroup.Item>
                   <ListGroup.Item action href="#link2">
-                    Link 2
+                  &nbsp;
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link3">
+                  &nbsp;
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link4">
+                  &nbsp;
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link5">
+                  &nbsp;
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link6">
+                  &nbsp;
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link7">
+                  &nbsp;
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link8">
+                  &nbsp;
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link9">
+                  &nbsp;
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link10">
+                  &nbsp;
                   </ListGroup.Item>
                 </ListGroup>
               </Col>
@@ -162,9 +216,12 @@ function Services() {
 
                               setServiceName(a.serviceName);
                               setCheckedService(a.serviceNo);
+                              setPublishedUserList('')
+                              setUnPublishedUserList('')
                               getUnpublishedUser(comNo, a.serviceNo);
                               getPublishedUser(comNo, a.serviceNo);
                               setShowListAfterConfirm(false);
+                              setStateAssociatedConfirm(true);
                               setShow(true);
                             }}>
                               <div className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
@@ -173,7 +230,7 @@ function Services() {
                                 <img src={a.serviceMainIconPath} alt="서비스 이미지" width="80px" height="80px" />
                               </div>
                               <h3 className="fs-2 text-body-emphasis">{a.serviceName}</h3>
-                              <p>사용자의 수 [{a.count}/{packageCount}]</p>
+                              <p>사용자의 수 [<span className="text-primary">{a.count}</span>/{packageCount}]</p>
                               <a href="#" className="icon-link">
                                 Call to action
                                 &gt;
@@ -195,7 +252,7 @@ function Services() {
           <Modal.Title>{serviceName}</Modal.Title>
         </Modal.Header>
         <Tabs
-          defaultActiveKey="profile"
+          defaultActiveKey="home"
           id="fill-tab-example"
           className="mb-3"
           fill
@@ -269,6 +326,14 @@ function Services() {
 
 
       </Modal>
+      {loading && (
+            <div className="overlay-loading-box text-center">
+        
+          {/* 로딩 스피너 컴포넌트 */}
+          <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
+          <div className="mt-3">서비스 배포 목록이 출력 중입니다.<br />잠시만 기다려주세요.</div>
+        </div>
+      )}
     </>
   );
 
