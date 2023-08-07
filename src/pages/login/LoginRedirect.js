@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
+import './LoginInvite';
 
 
 function LoginRedirect() {
@@ -11,12 +12,12 @@ function LoginRedirect() {
   useEffect(() => {
     axiosApi.get("/l/" + shortLink)
       .then((response) => {
-        if (response.data === null) {
+        if (response.data === '') {
           console.log('백엔드 오류 리턴');
         } else {
           console.log(response.data);
           const abc = response.data.empNo;
-          navigate('/LoginInvite');
+          navigate('/Logininvite');
         
   
   }

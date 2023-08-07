@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SignUpHeader from '../signUp/SignUpHeader';
+import Footer from "../main/Footer";
 import './Index1.css';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import BluetoothSearchingOutlinedIcon from '@mui/icons-material/BluetoothSearchingOutlined';
@@ -57,8 +58,9 @@ const IndexBackground = () => {
 
   return (
     <>
-      <SignUpHeader />
+      
       <div className="background-container">
+      <SignUpHeader />
         <div className="background-container-index">
           <h2 className="title-index1">기업에 필요한 다양한 업무환경을 제공하는 비즈니스 플랫폼</h2>
           <h2 className="title-index2">WEHAGO</h2>
@@ -154,8 +156,14 @@ const IndexBackground = () => {
             </div>
           </div>
         </div>
+       
+       
+      </div>
+      <div style={{background: "black"}}>
+        <Footer/>
       </div>
     </>
+    
   );
 };
 

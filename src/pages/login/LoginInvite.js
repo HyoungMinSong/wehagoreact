@@ -29,7 +29,7 @@ const LoginPage = () => {
 
     try {
       // JWT 토큰 발급
-      const response = await axiosApi.post('/api/LoginInvite', {
+      const response = await axiosApi.post('/Logininvite', {
         userid: username,
         password: password,
       });
