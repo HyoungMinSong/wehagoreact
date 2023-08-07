@@ -121,8 +121,6 @@ const TreeViewList = styled.div`
 `;
 
 function BasicTreeViewList(props) {
-  // 선택한 직원 정보
-  const [selectedUser, setSelectedUser] = useState(null);
   // 업데이트 할 유저 정보
   const [updateSelectedUser, setUpdateSelectedUser] = useState([]);
   // Date 형식 변환
@@ -137,6 +135,34 @@ function BasicTreeViewList(props) {
   const scrollRef = useRef(null);
   // 로그인 유저 정보
   const loginedUser = useSelector((state) => state.loginUserData);
+  // 검색 input
+  const [searchInput, setSearchInput] = useState("");
+  // 검색어
+  const [searchInputText, setSearchInputText] = useState('');
+  // 검색결과
+  const [searchEmployeeList, setSearchEmployeeList]  = useState([]);
+  
+
+  const handleSearchInputChange = (event) => {
+    setSearchInput(event.target.value);
+  };
+
+  const handleSearchButtonClick = () => {
+    // 검색 입력값에 따라 employeeList를 필터링합니다.
+    const filteredEmployeeList = props.employeeList.filter((user) => {
+      const { t_user_name, t_organization_name, t_user_email, t_user_phone } = user;
+      return (
+        t_user_name.includes(searchInput) ||
+        t_organization_name.includes(searchInput) ||
+        t_user_email.includes(searchInput) ||
+        t_user_phone.includes(searchInput)
+      );
+    });
+    // 필터링된 employeeList를 BasicGridBox로 전달합니다.
+    setSearchInputText(searchInput);
+    props.setSearchMode(true);
+    setSearchEmployeeList(filteredEmployeeList);
+  };
 
   // 직원 등록 클릭 이벤트
   const handleRegistrationClick = () => {
@@ -157,16 +183,19 @@ function BasicTreeViewList(props) {
   return (
     <TreeViewList>
       <div className="basicTblTit">
-        <h2>직원리스트</h2>
+        {props.searchMode ? (
+          <h2>검색 결과 [{searchEmployeeList.length}건]</h2>
+        ) : (<h2>직원리스트</h2>)}
         <div className="buttonBox">
           <div className="luxSearchBox">
             <div className="wrappingInput">
               <input
                 type="text"
                 className="searchInput"
-                placeholder="이름, 조직, 유선, 휴대폰 전화번호로 검색"
+                onChange={handleSearchInputChange}
+                placeholder="이름, 조직, 이메일, 휴대전화번호로 검색"
               />
-              <button type="button" className="basicSearchButton">
+              <button type="button" className="basicSearchButton" onClick={handleSearchButtonClick}>
                 <span className="wrappingIcon">
                   <SearchOutlinedIcon />
                 </span>
@@ -184,6 +213,8 @@ function BasicTreeViewList(props) {
       <div className="tblGridBox">
         <BasicGridBox
           employeeList={props.employeeList}
+          searchEmployeeList={searchEmployeeList}
+          searchMode={props.searchMode}
           organizationList={props.organizationList}
           scrollRef={scrollRef}
           selectedOrgaName={props.selectedOrgaName}
@@ -191,8 +222,6 @@ function BasicTreeViewList(props) {
           setIsExpanded={props.setIsExpanded}
           editingOrganization={props.editingOrganization}
           selectedListTab={props.selectedListTab}
-          selectedUser={selectedUser}
-          setSelectedUser={setSelectedUser}
           updateSelectedUser={updateSelectedUser}
           setUpdateSelectedUser={setUpdateSelectedUser}
           operateRegisMode={operateRegisMode}
@@ -203,6 +232,7 @@ function BasicTreeViewList(props) {
           setSelectedDate={setSelectedDate}
           fetchEmployeeList={props.fetchEmployeeList}
           setLoading={props.setLoading}
+          searchInputText={searchInputText}
         />
       </div>
     </TreeViewList>

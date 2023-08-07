@@ -13,6 +13,9 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   isexpanded: $isexpanded,
 }))`
   height: 100%;
+  .searchThing{
+    color: #1c90fb;
+  }
   .unrealGridBox {
     height: 100%;
     background-color: gray;
@@ -365,6 +368,8 @@ const WrappingDetailBox = styled.div`
 `;
 
 function BasicGridBox(props) {
+  // 선택한 직원 정보
+  const [selectedUser, setSelectedUser] = useState(null);
   // 이미지 등록 참조
   const fileInputRef = useRef(null);
   // 이미지 저장용
@@ -381,7 +386,7 @@ function BasicGridBox(props) {
     clearAllInputFiles();
     setSelectedImage(null);
     props.setOperateRegisMode(false);
-    props.setSelectedUser(user);
+    setSelectedUser(user);
     props.setUpdateSelectedUser({
       ...user,
       t_user_photo_path_prev: user.t_user_photo_path,
@@ -397,7 +402,7 @@ function BasicGridBox(props) {
   // Detail X버튼 클릭 이벤트
   const handleXClick = () => {
     props.setUpdateSelectedUser([]);
-    props.setSelectedUser(null);
+    setSelectedUser(null);
     props.setIsExpanded("false");
   };
 
@@ -771,6 +776,78 @@ function BasicGridBox(props) {
     dispatch(pushSwitch(false));
   };
 
+  // 컴포넌트 내의 모든 체크박스의 체크 함수
+  const checkAllCheckboxes = () => {
+    let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    let enabledCheckboxes = Array.from(checkboxes).filter((checkbox) => !checkbox.disabled);
+    let checkedCheckboxes = Array.from(enabledCheckboxes).filter((checkbox) => checkbox.checked);
+  
+    if (enabledCheckboxes.length / 2 >= checkedCheckboxes.length) {
+      enabledCheckboxes.forEach((checkbox) => {
+        checkbox.checked = true;
+      });
+    } else {
+      enabledCheckboxes.forEach((checkbox) => {
+        checkbox.checked = false;
+      });
+    }
+
+    checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    enabledCheckboxes = Array.from(checkboxes).filter((checkbox) => !checkbox.disabled);
+    checkedCheckboxes = Array.from(enabledCheckboxes).filter((checkbox) => checkbox.checked);
+
+    // 체크된 체크박스와 체크되지 않은 체크박스들의 id 값 추출
+    const checkedIds = checkedCheckboxes.map((checkbox) => checkbox.id);
+    const uncheckedIds = enabledCheckboxes.filter((checkbox) => !checkbox.checked).map((checkbox) => checkbox.id);
+    // 추출한 id 값과 일치하는 user 객체 찾기
+    const checkedUsers = props.employeeList.filter((user) => checkedIds.includes(user.t_user_no.toString()));
+    const uncheckedUsers = props.employeeList.filter((user) => uncheckedIds.includes(user.t_user_no.toString()));
+
+    // chosenOnes 함수 호출
+    chosenTwos(checkedUsers, uncheckedUsers);
+  };
+  
+  // 체크박스 이벤트
+const chosenTwos = (checkedUsers, uncheckedUsers) => {
+
+  const checkedEmployee = Array.isArray(dataOfTheChosenOnes.checkedEmployee)
+    ? [...dataOfTheChosenOnes.checkedEmployee] // 새로운 배열 생성
+    : [];
+
+  // checkedUsers 배열의 유저들을 checkedEmployee에 추가
+  checkedUsers.forEach((user) => {
+    const isAlreadyChecked = checkedEmployee.some((item) => item.t_user_no === user.t_user_no);
+    if (!isAlreadyChecked) {
+      checkedEmployee.push({
+        t_user_no: user.t_user_no,
+        t_user_name: user.t_user_name,
+        t_user_email: user.t_user_email,
+        t_company_no: user.t_company_no,
+        t_company_name: user.t_company_name,
+        t_organization_name: user.t_organization_name,
+        t_employee_duty: user.t_employee_duty,
+        t_employee_position: user.t_employee_position,
+        t_employee_no: user.t_employee_no,
+      });
+    }
+  });
+
+  // uncheckedUsers 배열의 유저들을 checkedEmployee에서 제거
+  uncheckedUsers.forEach((user) => {
+    const index = checkedEmployee.findIndex((item) => item.t_user_no === user.t_user_no);
+    if (index !== -1) {
+      checkedEmployee.splice(index, 1);
+    }
+  });
+
+  const updateDataOfTheChosenOnes = {
+    ...dataOfTheChosenOnes,
+    checkedEmployee: checkedEmployee,
+  };
+  dispatch(beTheChosenOnes(updateDataOfTheChosenOnes));
+};
+
+  
   return (
     <WrappingGridBox $isexpanded={props.isExpanded}>
       <div className="realMovingTable">
@@ -792,18 +869,21 @@ function BasicGridBox(props) {
             <table>
               <thead>
                 <tr>
-                  <th>V</th>
+                  <th onClick={checkAllCheckboxes}>V</th>
                   <th>이름</th>
                   <th>소속</th>
                   <th>직급</th>
                   <th>이메일주소</th>
-                  <th>휴대전화번호</th>
+                  <th>핸드폰번호</th>
                   <th>입사일</th>
                   <th>상태</th>
                 </tr>
               </thead>
               <tbody>
-                {props.employeeList.map((user) => {
+              {(props.searchMode && props.searchEmployeeList.length > 0
+                  ? props.searchEmployeeList
+                  : props.employeeList
+                ).map((user) => {
                   const isStateMatched =
                     props.selectedListTab === -1 ||
                     user.t_employee_state === props.selectedListTab;
@@ -817,6 +897,9 @@ function BasicGridBox(props) {
                         user={user}
                         handleRowClick={handleRowClick}
                         chosenOnes={chosenOnes}
+                        selectedUser={selectedUser}
+                        searchInputText={props.searchInputText}
+                        searchMode={props.searchMode}
                         selectedListTab={props.selectedListTab}
                       />
                     );
@@ -884,6 +967,17 @@ function BasicGridBox(props) {
                   </button>
                 </div>
               ))}
+              {(props.operateRegisMode || props.updateSelectedUser.t_employee_auth === 0) ? (
+                <div className="detailBoxButtonBox">
+                <button
+                  type="button"
+                  className="detailBoxBX"
+                  onClick={handleXClick}
+                >
+                  Ｘ
+                </button>
+              </div>
+              ) : ('')}
           </div>
           <div className="detailBoxInBox">
             <div className="detailBoxStaffInfo">
@@ -1036,7 +1130,7 @@ function BasicGridBox(props) {
                     </td>
                   </tr>
                   <tr>
-                    <th>유선전화번호</th>
+                    <th>핸드폰번호</th>
                     <td>
                       {props.operateRegisMode ? (
                         <input

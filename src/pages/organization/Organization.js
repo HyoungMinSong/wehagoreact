@@ -119,7 +119,7 @@ function Organization() {
           </div>
         </div>
       </SubHeader>
-      <div className={dataOfTheChosenOnes.length>0 ? "organizationSectionContainerO":"organizationSectionContainerX"} >
+      <div className={dataOfTheChosenOnes.checkedEmployee && dataOfTheChosenOnes.checkedEmployee.length>0 ? "organizationSectionContainerO":"organizationSectionContainerX"} >
         <Outlet />
       </div>
       <ActionFooter />
