@@ -69,7 +69,7 @@ const IndexBackground = () => {
         </div>
         <div className="page-content" style={{ height: pageHeight }}>
           <div className="video-container">
-            <h2 className="title-index4">쉽게, 편리하게, 다함께 WEHAGO</h2>
+            <h2 className="title-index4"><b>쉽게, 편리하게, 다함께 WEHAGO</b></h2>
             <div className="gray-box" onClick={() => handleImageClick(currentImageIndex)}>
               <iframe
                 id="videoIframe" // Added an ID to the iframe element
@@ -107,7 +107,7 @@ const IndexBackground = () => {
                   </div>
                   <div className='ccc' style={{width:'500px'}}>
                     <div className='my'>
-                      <div className="title-index5" style={{marginTop: '220px', fontSize: '40px'}}><b>WEHAGO 모바일</b></div>
+                      <div className="title-index5" style={{marginTop: '160px', fontSize: '40px'}}><b>WEHAGO 모바일</b></div>
                       <div className="title-index6 mt-3 text-muted" style={{fontSize: '25px'}}>WEHAGO를 더 스마트하게 사용하는 방법</div>
                     </div>
                     <div className='row'>
@@ -154,13 +154,11 @@ const IndexBackground = () => {
                 </div>
               </div>
             </div>
+            <div style={{background: "#333948"}}>
+        <Footer/>
+      </div>
           </div>
         </div>
-       
-       
-      </div>
-      <div style={{background: "black"}}>
-        <Footer/>
       </div>
     </>
     
