@@ -1,0 +1,55 @@
+/* Alert1.css */
+
+.Alert1-OuterContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.Alert1-Container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    width: 80%;
+    max-width: 700px;
+    height: 400px;
+}
+
+.Alert1-Title {
+    position: relative; /* 부모 요소에 relative 위치 설정 */
+    color: black;
+    font-size: 30px;
+}
+
+.Alert1-Title::after {
+    content: ''; /* ::after 의사 요소를 content 없이 사용하면 선을 만들어줄 수 있습니다 */
+    position: absolute; /* 선을 절대적으로 위치시킵니다 */
+    bottom: -30px; /* 타이틀 아래에 10px만큼 아래에 위치시켜 선과 여백을 만듭니다 */
+    left: 50%; /* 가운데로 위치하도록 50%로 설정합니다 */
+    transform: translateX(-50%); /* 가운데 정렬을 위해 선의 절반을 왼쪽으로 이동시킵니다 */
+    width: 150%; /* 선의 길이를 120%로 늘립니다 */
+   border-bottom: 1px solid rgba(0, 0, 0, 0.5) /* 선의 스타일을 설정합니다 (두께를 2px로 변경) */
+}
+
+.Alert1-Content {
+    margin-top: 70px;
+    color: black;
+    font-size: 18px;
+    text-align: center; /* 본문 내용을 가운데 정렬 */
+}
+
+.Alert1-Button {
+    background-color: #1c90fb;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 50px;
+}
+
+.Alert1-Button:hover {
+    background-color: black;
+}

@@ -33,6 +33,7 @@ import SignUp_invite from './pages/signUp/SignUp_invite';
 import LoginRedirect from './pages/login/LoginRedirect';
 import LoginInvite from './pages/login/LoginInvite';
 import UserChangePassword from './pages/main/UserChangePassword';
+import Alert1 from './pages/login/Alert1';
 
 
 export let persistor = persistStore(store);
@@ -51,7 +52,7 @@ root.render(
     <PersistGate persistor={persistor}>
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<App />} />
+        <Route path='/11' element={<App />} />
         <Route path='/signup' element={<SignUp_infomation />} />
         <Route path='/signup/company' element={<SignUp_company />} />
         <Route path='/signup/complete' element={<SignUp_complete />} />
@@ -74,11 +75,12 @@ root.render(
         <Route path="/test" element={ <Test_up></Test_up>} />
         <Route path="/test2" element={ <SignUpHeader></SignUpHeader>} />
         <Route path="/test3" element={ <SendTest></SendTest>} />
-        <Route path="/index1" element={ <Index1></Index1>} />
+        <Route path="/" element={ <Index1></Index1>} />
         <Route path="/s/:shortLink" element={ <SignUpRedirect></SignUpRedirect> }/>
         <Route path="/signup/invite" element={ <SignUp_invite></SignUp_invite>} />
         <Route path="/l/:shortLink" element={ <LoginRedirect></LoginRedirect> }/>
         <Route path="/logininvite" element={ <LoginInvite></LoginInvite> }/>
+        <Route path="/alert" element={ <Alert1></Alert1> }/>
 
         </Routes>
       </BrowserRouter>

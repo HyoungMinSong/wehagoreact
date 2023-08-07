@@ -6,6 +6,8 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import BluetoothSearchingOutlinedIcon from '@mui/icons-material/BluetoothSearchingOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import ImportantDevicesOutlinedIcon from '@mui/icons-material/ImportantDevicesOutlined';
+import { Link } from 'react-router-dom';
+import '../../../src/App.css';
 
 const IndexBackground = () => {
   const [pageHeight, setPageHeight] = useState(window.innerHeight);
@@ -69,7 +71,7 @@ const IndexBackground = () => {
         </div>
         <div className="page-content" style={{ height: pageHeight }}>
           <div className="video-container">
-            <h2 className="title-index4">쉽게, 편리하게, 다함께 WEHAGO</h2>
+            <h2 className="title-index4"><b>쉽게, 편리하게, 다함께 WEHAGO</b></h2>
             <div className="gray-box" onClick={() => handleImageClick(currentImageIndex)}>
               <iframe
                 id="videoIframe" // Added an ID to the iframe element
@@ -107,7 +109,7 @@ const IndexBackground = () => {
                   </div>
                   <div className='ccc' style={{width:'500px'}}>
                     <div className='my'>
-                      <div className="title-index5" style={{marginTop: '220px', fontSize: '40px'}}><b>WEHAGO 모바일</b></div>
+                      <div className="title-index5" style={{marginTop: '160px', fontSize: '40px'}}><b>WEHAGO 모바일</b></div>
                       <div className="title-index6 mt-3 text-muted" style={{fontSize: '25px'}}>WEHAGO를 더 스마트하게 사용하는 방법</div>
                     </div>
                     <div className='row'>
@@ -154,13 +156,27 @@ const IndexBackground = () => {
                 </div>
               </div>
             </div>
+            <div className="App">
+      <p>하이~~</p>
+      <Link to={'/signup'}>회원가입으로 가기</Link>
+      <br/>
+      <Link to={'/signup/company'}>회원가입/회사정보입력으로 가기</Link>
+      <br/>
+      <Link to={'/signup/complete'}>회원가입/회원가입완료로 가기</Link>
+      <br/>
+      <Link to={'/signup/package'}>회원가입/가입패키지결제로 가기</Link>
+      <br/>
+      <Link to={'/login'}>로그인으로 가기</Link>
+      <br />
+      <Link to={'/organization/management'}>조직도로 가기</Link>
+      <br/>
+      <Link to={'/main'}>메인화면으로 가기</Link>
+    </div>
+            <div style={{background: "#333948"}}>
+        <Footer/>
+      </div>
           </div>
         </div>
-       
-       
-      </div>
-      <div style={{background: "black"}}>
-        <Footer/>
       </div>
     </>
     

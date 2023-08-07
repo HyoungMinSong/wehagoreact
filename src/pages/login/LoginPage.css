@@ -45,7 +45,7 @@
 }
 
 .jongwonscss .wrapper {
-  background: linear-gradient(to top right, rgb(120, 21, 105), rgb(35, 1, 54));
+  background: linear-gradient(to top right, #1160a9,#1c90fb);
   position: fixed;
   top: 0;
   left: 0;
