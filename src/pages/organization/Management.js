@@ -703,22 +703,24 @@ function Management() {
 
   // 직원 목록 조회
   const fetchEmployeeList = async () => {
-    try {
-      // 로딩 on
-      setLoading(true);
-      // 체크박스 선택 값 초기화
-      dispatch(clearChosenOnes());
-      const emplList = await axiosApi.get("/findUserEmplOrgaFromCompany", {
-        params: {
-          t_company_no: tCompanyNo,
-        },
-      });
-      console.log("직원 리스트", emplList);
-      setEmployeeList(emplList.data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+    if (tCompanyNo) {
+      try {
+        // 로딩 on
+        setLoading(true);
+        // 체크박스 선택 값 초기화
+        dispatch(clearChosenOnes());
+        const emplList = await axiosApi.get("/findUserEmplOrgaFromCompany", {
+          params: {
+            t_company_no: tCompanyNo,
+          },
+        });
+        console.log("직원 리스트", emplList);
+        setEmployeeList(emplList.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
