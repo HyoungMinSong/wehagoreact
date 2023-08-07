@@ -19,6 +19,8 @@ import Swal from "sweetalert2";
 import axiosApi from "../../AxiosApi";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
+import SignUpHeader from "./SignUpHeader";
+import { Link } from 'react-router-dom';
 
 const VerticalLine = styled.div`
   border-left: 1px solid black;
@@ -37,25 +39,26 @@ function SignUp_package() {
   console.log(rangeValue)
 
   return (
-
+<>
+{/* <SignUpHeader></SignUpHeader> */}
     <div style={{ textAlign: 'center' }}>
 
       <div className="container" >
 
         <div className="row d-flex align-items-center">
           <div className="col-1">
-            <img src={require('./wehagologo2.png')} width="100" height="30" alt="Logo" />
+          <Link to={'/'}><img src={require('./wehagologo2.png')} width="100" height="30" alt="Logo" /></Link>
           </div>
           <div className="col-1">
-            <Badge pill bg="info">
+            {/* <Badge pill bg="info">
               회사이름입니다
-            </Badge>
+            </Badge> */}
           </div>
           <div className="col-9 small-text text-end" style={{ paddingRight: '0px' }}>
             WEHAGO 고객센터 &gt;
           </div>
           <div className="col-1 text-end">
-            <Button variant="outline-secondary" size="sm" className="ml-0 mb-1">로그인</Button>
+          <Link to={'/login'}><Button variant="outline-secondary" size="sm" className="ml-0 mb-1">로그인</Button></Link>
           </div>
         </div>
       </div>
@@ -402,9 +405,9 @@ function SignUp_package() {
                     if (result.isConfirmed) {
                       console.log('name : ' + test11.name + 'id : ' + test11.id + 'businessCategory : ' + test11.businessCategory);
                       if (packagePrice.selectPackge === 'CLUB') {
-                        finalTest = { ...test11, packageNo: 1, packageCount:rangeValue };
+                        finalTest = { ...test11, packageNo: 1, packageCount: rangeValue };
                       } else {
-                        finalTest = { ...test11, packageNo: 2, packageCount:rangeValue };
+                        finalTest = { ...test11, packageNo: 2, packageCount: rangeValue };
                       }
 
 
@@ -427,7 +430,8 @@ function SignUp_package() {
                       // fetchData();
                       // setEditingOrganization(false);
                     }
-                  }})
+                  }
+                })
               }}>
                 결제하기
               </Button>
@@ -445,6 +449,7 @@ function SignUp_package() {
         </div>
       )}
     </div>
+    </>
   );
 }
 
