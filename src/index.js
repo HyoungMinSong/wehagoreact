@@ -30,6 +30,8 @@ import Index1 from './pages/login/Index1';
 import UserSetting from './pages/main/UserSetting';
 import SignUpRedirect from './pages/signUp/SignUpRedirect';
 import SignUp_invite from './pages/signUp/SignUp_invite';
+import LoginRedirect from './pages/login/LoginRedirect';
+import LoginInvite from './pages/login/LoginInvite';
 import UserChangePassword from './pages/main/UserChangePassword';
 
 
@@ -75,6 +77,8 @@ root.render(
         <Route path="/index1" element={ <Index1></Index1>} />
         <Route path="/s/:shortLink" element={ <SignUpRedirect></SignUpRedirect> }/>
         <Route path="/signup/invite" element={ <SignUp_invite></SignUp_invite>} />
+        <Route path="/l/:shortLink" element={ <LoginRedirect></LoginRedirect> }/>
+        <Route path="/logininvite" element={ <LoginInvite></LoginInvite> }/>
 
         </Routes>
       </BrowserRouter>

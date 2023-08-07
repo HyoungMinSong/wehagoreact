@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SignUpHeader from '../signUp/SignUpHeader';
+import Footer from "../main/Footer";
 import './Index1.css';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import BluetoothSearchingOutlinedIcon from '@mui/icons-material/BluetoothSearchingOutlined';
@@ -57,8 +58,9 @@ const IndexBackground = () => {
 
   return (
     <>
-      <SignUpHeader />
+      
       <div className="background-container">
+      <SignUpHeader />
         <div className="background-container-index">
           <h2 className="title-index1">기업에 필요한 다양한 업무환경을 제공하는 비즈니스 플랫폼</h2>
           <h2 className="title-index2">WEHAGO</h2>
@@ -143,7 +145,7 @@ const IndexBackground = () => {
                           <QuestionAnswerOutlinedIcon style={{ fontSize: '80px', marginBottom: '10px' }}className='text-primary' ></QuestionAnswerOutlinedIcon>
                           <div className='index11-1 mb-4'><b style={{ fontSize: '18px' }}>WEHAGO 컨텐츠 공유</b></div>
                         </div>
-                        <div className="title-index12 text-muted">연락처, 거래처 등<br></br>WEHAGO 서비스 컨텐츠를<br></br>공유하며 협업할 수 있습니다.
+                        <div className="title-index12 text-muted" style={{ marginBottom: '300px' }}>연락처, 거래처 등<br></br>WEHAGO 서비스 컨텐츠를<br></br>공유하며 협업할 수 있습니다.
                         </div>
                         </div>
                       </div>
@@ -154,8 +156,14 @@ const IndexBackground = () => {
             </div>
           </div>
         </div>
+       
+       
+      </div>
+      <div style={{background: "black"}}>
+        <Footer/>
       </div>
     </>
+    
   );
 };
 
