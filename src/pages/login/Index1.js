@@ -6,6 +6,8 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import BluetoothSearchingOutlinedIcon from '@mui/icons-material/BluetoothSearchingOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import ImportantDevicesOutlinedIcon from '@mui/icons-material/ImportantDevicesOutlined';
+import { Link } from 'react-router-dom';
+import '../../../src/App.css';
 
 const IndexBackground = () => {
   const [pageHeight, setPageHeight] = useState(window.innerHeight);
@@ -154,6 +156,22 @@ const IndexBackground = () => {
                 </div>
               </div>
             </div>
+            <div className="App">
+      <p>하이~~</p>
+      <Link to={'/signup'}>회원가입으로 가기</Link>
+      <br/>
+      <Link to={'/signup/company'}>회원가입/회사정보입력으로 가기</Link>
+      <br/>
+      <Link to={'/signup/complete'}>회원가입/회원가입완료로 가기</Link>
+      <br/>
+      <Link to={'/signup/package'}>회원가입/가입패키지결제로 가기</Link>
+      <br/>
+      <Link to={'/login'}>로그인으로 가기</Link>
+      <br />
+      <Link to={'/organization/management'}>조직도로 가기</Link>
+      <br/>
+      <Link to={'/main'}>메인화면으로 가기</Link>
+    </div>
             <div style={{background: "#333948"}}>
         <Footer/>
       </div>

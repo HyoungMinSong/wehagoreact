@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom'
 import axiosApi from "../../AxiosApi";
-
+import { Spinner } from "react-bootstrap";
 // className="border-danger"
 
 
@@ -31,14 +31,18 @@ function SignUpRedirect() {
     //     setLoading(false);
     //   })
 
-    if (loading) {
       return (
         <div>
-          로딩 중...
+          {loading && (
+            <div className="overlay-loading-box text-center"  style={{ backgroundColor: 'white', color: 'black' }}>
+                {/* 로딩 스피너 컴포넌트 */}
+                <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
+                <div className="mt-3">로딩중입니다<br />잠시만 기다려주세요.</div>
+            </div>)}
         </div>
       );
     }
   
-}
+
 
 export default SignUpRedirect;
