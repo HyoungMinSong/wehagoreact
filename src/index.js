@@ -33,6 +33,7 @@ import SignUp_invite from './pages/signUp/SignUp_invite';
 import LoginRedirect from './pages/login/LoginRedirect';
 import LoginInvite from './pages/login/LoginInvite';
 import UserChangePassword from './pages/main/UserChangePassword';
+import Alert1 from './pages/login/Alert1';
 
 
 export let persistor = persistStore(store);
@@ -79,6 +80,7 @@ root.render(
         <Route path="/signup/invite" element={ <SignUp_invite></SignUp_invite>} />
         <Route path="/l/:shortLink" element={ <LoginRedirect></LoginRedirect> }/>
         <Route path="/logininvite" element={ <LoginInvite></LoginInvite> }/>
+        <Route path="/alert" element={ <Alert1></Alert1> }/>
 
         </Routes>
       </BrowserRouter>

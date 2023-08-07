@@ -12,20 +12,20 @@ function LoginRedirect() {
   useEffect(() => {
     axiosApi.get("/l/" + shortLink)
       .then((response) => {
+        setLoading(false);
         if (response.data === '') {
           console.log('백엔드 오류 리턴');
+          navigate('/alert');
         } else {
           console.log(response.data);
           const abc = response.data.empNo;
-          navigate('/Logininvite');
-        
-  
-  }
-        setLoading(false);
+          navigate('/Logininvite');     
+        }
       })
       .catch(() => {
         console.log('실패함');
         setLoading(false);
+        navigate('/alert');
       });
   }, [navigate, shortLink]);
 
