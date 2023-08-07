@@ -5,6 +5,7 @@ import { styled } from "styled-components";
 import { useSelector } from "react-redux";
 import { setUser, setService, setCompany, setCompanyName } from '../../store'
 import axiosApi from "../../AxiosApi";
+import Swal from "sweetalert2";
 
 const Navbar = styled.nav `
     display: flex;
@@ -123,26 +124,66 @@ function UserChangePassword() {
         const newPassword = e.target.newPassword.value;
         const newPasswordCheck = e.target.newPasswordCheck.value;
         
-        if(!pwRegex.test(newPassword)) {
-            alert("새 비밀번호 정규식 에러!");
-            e.target.currentPassword.focus();
-            return;
-        }
-        
         if(currentPassword === newPassword) {
-            alert("현재 비밀번호와 다른 비밀번호를 사용하세요.");
+            Swal.fire({
+                title: false,
+                text: "새 비밀번호를 현재 비밀번호와 다르게 설정하세요.",
+                icon: "warning",
+                showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                // reverseButtons: true, // 버튼 순서 거꾸로
+            });
             e.target.newPassword.focus();
             return;
         }
-
+        
+        if(!pwRegex.test(newPassword)) {
+            Swal.fire({
+                title: false,
+                text: "새 비밀번호 입력란을 확인하세요.",
+                icon: "warning",
+                showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                // reverseButtons: true, // 버튼 순서 거꾸로
+            });
+            e.target.newPassword.focus();
+            return;
+        }
+        
         if(!pwRegex.test(newPasswordCheck)) {
-            alert("새 비밀번호 확인 정규식 에러!");
-            e.target.currentPassword.focus();
+            Swal.fire({
+                title: false,
+                text: "새 비밀번호 확인 입력란을 확인하세요.",
+                icon: "warning",
+                showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                // reverseButtons: true, // 버튼 순서 거꾸로
+            });
+            e.target.newPasswordCheck.focus();
             return;
         }
 
         if(newPassword !== newPasswordCheck) {
-            alert("새 비밀번호가 일치하지 않습니다.");
+            Swal.fire({
+                title: false,
+                text: "새 비밀번호와 일치하지 않습니다.",
+                icon: "warning",
+                showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                // reverseButtons: true, // 버튼 순서 거꾸로
+            });
             e.target.newPasswordCheck.focus();
             return;
         }
@@ -152,19 +193,59 @@ function UserChangePassword() {
         formData.append("id", user.id);
         formData.append("currentPassword", currentPassword);
         formData.append("newPassword", newPassword);
-        
-        const response = await axiosApi.post("/api/update_password", formData, {
-            headers: {
-                "Content-Type": "form-data",
-            },
-        });
 
-        if(response.data) {
-            alert("비밀번호 변경 되었습니다.");
-            window.location.reload();
-        } else {
-            alert("현재 비밀번호가 일치하지 않습니다.");
-        }
+        Swal.fire({
+            title: false,
+            text: "이대로 비밀번호를 수정 하시겠습니까?",
+            icon: "warning",
+            showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+            confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+            cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+            // reverseButtons: true, // 버튼 순서 거꾸로
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // 만약 모달창에서 confirm 버튼을 눌렀다면
+              axiosApi.post("/api/update_password", formData, {
+                headers: {
+                    "Content-Type": "form-data",
+                },
+              }).then((response) => {
+                if(response.data) {
+                    Swal.fire({
+                        title: false,
+                        text: "비밀번호가 수정 되었습니다.",
+                        icon: "success",
+                        showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                        // reverseButtons: true, // 버튼 순서 거꾸로
+                    }).then(() => {
+                        window.location.reload();
+                    })
+                } else {
+                    Swal.fire({
+                        title: false,
+                        text: "현재 비밀번호가 일치하지 않습니다.",
+                        icon: "error",
+                        showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                        // reverseButtons: true, // 버튼 순서 거꾸로
+                    });
+                    e.target.currentPassword.focus();
+                }
+            }).catch((response) => {
+                console.error("통신 실패..");
+                return;
+            });
+            }
+        });
     }
 
     const inputCurrentPasswordHandler = (e) => {

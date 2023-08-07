@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setUser, setService, setCompany, setCompanyName } from '../../store'
 import axiosApi from "../../AxiosApi";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Navbar = styled.nav `
     display: flex;
@@ -80,6 +81,7 @@ const LeftTd = styled.td`
 
 const RightTd = styled.td`
     display: flex;
+    align-items: center;
     padding: 15px;
     font-size: 13px;
 
@@ -134,9 +136,15 @@ const DeleteBtn = styled.div`
 function UserSetting(props) {
     const dispatch = useDispatch();
     const prefixImgUrl = "http://localhost:8080/images/";
+    const nameRegex = /^[가-힣a-zA-Z]+$/;
+    const emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    const phoneRegex = /^\d{3}\d{3,4}\d{4}$/;
 
     const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
     const [editClick, setEditClick] = useState(false);
+    const [nameValidate, setNameValidate] = useState(true);
+    const [emailValidate, setEmailValidate] = useState(true);
+    const [phoneValidate, setPhoneValidate] = useState(true);
     const index = company.findIndex((element) => element.t_company_name === companyName);
 
     const imgInputRef = useRef(null);
@@ -182,6 +190,38 @@ function UserSetting(props) {
     const editSubmitHandler = async (e) => {
         e.preventDefault();
 
+        let focusTarget = null; // 포커스를 줄 input 요소를 저장할 변수
+
+        if (!nameRegex.test(e.target.name.value)) {
+            focusTarget = e.target.name; // 포커스를 줄 input 요소 설정
+            setNameValidate(false);
+            setEmailValidate(true);
+            setPhoneValidate(true);
+            window.scrollTo(0, 0);
+            focusTarget.focus();
+            return;
+        } else if (!emailRegex.test(e.target.email.value)) {
+            focusTarget = e.target.email; // 포커스를 줄 input 요소 설정
+            setNameValidate(true);
+            setEmailValidate(false);
+            setPhoneValidate(true);
+            window.scrollTo(0, 0);
+            focusTarget.focus();
+            return;
+        } else if (!phoneRegex.test(e.target.phone.value)) {
+            focusTarget = e.target.phone; // 포커스를 줄 input 요소 설정
+            setNameValidate(true);
+            setEmailValidate(true);
+            setPhoneValidate(false);
+            window.scrollTo(0, 0);
+            focusTarget.focus();
+            return;
+        }
+
+        setNameValidate(true);
+        setEmailValidate(true);
+        setPhoneValidate(true);
+
         const file = imgInputRef.current.files[0]; // 선택한 파일 가져오기
         const formData = new FormData();
         
@@ -191,32 +231,53 @@ function UserSetting(props) {
         formData.append("email", e.target.email.value); // 이메일 추가
         formData.append("phone", e.target.phone.value); // 전화번호 추가
 
-        try {
-            const response = await axiosApi.post("/api/update/change_image", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
+        Swal.fire({
+            title: false,
+            text: "이대로 정보를 수정 하시겠습니까?",
+            icon: "warning",
+            showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+            confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+            cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+            cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+            // reverseButtons: true, // 버튼 순서 거꾸로
+          }).then((result) => {
+            // 만약 Promise리턴을 받으면,
+            if (result.isConfirmed) {
+              // 만약 모달창에서 confirm 버튼을 눌렀다면
+                axiosApi.post("/api/update/change_image", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }).then((response) => {
+                    Swal.fire({
+                        title: false,
+                        text: "개인정보가 수정 되었습니다.",
+                        icon: "success",
+                        showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                        // reverseButtons: true, // 버튼 순서 거꾸로
+                      }).then((result) => {
+                        const userInfo = 
+                        {
+                            "id" : userIdRef.current.innerText,
+                            "name" : e.target.name.value,
+                            "email" : e.target.email.value,
+                            "photo" : prefixImgUrl + response.data.photo_path,
+                            "phone" : e.target.phone.value
+                        }
+                        dispatch(setUser(userInfo));
+                        window.location.reload(); // 새로고침
+                      });
+                }).catch((response) => {
+                    console.error("통신 실패..");
+                    return;
                 });
-
-            if(response.status === 200) {
-                alert('정보가 수정되었습니다!');
-                const userInfo = 
-                {
-                    "id" : userIdRef.current.innerText,
-                    "name" : e.target.name.value,
-                    "email" : e.target.email.value,
-                    "photo" : prefixImgUrl + response.data.photo_path,
-                    "phone" : e.target.phone.value
-                }
-                dispatch(setUser(userInfo));
-                window.location.reload(); // 새로고침
-            } else {
-                alert('정보 수정에 실패했습니다..');
             }
-        } catch (error) {
-            console.error("업로드 실패:", error);
-            return;
-        }
+        });
     }
 
     return(
@@ -265,7 +326,10 @@ function UserSetting(props) {
                             </Tr>
                             <Tr>
                                 <LeftTd>이름</LeftTd>
-                                <RightTd>{editClick ? <input type="text" name="name" required/> : user.name}</RightTd>
+                                <RightTd>
+                                    {editClick ? <input type="text" name="name" required/> : user.name}
+                                    {nameValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>이름을 다시 입력하세요.</small>}
+                                </RightTd>                   
                             </Tr>
                             <Tr>
                                 <LeftTd>아이디</LeftTd>
@@ -273,11 +337,17 @@ function UserSetting(props) {
                             </Tr>
                             <Tr>
                                 <LeftTd>이메일주소</LeftTd>
-                                <RightTd>{editClick ? <input type="email" name="email" required/> : user.email}</RightTd>
+                                <RightTd>
+                                    {editClick ? <input type="text" name="email" required/> : user.email}
+                                    {emailValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>이메일을 다시 입력하세요.</small>}
+                                </RightTd>                  
                             </Tr>
                             <Tr>
                                 <LeftTd>휴대전화번호</LeftTd>
-                                <RightTd>{editClick ? <input type="phone" name="phone" required/> : user.phone}</RightTd>
+                                <RightTd>
+                                    {editClick ? <input type="text" name="phone" required/> : user.phone}
+                                    {phoneValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>휴대전화번호를 다시 입력하세요.</small>}
+                                </RightTd>
                             </Tr>
                         </tbody>
                     </InfoTable>
