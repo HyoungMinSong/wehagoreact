@@ -1,5 +1,12 @@
 function BasicGridBoxItem(props) {
   const user = props.user;
+  const searchInputText = props.searchInputText;
+
+  // 검색어를 포함하는지 확인하는 함수
+  const isMatched = (text) => {
+    return text.includes(searchInputText);
+  };
+
   return (
     <tr
       key={user.t_user_no}
@@ -10,15 +17,16 @@ function BasicGridBoxItem(props) {
         <input
           type="checkbox"
           name="theChosenOnes"
+          id={user.t_user_no}
           onChange={(e) => props.chosenOnes(e, user)}
           disabled={user.t_employee_state !== 0 && user.t_employee_state !== 1}
         />
       </td>
-      <td>{user.t_user_name}</td>
-      <td>{user.t_organization_name}</td>
+      <td className={props.searchMode && isMatched(user.t_user_name) ? "searchThing" : ""}>{user.t_user_name}</td>
+      <td className={props.searchMode && isMatched(user.t_organization_name) ? "searchThing" : ""}>{user.t_organization_name}</td>
       <td>{user.t_employee_position}</td>
-      <td>{user.t_user_email}</td>
-      <td>{user.t_user_phone}</td>
+      <td className={props.searchMode && isMatched(user.t_user_email) ? "searchThing" : ""}>{user.t_user_email}</td>
+      <td className={props.searchMode && isMatched(user.t_user_phone) ? "searchThing" : ""}>{user.t_user_phone}</td>
       <td>{user.t_employee_date}</td>
       <td>
         {user.t_employee_state === 0 && "미가입"}

@@ -304,6 +304,8 @@ function Management() {
   const [loading, setLoading] = useState(false);
   // 무선 스피너
   const pushedSwitch = useSelector((state) => state.spinnerSwitch);
+  // 검색 모드
+  const [searchMode, setSearchMode] = useState(false);
 
   // 로그인한 회사로 첫 렌더링
   useEffect(() => {
@@ -330,6 +332,7 @@ function Management() {
     // 조직도 선택 값 회사로 초기화
     setSelectedRowNum(0);
     setSelectedOrgaName(loginedUser.companyName);
+    setSearchMode(false);
   }, [loginedUser.companyName]); // 헤더의 선택된 회사이름
 
   // tCompanyNo 값이 변경될 때마다 fetchEmployeeList() 함수 실행
@@ -373,6 +376,7 @@ function Management() {
     if (isExpanded === "true") {
       setIsExpanded("false");
     }
+    setSearchMode(false);
     // 조직 선택 구분
     setSelectedRowNum(rownum);
     // 조직 이름 선택 구분
@@ -384,6 +388,7 @@ function Management() {
     // 편집 버튼 클릭시
     if (e.target.name == "EditB") {
       setEditingOrganization(true);
+      setSearchMode(false);
       dispatch(clearChosenOnes());
       if (isExpanded === "true") {
         setIsExpanded("false");
@@ -925,6 +930,7 @@ function Management() {
         />
         <BasicTreeViewList
           employeeList={employeeList}
+          setEmployeeList={setEmployeeList}
           organizationList={organizationList}
           selectedOrgaName={selectedOrgaName}
           tCompanyNo={tCompanyNo}
@@ -934,6 +940,8 @@ function Management() {
           selectedListTab={selectedListTab}
           fetchEmployeeList={fetchEmployeeList}
           setLoading={setLoading}
+          searchMode={searchMode}
+          setSearchMode={setSearchMode}
         />
       </WrappedTreeView>
     </CsContainer>
