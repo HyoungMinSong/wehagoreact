@@ -376,6 +376,9 @@ function BasicGridBox(props) {
   const [selectedImage, setSelectedImage] = useState(null);
   // 로그인 유저 정보
   const loginedUser = useSelector((state) => state.loginUserData);
+  let nameRegex = /^[가-힣a-zA-Z]+$/;
+  let numberRegex = /^\d{11}$/;
+  let emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
 
   useEffect(() => {
     updateOnesDate(props.selectedDate);
@@ -549,8 +552,59 @@ function BasicGridBox(props) {
     }
   };
 
+  // 저장버튼 유효성 검사
+  const handleSaveClick = () => {
+    if(props.updateSelectedUser.t_user_name == null || props.updateSelectedUser.t_user_name == '' ||
+      props.updateSelectedUser.t_employee_position == null || props.updateSelectedUser.t_employee_position == '' ||
+      props.updateSelectedUser.t_employee_duty == null || props.updateSelectedUser.t_employee_duty == '' ||
+      props.updateSelectedUser.t_user_phone == null || props.updateSelectedUser.t_user_phone == '' ||
+      props.updateSelectedUser.t_user_email == null || props.updateSelectedUser.t_user_email == ''
+      ){
+        Swal.fire({
+          title: "등록에 실패했습니다.",
+          text: "입력하지 않은 항목이 존재합니다.",
+          icon: "warning",
+          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        }).then((result) => {
+          // 만약 Promise리턴을 받으면,
+          if (result.isConfirmed) {
+            // 만약 모달창에서 confirm 버튼을 눌렀다면
+            console.log(result);
+          }
+        });
+    }else if(!nameRegex.test(props.updateSelectedUser.t_user_name) ||
+      !numberRegex.test(props.updateSelectedUser.t_user_phone) ||
+      !emailRegex.test(props.updateSelectedUser.t_user_email)
+    ){
+      let swalText = '';
+      if(!nameRegex.test(props.updateSelectedUser.t_user_name)){
+        swalText = "이름은 한글과 영문만 입력 가능합니다.";
+      }else if(!numberRegex.test(props.updateSelectedUser.t_user_phone)){
+        swalText = "휴대전화번호 11자리를 올바르게 입력해주세요.";
+      }else{
+        swalText = "올바른 이메일 형식이 아닙니다.";
+      }
+      Swal.fire({
+        title: "등록에 실패했습니다.",
+        text: swalText,
+        icon: "warning",
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+          console.log(result);
+        }
+      });
+    }else{
+      requestSaveClick();
+    }
+  };
+
   // 저장버튼 이벤트 등록
-  const handleSaveClick = async () => {
+  const requestSaveClick = async () => {
     try {
       props.setLoading(true);
       // 이미지 파일 저장
@@ -602,8 +656,31 @@ function BasicGridBox(props) {
     }
   };
 
+  // 저장버튼(수정) 유효성 검사
+  const handleUpdateClick = () => {
+    if(props.updateSelectedUser.t_employee_position == null || props.updateSelectedUser.t_employee_position == '' ||
+      props.updateSelectedUser.t_employee_duty == null || props.updateSelectedUser.t_employee_duty == ''
+      ){
+        Swal.fire({
+          title: "수정에 실패했습니다.",
+          text: "입력하지 않은 항목이 존재합니다.",
+          icon: "warning",
+          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+        }).then((result) => {
+          // 만약 Promise리턴을 받으면,
+          if (result.isConfirmed) {
+            // 만약 모달창에서 confirm 버튼을 눌렀다면
+            console.log(result);
+          }
+        });
+    }else{
+      requestUpdateClick();
+    }
+  };
+
   // 저장버튼 이벤트 수정
-  const handleUpdateClick = async () => {
+  const requestUpdateClick = async () => {
     console.log("props.updateSelectedUser", props.updateSelectedUser);
     try {
       props.setLoading(true);
@@ -1053,6 +1130,7 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                         <input
                           type="text"
                           name="su-usname"
+                          placeholder="한글과 영문만 입력 가능합니다."
                           value={props.updateSelectedUser.t_user_name || ""}
                           onChange={(e) => updateOnes(e)}
                         />
@@ -1136,6 +1214,7 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                         <input
                           type="text"
                           name="su-usphon"
+                          placeholder="핸드폰번호 11자리를 입력하세요."
                           value={props.updateSelectedUser.t_user_phone || ""}
                           onChange={(e) => updateOnes(e)}
                         />
@@ -1153,6 +1232,7 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                         <input
                           type="text"
                           name="su-usemai"
+                          placeholder="이메일 형식으로 입력하세요."
                           value={props.updateSelectedUser.t_user_email || ""}
                           onChange={(e) => updateOnes(e)}
                         />
