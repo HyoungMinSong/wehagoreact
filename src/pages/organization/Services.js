@@ -31,7 +31,7 @@ function Services() {
   useEffect(() => {
     // return () => {
       showCompanySerivces();
-  }, [show])
+  }, [show, loginedUser.companyName])
   // 모달창 띄우기 유무
 
 const showCompanySerivces = async() => {
@@ -80,7 +80,7 @@ const showCompanySerivces = async() => {
 
   let getPublishedUser = (cn, sn) => {
     axiosApi.post("/findpublisheduser", {
-      comNo: cn, serviceNo: sn, comNo:comNo, packCt : packageCount
+      comNo: cn, serviceNo: sn
     }).then((c) => {
       console.log(c.data);
       setPublishedUserList(c.data);
@@ -105,7 +105,7 @@ const showCompanySerivces = async() => {
       if (result.isConfirmed) {
         // 만약 모달창에서 confirm 버튼을 눌렀다면
         axiosApi.post("/saveinvitedemployeepublish", {
-          serviceNo: cs, employeeNo: en
+          serviceNo: cs, employeeNo: en, comNo:comNo, packCt : packageCount
         }).then((c) => {
           if(c.data === 0){
           console.log(c.data);
