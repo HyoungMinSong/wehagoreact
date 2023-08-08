@@ -3,6 +3,9 @@ import './LoginPage.css';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
 import jwt_decode from 'jwt-decode';
+import SignUpHeader1 from '../signUp/SignUpHeaderlogin';
+import { Spinner } from "react-bootstrap";
+
 
 
 const LoginForm = ({ handleLogin }) => {
@@ -20,6 +23,7 @@ const LoginPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -94,8 +98,11 @@ const LoginPage = () => {
 
 
   return (
+    <div>
     <div className="jongwonscss">
       <div className={`wrapper${formSuccess ? ' form-success' : ''}`}>
+      <SignUpHeader1>
+    </SignUpHeader1>
         <div className="container">
           <h1 className={`${formSuccess ? 'form-success text-white' : 'text-white'}`}>W E H A G O</h1>
 
@@ -135,6 +142,7 @@ const LoginPage = () => {
         </ul>
       </div>
     </div>
+  </div>
   );
 };
 

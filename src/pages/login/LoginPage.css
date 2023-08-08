@@ -45,7 +45,7 @@
 }
 
 .jongwonscss .wrapper {
-  background: linear-gradient(to top right, #1160a9,#1c90fb);
+  background: linear-gradient(to top right,#1c90fb,#68aae4);
   position: fixed;
   top: 0;
   left: 0;
@@ -75,7 +75,7 @@
   margin: 0 auto;
   padding: 80px 0;
   height: 600px;
-  margin-top: 160px;
+  margin-top: 100px;
   text-align: center;
   font-weight: bold;
 
@@ -147,7 +147,7 @@
 
 .jongwonscss .bg-bubbles {
   position: absolute;
-  top: 0;
+  top: 80px;
   left: 0;
   width: 100%;
   height: 100%;

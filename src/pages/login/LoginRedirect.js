@@ -19,8 +19,8 @@ function LoginRedirect() {
           navigate('/alert');
         } else {
           console.log(response.data);
-          const abc = response.data.empNo;
-          navigate('/Logininvite');     
+          const empNo = response.data.empNo;
+          navigate('/Logininvite',{state:{empNo}});     
         }
       })
       .catch(() => {

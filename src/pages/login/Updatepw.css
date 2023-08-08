@@ -3,14 +3,15 @@
 .update-password-container {
   max-width: 700px;
   margin: 0 auto;
-  margin-top: 60px;
+  margin-top: 80px;
+  margin-bottom: 60px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   border: 2px solid #ccc;
   align-items: center;
   justify-content: center;
-  min-height: 85vh;
+  min-height: 75vh;
 }
 
 .update-password-title {
@@ -73,7 +74,6 @@
   border-radius: 4px;
   cursor: pointer;
   margin-top: 30px;
-  margin-bottom: 10px;
 }
 
 .update-password-form-button:hover {
@@ -104,7 +104,7 @@
   white-space: nowrap;
 }
 .update-password-form {
-  height: 700px;
+  height: 600px;
 }
 
 
