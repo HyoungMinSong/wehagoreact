@@ -13,7 +13,7 @@ const Navbar = styled.nav `
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 60px;
+    height: 48px;
     background: #1c90fb;
     color: white;
     padding: 0px 100px;
@@ -22,12 +22,12 @@ const Navbar = styled.nav `
     & > a {
         text-decoration: none;
         color: white;
-        font-size: 22px;
+        font-size: 20px;
     }
 
     & > div > button, & > div > a > button {
         width: 125px;
-        height: 60px;
+        height: 48px;
         background: none;
         border: none;
         color: white;
@@ -142,6 +142,7 @@ function UserSetting(props) {
 
     const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
     const [editClick, setEditClick] = useState(false);
+    const [isDeleteClick, setIsDeleteClick] = useState(false);
     const [nameValidate, setNameValidate] = useState(true);
     const [emailValidate, setEmailValidate] = useState(true);
     const [phoneValidate, setPhoneValidate] = useState(true);
@@ -172,11 +173,13 @@ function UserSetting(props) {
         if (file) {
             reader.readAsDataURL(file);
         }
+        setIsDeleteClick(false);
     }
 
     const deleteBtnHandler = (event) => {
-        profileImgRef.current.src = user.photo; // 다시 원래 유저 프로필 이미지로
+        profileImgRef.current.src = 'https://static.wehago.com/imgs/dummy/@dummy_02.jpg'; // 기본 프로필 이미지로
         imgInputRef.current.value = ''; // 파일 등록 초기화
+        setIsDeleteClick(true);
     }
 
     const editBtnHandler = () => {
@@ -226,6 +229,7 @@ function UserSetting(props) {
         const formData = new FormData();
         
         formData.append("profileImage", file); // 새 파일이 있으면 formData에 추가
+        formData.append("isDelete", isDeleteClick); // 삭제 버튼 눌렀는지 확인
         formData.append("id", userIdRef.current.innerText); // 식별 할 유저 아이디
         formData.append("name", e.target.name.value); // 이름 추가
         formData.append("email", e.target.email.value); // 이메일 추가
@@ -261,12 +265,15 @@ function UserSetting(props) {
                         cancelButtonText: "취소", // cancel 버튼 텍스트 지정
                         // reverseButtons: true, // 버튼 순서 거꾸로
                       }).then((result) => {
+                        const photo = response.data.photo_path.startsWith('http') ? 
+                                        response.data.photo_path : prefixImgUrl + response.data.photo_path;
+                        console.log(photo);
                         const userInfo = 
                         {
                             "id" : userIdRef.current.innerText,
                             "name" : e.target.name.value,
                             "email" : e.target.email.value,
-                            "photo" : prefixImgUrl + response.data.photo_path,
+                            "photo" : photo,
                             "phone" : e.target.phone.value
                         }
                         dispatch(setUser(userInfo));
@@ -361,36 +368,32 @@ function UserSetting(props) {
                                 <RightTd>{companyName}</RightTd>
                             </Tr>
                             <Tr>
-                                <LeftTd>직급</LeftTd>
+                                <LeftTd>내 직급</LeftTd>
                                 <RightTd>{company.length > 0 ? company[index].t_employee_position : ''}</RightTd>
                             </Tr>
                             <Tr>
-                                <LeftTd>직책</LeftTd>
+                                <LeftTd>내 직책</LeftTd>
                                 <RightTd>{company.length > 0 ? company[index].t_employee_duty : ''}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>대표자</LeftTd>
+                                <RightTd>{company.length > 0 ? company[index].t_company_representative : ''}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>사업 구분</LeftTd>
+                                <RightTd>{company.length > 0 ? company[index].t_company_clasification : ''}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>업태</LeftTd>
+                                <RightTd>{company.length > 0 ? company[index].t_company_business : ''}</RightTd>
+                            </Tr>
+                            <Tr>
+                                <LeftTd>업종</LeftTd>
+                                <RightTd>{company.length > 0 ? company[index].t_company_sectors : ''}</RightTd>
                             </Tr>
                             <Tr>
                                 <LeftTd>직장 전화번호</LeftTd>
                                 <RightTd>{company.length > 0 ? company[index].t_company_call_num : ''}</RightTd>
-                            </Tr>
-                            <Tr>
-                                <LeftTd>내선번호</LeftTd>
-                                <RightTd></RightTd>
-                            </Tr>
-                            <Tr>
-                                <LeftTd>직장 팩스번호</LeftTd>
-                                <RightTd></RightTd>
-                            </Tr>
-                            <Tr>
-                                <LeftTd>직장 주소</LeftTd>
-                                <RightTd></RightTd>
-                            </Tr>
-                            <Tr>
-                                <LeftTd>담당업무</LeftTd>
-                                <RightTd></RightTd>
-                            </Tr>
-                            <Tr>
-                                <LeftTd>사원번호</LeftTd>
-                                <RightTd></RightTd>
                             </Tr>
                             <Tr>
                                 <LeftTd>입사일</LeftTd>

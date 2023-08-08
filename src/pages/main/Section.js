@@ -80,6 +80,20 @@ const NoticeHeader = styled.div`
     font-weight: bold;
 `;
 
+const NoticeBody = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 210px;
+    color: gray;
+
+    & > img {
+        width: 150px;
+        height: 125px;
+    }
+`;
+
 const CompanyLabel = styled.span`
     color: blue;
     line-height: 10px;
@@ -122,6 +136,10 @@ function Section(props) {
                         </div>
                         <A href="#">더보기 &gt;</A>
                     </NoticeHeader>
+                    <NoticeBody>
+                        <img src="https://static.wehago.com/imgs/common/ico_nodata76.png"/>
+                        <span>작성된 공지사항이 없습니다.</span>
+                    </NoticeBody>
                 </Notice>
             </SideWrapper>
         </Wrapper>

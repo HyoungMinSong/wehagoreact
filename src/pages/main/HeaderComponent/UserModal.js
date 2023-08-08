@@ -17,7 +17,7 @@ const ModalWrapper = styled.div`
     right: 5%;
 
     /* 모달창 디자인 */
-    background: linear-gradient(#800080, #EEEEEE, #EEEEEE, #EEEEEE);
+    background: linear-gradient(#9370DB 30%, #EEEEEE 30%, #EEEEEE 100%);
     border: none;
     border-radius: 10px;
 
@@ -29,7 +29,7 @@ const ModalWrapper = styled.div`
         margin-left: -10px;
         border-width: 10px;
         border-style: solid;
-        border-color: #AAAAAA transparent transparent transparent;
+        border-color: #9370DB transparent transparent transparent;
         transform: rotate(180deg);
         transform-origin: center top;
     }

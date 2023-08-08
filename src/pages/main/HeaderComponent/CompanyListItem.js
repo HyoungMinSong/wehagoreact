@@ -11,9 +11,10 @@ const Item = styled.button`
     margin-top: 7px;
     text-align: left;
     font-size: 17px;
-    border: none;
+    border: 1px solid #cccccc;
     border-radius: 7px;
     cursor: pointer;
+    box-shadow: 2px 3px 5px 0px gray;
 
     & > div {
         display: flex;

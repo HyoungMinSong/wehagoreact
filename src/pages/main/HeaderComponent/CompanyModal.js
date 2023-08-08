@@ -18,7 +18,7 @@ const ModalWrapper = styled.div`
     left: 10%;
 
     /* 모달창 디자인 */
-    background: linear-gradient(#800080, #DDDDDD, #DDDDDD);
+    background: white;
     border: none;
     border-radius: 7px;
 
@@ -30,7 +30,7 @@ const ModalWrapper = styled.div`
         margin-left: -10px;
         border-width: 10px;
         border-style: solid;
-        border-color: #AAAAAA transparent transparent transparent;
+        border-color: #9370DB transparent transparent transparent;
         transform: rotate(180deg);
         transform-origin: center top;
     }
@@ -42,7 +42,7 @@ const CurrentCompanyArea = styled.div`
     align-items: center;
     height: 70px;
     border-radius: 7px 7px 0px 0px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: #9370DB;
     
     & > span {
         color: white;
