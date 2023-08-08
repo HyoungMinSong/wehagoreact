@@ -20,16 +20,16 @@ const SectionTag = styled.div`
       position: absolute;
       top: 118px;
       bottom: 0;
-      left: 0;
-      right: 0;
+      left: 20px;
+      right: 20px;
       transition: bottom 0.4s;
     }
     .organizationSectionContainerO{
       position: absolute;
       top: 118px;
       bottom: 44px;
-      left: 0;
-      right: 0;
+      left: 20px;
+      right: 20px;
       transition: bottom 0.4s;
     }
 `;
