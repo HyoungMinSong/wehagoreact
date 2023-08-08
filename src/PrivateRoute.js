@@ -3,7 +3,7 @@ import { Navigate  } from 'react-router-dom';
 
 const PrivateRoute = ({ isLogin, component : Component}) => {
   return(
-      isLogin ? Component : <Navigate to="/login" {...alert("로그인이 필요합니다.")} />
+      isLogin ? Component : <Navigate to="/login" {...alert("로그인 후 이용 가능합니다.")} />
   )
 }
 

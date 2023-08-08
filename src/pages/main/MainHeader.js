@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { styled } from "styled-components";
-import CompanyModal from "./CompanyModal";
-import UserModal from "./UserModal";
+import CompanyModal from "./HeaderComponent/CompanyModal";
+import UserModal from "./HeaderComponent/UserModal";
 
 const Wrapper = styled.div`
     display: flex;
@@ -10,11 +9,10 @@ const Wrapper = styled.div`
     align-items: center;
     width: 100%;
     height: 70px;      
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.2);
     position: sticky;
     top: 0;
     z-index:10;
-    border-bottom: 1px solid #dddddd;
 `;
 
 const Area = styled.div`
@@ -34,12 +32,13 @@ const CompanyButton = styled.button`
     align-items: center;
     margin-left: 15px;
     padding-right: 15px;
-    border: 1px solid #dddddd;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
     border-radius: 20px;
     cursor: pointer;
 
     & > span {
-        color: black;
+        color: white;
         font-size: 14px;
     }
 `;
@@ -57,7 +56,7 @@ const ProfileButton = styled.button`
     }
 
     & > div > span {
-        color: black;
+        color: white;
         font-size: 14px;
         margin-left: 5px;
     }
@@ -67,7 +66,7 @@ const ProfileButton = styled.button`
     }
 `;
 
-function Header(props) {
+function MainHeader(props) {
     const {user, company, companyName, setCompanyName} = props;
     const [companyModalOpen, setCompanyModalOpen] = useState(false);
     const [userModalOpen, setUserModalOpen] = useState(false);
@@ -86,7 +85,7 @@ function Header(props) {
         <Wrapper>
             <Area>
                 <a href="/main">
-                    <img src="https://static.wehago.com/imgs/common/wehago_b.svg" alt="로고" width="150px" height="25px"/>
+                    <img src="https://static.wehago.com/imgs/common/svg/wehago_w_all.svg" alt="로고" width="150px" height="25px"/>
                 </a>
                 <CompanyButton className="company" onClick={showCompanyModal}>
                     <img className="company" src="https://cdn-icons-png.flaticon.com/128/7500/7500171.png" width="30px" height="30px"/>
@@ -122,4 +121,4 @@ function Header(props) {
     );
 }
 
-export default Header;
+export default MainHeader;

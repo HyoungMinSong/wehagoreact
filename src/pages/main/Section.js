@@ -44,8 +44,9 @@ const StyledCalendar = styled(Calendar)`
     border-radius: 10px;
 
     .react-calendar__navigation {
-        background: #eeeeee;
+        background: #dddddd;
         border-radius: 10px 10px 0px 0px;
+        height: 50px;
     }
 
     .react-calendar__month-view__weekdays__weekday abbr {
@@ -73,7 +74,7 @@ const NoticeHeader = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 15px;
-    background-color: #eeeeee;
+    background-color: #dddddd;
     border-radius: 10px 10px 0px 0px;
     font-size: 14px;
     font-weight: bold;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Header from "./HeaderComponent/Header";
+import MainHeader from "./MainHeader";
 import Section from "./Section";
 import Footer from "./Footer";
 import axiosApi from "../../AxiosApi";
@@ -80,7 +80,6 @@ function Main(props) {
               dispatch(setCompanyName(lastSelectedCompanyName));
               
             } else {
-              alert('로그인 시간이 만료되어 재로그인이 필요합니다.');
               window.location.replace('/login');
             }
           } catch (error) {
@@ -105,7 +104,7 @@ function Main(props) {
                 <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
                 <div className="mt-3">유저 정보를 불러오는 중입니다.<br />잠시만 기다려주세요.</div>
             </div>)}
-            <Header user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
+            <MainHeader user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
             <Section user={user} companyName={companyName} service={service}/>
             <Footer/>
         </Wrapper>
