@@ -16,7 +16,7 @@ const Navbar = styled.nav `
     height: 48px;
     background: #1c90fb;
     color: white;
-    padding: 0px 100px;
+    padding: 0px 32px;
     margin-bottom: 40px;
 
     & > a {
@@ -42,17 +42,22 @@ const Navbar = styled.nav `
 const HeadLine = styled.div`
     display: flex;
     align-items: center;
-    margin: 30px 100px;
+    margin: 30px 35px;
     border-bottom: 1px solid #dddddd;
 
+    & > h3 {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
     & > span {
-        font-size: 14px;
+        font-size: 13px;
         margin-left: 15px;
     }
 `;
 
 const TableWrapper = styled.div`
-    padding: 30px 100px;
+    padding: 30px 35px;
 
     & > span {
         font-weight: bold;
@@ -195,29 +200,27 @@ function UserSetting(props) {
 
         let focusTarget = null; // 포커스를 줄 input 요소를 저장할 변수
 
-        if (!nameRegex.test(e.target.name.value)) {
+        if (e.target.name.value === '' || !nameRegex.test(e.target.name.value)) {
             focusTarget = e.target.name; // 포커스를 줄 input 요소 설정
             setNameValidate(false);
             setEmailValidate(true);
             setPhoneValidate(true);
-            window.scrollTo(0, 0);
             focusTarget.focus();
             return;
-        } else if (!emailRegex.test(e.target.email.value)) {
+        } else if (e.target.email.value === '' || !emailRegex.test(e.target.email.value)) {
             focusTarget = e.target.email; // 포커스를 줄 input 요소 설정
             setNameValidate(true);
             setEmailValidate(false);
             setPhoneValidate(true);
-            window.scrollTo(0, 0);
             focusTarget.focus();
             return;
-        } else if (!phoneRegex.test(e.target.phone.value)) {
+        } else if (e.target.phone.value === '' || !phoneRegex.test(e.target.phone.value)) {
             focusTarget = e.target.phone; // 포커스를 줄 input 요소 설정
             setNameValidate(true);
             setEmailValidate(true);
             setPhoneValidate(false);
-            window.scrollTo(0, 0);
             focusTarget.focus();
+            window.scrollTo(0, 170);
             return;
         }
 
@@ -249,39 +252,68 @@ function UserSetting(props) {
             // 만약 Promise리턴을 받으면,
             if (result.isConfirmed) {
               // 만약 모달창에서 confirm 버튼을 눌렀다면
-                axiosApi.post("/api/update/change_image", formData, {
+                axiosApi.post("/api/update/userInfo", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
                 }).then((response) => {
-                    Swal.fire({
-                        title: false,
-                        text: "개인정보가 수정 되었습니다.",
-                        icon: "success",
-                        showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
-                        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
-                        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
-                        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-                        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
-                        // reverseButtons: true, // 버튼 순서 거꾸로
-                      }).then((result) => {
-                        const photo = response.data.photo_path.startsWith('http') ? 
-                                        response.data.photo_path : prefixImgUrl + response.data.photo_path;
-                        console.log(photo);
-                        const userInfo = 
-                        {
-                            "id" : userIdRef.current.innerText,
-                            "name" : e.target.name.value,
-                            "email" : e.target.email.value,
-                            "photo" : photo,
-                            "phone" : e.target.phone.value
-                        }
-                        dispatch(setUser(userInfo));
-                        window.location.reload(); // 새로고침
-                      });
-                }).catch((response) => {
-                    console.error("통신 실패..");
-                    return;
+                    if(response.data === '') {
+                        Swal.fire({
+                            title: false,
+                            text: "중복된 이메일 입니다.",
+                            icon: "warning",
+                            showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                            confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                            cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                            cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                            // reverseButtons: true, // 버튼 순서 거꾸로
+                        });
+                    } else {
+                        Swal.fire({
+                            title: false,
+                            text: "개인정보가 수정 되었습니다.",
+                            icon: "success",
+                            showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                            confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                            cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                            cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                            // reverseButtons: true, // 버튼 순서 거꾸로
+                          }).then((result) => {
+                            const photo = response.data.photo_path.startsWith('http') ? 
+                                            response.data.photo_path : prefixImgUrl + response.data.photo_path;
+                            console.log(photo);
+                            const userInfo = 
+                            {
+                                "id" : userIdRef.current.innerText,
+                                "name" : e.target.name.value,
+                                "email" : e.target.email.value,
+                                "photo" : photo,
+                                "phone" : e.target.phone.value
+                            }
+                            dispatch(setUser(userInfo));
+                            window.location.reload(); // 새로고침
+                          });
+                    }
+                }).catch((error) => {
+                    if(error.response.status === 500) {
+                        alert("로그인 시간이 만료되었습니다. 재로그인이 필요합니다.");
+                        window.location.replace('/login');
+                    } else {
+                        Swal.fire({
+                            title: false,
+                            text: "정보 수정에 실패 했습니다.",
+                            icon: "error",
+                            showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                            confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                            cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                            cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                            // reverseButtons: true, // 버튼 순서 거꾸로
+                        });
+                        return;
+                    }
                 });
             }
         });
@@ -334,8 +366,8 @@ function UserSetting(props) {
                             <Tr>
                                 <LeftTd>이름</LeftTd>
                                 <RightTd>
-                                    {editClick ? <input type="text" name="name" required/> : user.name}
-                                    {nameValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>이름을 다시 입력하세요.</small>}
+                                    {editClick ? <input type="text" name="name"/> : user.name}
+                                    {nameValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>이름을 확인해 주세요.</small>}
                                 </RightTd>                   
                             </Tr>
                             <Tr>
@@ -345,15 +377,15 @@ function UserSetting(props) {
                             <Tr>
                                 <LeftTd>이메일주소</LeftTd>
                                 <RightTd>
-                                    {editClick ? <input type="text" name="email" required/> : user.email}
-                                    {emailValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>이메일을 다시 입력하세요.</small>}
+                                    {editClick ? <input type="text" name="email"/> : user.email}
+                                    {emailValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>이메일을 확인해 주세요.</small>}
                                 </RightTd>                  
                             </Tr>
                             <Tr>
                                 <LeftTd>휴대전화번호</LeftTd>
                                 <RightTd>
-                                    {editClick ? <input type="text" name="phone" required/> : user.phone}
-                                    {phoneValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>휴대전화번호를 다시 입력하세요.</small>}
+                                    {editClick ? <input type="text" name="phone"/> : user.phone}
+                                    {phoneValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>휴대전화번호를 확인해 주세요.</small>}
                                 </RightTd>
                             </Tr>
                         </tbody>
