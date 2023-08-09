@@ -3,7 +3,7 @@ import './LoginPage.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
 import jwt_decode from 'jwt-decode';
-import SignUpHeader1 from '../signUp/SignUpHeaderlogin';
+import SignUpHeader1 from '../signUp/SignUpHeaderLogin1';
 
 
 const LoginForm = ({ handleLogin }) => {
@@ -125,9 +125,7 @@ const LoginPage = () => {
                 <Link to="/findId" className='px-3'>아이디 찾기</Link> {/* 아이디 찾기 페이지로 이동하는 링크 추가 */}
                 <Link to="/findpw">비밀번호 찾기</Link> {/* 비밀번호 찾기 페이지로 이동하는 링크 추가 */}
               </div>
-              <div className="register-link">
-                <Link to="/s/en40">회원가입</Link> {/* 회원가입 페이지로 이동하는 링크 추가 */}
-              </div>
+              
             </form>
           ) : (
             <div className="text-white">로그인 성공!</div>
