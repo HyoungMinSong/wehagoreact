@@ -1,8 +1,10 @@
 /* 스타일 수정된 부분은 주석으로 표시되어 있습니다. */
 .wrappingContainer{
   height: 3000px;
+  font-family: Arial, sans-serif;
 }
 .background-image-insert{
+  background-size: contain !important;
   background: url(https://static.wehago.com/html/landing/img/v2/bg_section_idx_05.jpg) no-repeat center top;
 }
 .background-container {

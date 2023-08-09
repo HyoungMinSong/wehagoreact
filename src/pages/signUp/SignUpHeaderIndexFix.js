@@ -7,7 +7,7 @@ const Wrapper = styled.div`
     align-items: center;
     width: 100%;
     height: 70px;      
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.3);
     position: sticky;
     top: 0;
     z-index:10;
@@ -16,13 +16,16 @@ const Wrapper = styled.div`
 const Area = styled.div`
     display: flex;
     align-items: center;
+    .grab{
+      cursor: -webkit-grab;
+    }
 `;
 const StyledLink1 = styled(Link)`
   text-decoration: none;
   color: white;
 `;
 
-function SignUpHeaderIndexFix() {
+function SignUpHeaderIndexFix(props) {
 
     return(
         <Wrapper>
@@ -34,7 +37,12 @@ function SignUpHeaderIndexFix() {
             <Area/><Area/>
             <Area>
               <div className="" style={{ float: "right", color: "white", fontSize: "18px", marginRight: "20px" }}>
-                <span className="px-3">서비스 소개</span>
+                <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.serviceIntroduction)}>서비스 소개</span>
+                <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.mobile)}>모바일</span>
+                <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.pricingGuide)}>요금안내</span>
+                <StyledLink1 to="/signup">
+                  <span className="px-3">회원가입</span>
+                </StyledLink1>
                 <StyledLink1 to="/login">
                   <span className="px-3">로그인</span>
                 </StyledLink1>
