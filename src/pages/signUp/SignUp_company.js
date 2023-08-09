@@ -6,6 +6,7 @@ import { increase } from "../../store";
 import { useNavigate } from "react-router-dom";
 import SignUpHeader from "./SignUpHeader";
 import axiosApi from "../../AxiosApi";
+import { useRef } from "react";
 
 
 // className="border-danger"
@@ -69,6 +70,13 @@ function SignUp_company() {
     }
   }, [companyName, businessRegistrationNumber, businessStatus, businessCategory, representativeName, companyPhoneNumber, businessType]);
 
+  let companynameInputRef = useRef(null);
+  let businessTypeInputRef = useRef(null);
+  let businessStatusInputRef = useRef(null);
+  let businessCategoryInputRef = useRef(null);
+  let representativeNameInputRef = useRef(null);
+
+
 
   return (
     <>
@@ -103,7 +111,7 @@ function SignUp_company() {
                           <Form.Control type="text" placeholder="Enter company name" onChange={(e) => {
                             setCompanyName(e.target.value);
                             // regex.test(name) ? setNameError(false) : setNameError(true);
-                          }} className={companyNameError ? "border-danger" : ""} />
+                          }} className={companyNameError ? "border-danger" : ""} ref={companynameInputRef}/>
                           {companyNameError ?
                             <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                               한글 문자와 특수문자만 입력 가능합니다.
@@ -117,7 +125,7 @@ function SignUp_company() {
                           <Form.Label style={{ fontWeight: 'bold' }}>구분</Form.Label>
                           <Form.Select aria-label="Default select example" onChange={(e) => {
                             setBusinessType(e.target.value);
-                          }} className={businessTypeError ? "border-danger" : ""} >
+                          }} className={businessTypeError ? "border-danger" : ""} ref={businessTypeInputRef} >
                             <option value="">Select business type</option>
                             <option value="개인사업자">개인사업자</option>
                             <option value="법인사업자">법인사업자</option>
@@ -133,6 +141,7 @@ function SignUp_company() {
                         <Form.Group className="my-2 " controlId="formBasicPhone">
                           <Form.Label style={{ fontWeight: 'bold' }}>사업자등록번호</Form.Label>
                           <InputMask
+                            id="registrationInput"
                             mask="999-99-99999"
                             maskChar="_"
                             // className=""
@@ -157,7 +166,7 @@ function SignUp_company() {
                           <Form.Control type="text" placeholder="Enter business status" onChange={(e) => {
                             setBusinessStatus(e.target.value);
                           }}
-                            className={businessStatusError ? "border-danger" : ""} />
+                            className={businessStatusError ? "border-danger" : ""} ref={businessStatusInputRef} />
                           {businessStatusError ?
                             <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                               한글 문자 5자리까지 입력해주세요.
@@ -174,7 +183,7 @@ function SignUp_company() {
                             setBusinessCategory(e.target.value);
                             console.log(businessCategory)
                           }}
-                            className={businessCategoryError ? "border-danger" : ""} />
+                            className={businessCategoryError ? "border-danger" : ""} ref={businessCategoryInputRef} />
                           {businessCategoryError ?
                             <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                               한글 문자 5자리까지 입력해주세요.
@@ -188,7 +197,7 @@ function SignUp_company() {
                           <Form.Control type="text" placeholder="Enter representative name" onChange={(e) => {
                             setRepresentativeName(e.target.value);
                           }}
-                            className={representativeNameError ? "border-danger" : ""} />
+                            className={representativeNameError ? "border-danger" : ""} ref={representativeNameInputRef} />
                           {representativeNameError ?
                             <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                               한글 문자나 영문 20자리까지 입력해주세요.
@@ -199,6 +208,7 @@ function SignUp_company() {
                         <Form.Group className="my-2 " controlId="formBasicPhone">
                           <Form.Label style={{ fontWeight: 'bold' }}>회사 전화번호</Form.Label>
                           <InputMask
+                            id="comPhoneInput"
                             mask="999-9999-9999"
                             maskChar="_"
                             // className=""
@@ -235,13 +245,36 @@ function SignUp_company() {
                         </Button>
                         <Button variant="primary" className="mx-3" onClick={() => {
                             setLoading(true);
-                          // console.log(companyName, businessType, businessRegistrationNumber, businessStatus, businessCategory, representativeName, companyPhoneNumber) 
-                          if (businessType == '') {
-                            setBusinessTypeError(true)
-                          } else if (companyName != '' && companyNameError == false && businessRegistrationNumber != '' && businessRegistrationNumberError == false && businessStatus != ''
-                            && businessStatusError == false && businessCategory != '' && businessCategoryError == false && representativeName != '' && representativeNameError == false &&
-                            companyPhoneNumber != '' && companyPhoneNumberError == false) {
-                            axiosApi.post("/companycheck", {
+                          // console.log(companyName, businessType, businessRegistrationNumber, businessStatus, businessCategory, representativeName, companyPhoneNumber)
+                          if (companyName === '' || companyNameError === true) {
+                            setCompanyNameError(true);
+                            companynameInputRef.current.focus();
+                          } else if (businessType === '' || businessTypeError === true) {
+                            setBusinessTypeError(true);
+                            businessTypeInputRef.current.focus();
+                          } else if(businessRegistrationNumber === '' || businessRegistrationNumberError === true){
+                            setBusinessRegistrationNumber(true);
+                            window.document.getElementById("registrationInput").focus();
+                          } else if(businessStatus === '' || businessStatusError === true){
+                            setBusinessStatusError(true);
+                            businessStatusInputRef.current.focus();
+                          } else if(businessCategory === '' || businessCategoryError === true){
+                            setBusinessCategoryError(true);
+                            businessCategoryInputRef.current.focus();
+                          } else if(representativeName === '' || representativeNameError === true){
+                            setRepresentativeNameError(true);
+                            representativeNameInputRef.current.focus();
+                          } else if(companyPhoneNumber === '' || companyPhoneNumberError === true){
+                            setCompanyPhoneNumber(true);
+                            window.document.getElementById("comPhoneInput").focus();
+                          }
+                          // if (businessType == '') {
+                          //   setBusinessTypeError(true)
+                          // } else if (companyName != '' && companyNameError == false && businessRegistrationNumber != '' && businessRegistrationNumberError == false && businessStatus != ''
+                          //   && businessStatusError == false && businessCategory != '' && businessCategoryError == false && representativeName != '' && representativeNameError == false &&
+                          //   companyPhoneNumber != '' && companyPhoneNumberError == false) {
+                          else {  
+                          axiosApi.post("/companycheck", {
                               companyName: companyName
                             }).then((c) => {
                               if (c.data === companyName) {
@@ -257,12 +290,10 @@ function SignUp_company() {
 
                             }).catch(() => {
                               console.log('실패함')
-                            }).finally(() => {
-                              setLoading(false);
                             })
-                          } else {
+                          } 
                             setLoading(false);
-                          }
+                          
 
                         }}>
                           다음 &gt;
