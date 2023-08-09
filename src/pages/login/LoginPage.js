@@ -23,7 +23,7 @@ const LoginPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -33,11 +33,12 @@ const LoginPage = () => {
 
     try {
       // JWT 토큰 발급
+      setLoading(true);
       const response = await axiosApi.post('/api/login', {
         userid: username,
         password: password,
       });
-
+      setLoading(false);
       if (response.status === 200) {
         console.log('로그인 성공!');
         setLoggedIn(true);
@@ -142,6 +143,21 @@ const LoginPage = () => {
         </ul>
       </div>
     </div>
+    {loading && (
+              <div className="overlay-loading-box text-center">
+                {/* 로딩 스피너 컴포넌트 */}
+                <Spinner
+                  animation="border"
+                  variant="primary"
+                  style={{ fontSize: "3rem", width: "6rem", height: "6rem" }}
+                />
+                <div className="mt-3">
+                  계정 정보 확인 중입니다.
+                  <br />
+                  잠시만 기다려주세요.
+                </div>
+              </div>
+            )}
   </div>
   );
 };
