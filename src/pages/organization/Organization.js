@@ -39,13 +39,14 @@ const SubHeader = styled.div`
     background: #1c90fb;
     h1{
         float: left;
-        font-size: 18px;
+        font-size: 20px;
         line-height: 48px;
         font-weight: 300;
         color: #fff;
         vertical-align: top;
         margin: 0;
         padding: 0;
+        margin-left: 32px;
     }
     h2{
       font-size: 15px;
