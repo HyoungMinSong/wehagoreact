@@ -82,7 +82,7 @@ const IndexBackground = () => {
   };
 
   return (
-    <>
+    
       <div className="background-image-insert">
         <SignUpHeaderIndexFix
           handleScroll={handleScroll}
@@ -298,8 +298,9 @@ const IndexBackground = () => {
             </div>
           </div>
         </div>
-    </>
+    </div>
   );
-};
+                                }
 
 export default IndexBackground;
+                                
