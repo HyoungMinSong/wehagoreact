@@ -163,12 +163,12 @@ const showCompanySerivces = async() => {
 
   return (
     <>
-      <div className="mx-5 mb-5 mt-4">
+      <div className="mx-4 mb-5 mt-4">
         <div className="text-start">
           <span className="mx-1" style={{ fontSize: '20px' }}><b>서비스 배포관리</b></span><span className="text-muted small-text">회사에서 사용중인 서비스에 대하여 사용자 배포현황을 관리할 수 있습니다.</span>
         </div>
         <hr />
-        <div className="m-5">
+        <div className="my-5">
           <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
             <Row>
               <Col sm={4}>
