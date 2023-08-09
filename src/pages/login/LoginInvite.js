@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
 import jwt_decode from 'jwt-decode';
 import SignUpHeader1 from '../signUp/SignUpHeaderlogin';
+import { Spinner } from 'react-bootstrap';
 
 
 const LoginForm = ({ handleLogin }) => {
@@ -23,6 +24,7 @@ const LoginPage = () => {
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
   const { empNo } = location.state || {};
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -31,6 +33,7 @@ const LoginPage = () => {
     const password = event.target.elements.password.value;
 
     try {
+      setLoading(true);
       // JWT 토큰 발급
       const response = await axiosApi.post('/api/login', {
         userid: username,
@@ -39,6 +42,7 @@ const LoginPage = () => {
 
       if (response.status === 200) {
         console.log('로그인 성공!');
+        setLoading(false);
         setLoggedIn(true);
         setLoginError(null);
 
@@ -65,19 +69,23 @@ const LoginPage = () => {
         window.location.replace('/main');
       } else if (response.status === 401) {
         console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
+        setLoading(false);
         setLoggedIn(false);
         setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
       } else {
         console.error('로그인 실패!');
+        setLoading(false);
         setLoggedIn(false);
         setLoginError('로그인에 실패했습니다.');
       }
     } catch (error) {
       if (error.response && error.response.status === 500) {
+        setLoading(false);
         setLoggedIn(false);
         setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
       } else if (!error.response) {
         console.error('로그인 요청 중 오류 발생:', error);
+        setLoading(false);
         setLoggedIn(false);
         setLoginError('네트워크 오류가 발생했습니다.');
       }
@@ -150,6 +158,21 @@ const LoginPage = () => {
         </ul>
       </div>
     </div>
+    {loading && (
+              <div className="overlay-loading-box text-center">
+                {/* 로딩 스피너 컴포넌트 */}
+                <Spinner
+                  animation="border"
+                  variant="primary"
+                  style={{ fontSize: "3rem", width: "6rem", height: "6rem" }}
+                />
+                <div className="mt-3">
+                  계정 정보 확인 중입니다.
+                  <br />
+                  잠시만 기다려주세요.
+                </div>
+              </div>
+            )}
     </div>
   );
 };
