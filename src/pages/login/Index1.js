@@ -298,7 +298,6 @@ const IndexBackground = () => {
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 };
