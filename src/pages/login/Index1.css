@@ -1,4 +1,10 @@
 /* 스타일 수정된 부분은 주석으로 표시되어 있습니다. */
+.wrappingContainer{
+  height: 3000px;
+}
+.background-image-insert{
+  background: url(https://static.wehago.com/html/landing/img/v2/bg_section_idx_05.jpg) no-repeat center top;
+}
 .background-container {
   /* 부모 요소의 크기를 조정하여 배경 이미지를 감쌀 수 있도록 합니다. */
   height: 600px;
@@ -16,7 +22,7 @@
   left: 0;
   display: block;
   height: 100%;
-  background: url(https://static.wehago.com/html/landing/img/v2/bg_section_idx_05.jpg) no-repeat center bottom;
+  /* background: url(https://static.wehago.com/html/landing/img/v2/bg_section_idx_05.jpg) no-repeat center bottom; */
   background-size: cover;
 }
 

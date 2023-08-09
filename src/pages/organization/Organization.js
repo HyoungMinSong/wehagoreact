@@ -41,7 +41,7 @@ const SubHeader = styled.div`
         float: left;
         font-size: 20px;
         line-height: 48px;
-        font-weight: 300;
+        font-weight: 500;
         color: #fff;
         vertical-align: top;
         margin: 0;

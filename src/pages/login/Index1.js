@@ -8,6 +8,7 @@ import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlin
 import ImportantDevicesOutlinedIcon from '@mui/icons-material/ImportantDevicesOutlined';
 import { Link } from 'react-router-dom';
 import '../../../src/App.css';
+import SignUpHeaderIndexFix from '../signUp/SignUpHeaderIndexFix';
 
 const IndexBackground = () => {
   const [pageHeight, setPageHeight] = useState(window.innerHeight);
@@ -60,9 +61,10 @@ const IndexBackground = () => {
 
   return (
     <>
-      
+    <div className='background-image-insert'>
+      <SignUpHeaderIndexFix />
+    <div className='wrappingContainer'>
       <div className="background-container">
-      <SignUpHeaderindex />
         <div className="background-container-index">
           <h2 className="title-index1">기업에 필요한 다양한 업무환경을 제공하는 비즈니스 플랫폼</h2>
           <h2 className="title-index2">WEHAGO</h2>
@@ -82,16 +84,16 @@ const IndexBackground = () => {
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-              ></iframe>
+                ></iframe>
               <h2 className="description">{images[currentImageIndex].description}</h2>
             </div>
           </div>
           <div className="image-list-horizontal">
             {images.map((image, index) => (
               <div
-                key={index}
-                className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`}
-                onClick={() => handleImageClick(index)}
+              key={index}
+              className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`}
+              onClick={() => handleImageClick(index)}
               >
                 <img src={image.imageSrc} alt={`Image ${index + 1}`} />
               </div>
@@ -178,8 +180,9 @@ const IndexBackground = () => {
           </div>
         </div>
       </div>
+            </div>
+            </div>
     </>
-    
   );
 };
 
