@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './LoginPage.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
 import jwt_decode from 'jwt-decode';
+import SignUpHeader1 from '../signUp/SignUpHeaderlogin';
 
 
 const LoginForm = ({ handleLogin }) => {
@@ -16,10 +17,12 @@ const LoginForm = ({ handleLogin }) => {
 };
 
 const LoginPage = () => {
+  let location = useLocation();
   const [formSuccess, setFormSuccess] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
+  const { empNo } = location.state || {};
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -29,7 +32,7 @@ const LoginPage = () => {
 
     try {
       // JWT 토큰 발급
-      const response = await axiosApi.post('/Logininvite', {
+      const response = await axiosApi.post('/api/login', {
         userid: username,
         password: password,
       });
@@ -47,6 +50,14 @@ const LoginPage = () => {
         // Access Token을 쿠키에 등록
         const expires = accessTokenExpiration.toUTCString();
         document.cookie = `accessToken=${accessToken}; path=/; expires=${expires}`;
+        // 로그인한 id, pw 로 user_no를 조회하고 업데이트
+        await axiosApi.post('/updateinvite', {params : {
+          userid: username,
+          password: password,
+          empNo : empNo,
+        }});
+        console.log(empNo);
+
 
         // 메인 페이지로 넘어가기
         window.location.replace('/main');
@@ -94,8 +105,11 @@ const LoginPage = () => {
 
 
   return (
+    <div>
     <div className="jongwonscss">
       <div className={`wrapper${formSuccess ? ' form-success' : ''}`}>
+      <SignUpHeader1>
+    </SignUpHeader1>
         <div className="container">
           <h1 className={`${formSuccess ? 'form-success text-white' : 'text-white'}`}>W E H A G O</h1>
 
@@ -111,7 +125,7 @@ const LoginPage = () => {
                 <Link to="/findpw">비밀번호 찾기</Link> {/* 비밀번호 찾기 페이지로 이동하는 링크 추가 */}
               </div>
               <div className="register-link">
-                <Link to="/signup">회원가입</Link> {/* 회원가입 페이지로 이동하는 링크 추가 */}
+                <Link to="/s/en40">회원가입</Link> {/* 회원가입 페이지로 이동하는 링크 추가 */}
               </div>
             </form>
           ) : (
@@ -134,6 +148,7 @@ const LoginPage = () => {
           <li></li>
         </ul>
       </div>
+    </div>
     </div>
   );
 };

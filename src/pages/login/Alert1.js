@@ -16,7 +16,7 @@ const Alert1 = () => {
           WEHAGO 홈으로 이동해 아이디를 찾거나, 관리자에게 문의하세요
         </div>
 
-        <Link to="/index1">
+        <Link to="/">
           <button className='Alert1-Button'>WEHAGO 홈</button>
         </Link>
       </div>
