@@ -55,11 +55,13 @@ const LoginPage = () => {
         const expires = accessTokenExpiration.toUTCString();
         document.cookie = `accessToken=${accessToken}; path=/; expires=${expires}`;
         // 로그인한 id, pw 로 user_no를 조회하고 업데이트
-        await axiosApi.post('/updateinvite', {params : {
-          userid: username,
-          password: password,
-          empNo : empNo,
-        }});
+        console.log("하이");
+        console.log(empNo + typeof(empNo))
+        await axiosApi.post('/updateinvite',  {
+          t_user_id: username,
+          t_user_password: password,
+          t_employee_no : empNo
+        });
         console.log(empNo);
 
 
@@ -78,7 +80,6 @@ const LoginPage = () => {
       }
     } catch (error) {
       if (error.response && error.response.status === 500) {
-        console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
         setLoading(false);
         setLoggedIn(false);
         setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
