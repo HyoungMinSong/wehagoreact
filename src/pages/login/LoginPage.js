@@ -38,12 +38,12 @@ const LoginPage = () => {
         userid: username,
         password: password,
       });
-      setLoading(false);
+
       if (response.status === 200) {
         console.log('로그인 성공!');
         setLoggedIn(true);
         setLoginError(null);
-
+        setLoading(false);
         // 발급 받은 Access Token 쿠키에 등록
         const accessToken = response.data.accessToken;
         const decodedAccessToken = jwt_decode(accessToken);
@@ -57,20 +57,24 @@ const LoginPage = () => {
         window.location.replace('/main');
       } else if (response.status === 401) {
         console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
+        setLoading(false);
         setLoggedIn(false);
         setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
       } else {
         console.error('로그인 실패!');
+        setLoading(false);
         setLoggedIn(false);
         setLoginError('로그인에 실패했습니다.');
       }
     } catch (error) {
       if (error.response && error.response.status === 500) {
         console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
+        setLoading(false);
         setLoggedIn(false);
         setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
       } else if (!error.response) {
         console.error('로그인 요청 중 오류 발생:', error);
+        setLoading(false);
         setLoggedIn(false);
         setLoginError('네트워크 오류가 발생했습니다.');
       }
