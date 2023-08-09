@@ -12,7 +12,7 @@ const Navbar = styled.nav `
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 60px;
+    height: 48px;
     background: #1c90fb;
     color: white;
     padding: 0px 100px;
@@ -21,12 +21,12 @@ const Navbar = styled.nav `
     & > a {
         text-decoration: none;
         color: white;
-        font-size: 22px;
+        font-size: 20px;
     }
 
     & > div > button, & > div > a > button {
         width: 125px;
-        height: 60px;
+        height: 48px;
         background: none;
         border: none;
         color: white;
