@@ -617,7 +617,7 @@ function BasicGridBox(props) {
     });
       console.log("res",res);
       if(res.data===null || res.data===0){
-        // requestSaveClick();
+        requestSaveClick();
         console.log("res",res);
       }else{
         handleSnackOpen();
