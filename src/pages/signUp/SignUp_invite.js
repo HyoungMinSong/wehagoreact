@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect, useRef } from "react";
 import { useLocation  } from 'react-router-dom'
 import axiosApi from "../../AxiosApi";
 import { Button, Card, Col, Container, Form, Modal, Row, Spinner } from "react-bootstrap";
@@ -29,6 +29,11 @@ let [loading, setLoading] = useState(false);
 
 let idRegex = /^[a-zA-Z0-9]*$/;
 let pwRegex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+
+
+let idInputRef = useRef(null);
+let passwordInputRef = useRef(null);
+let confirmPasswordInputRef = useRef(null);
 
 
 useEffect(() => {
@@ -106,7 +111,7 @@ let navigate = useNavigate();
                       <Form.Control type="text" placeholder="Enter id" onChange={(e) => {
                         setId(e.target.value);
                         // idRegex.test(id) ? setIdError(false) : setIdError(true);
-                      }} className={idError ? "border-danger" : ""} />
+                      }} className={idError ? "border-danger" : ""} ref={idInputRef} />
                       {idError ?
                         <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                           영문자로 시작하는 영문자 또는 숫자 6~20자를 입력하세요.
@@ -124,7 +129,7 @@ let navigate = useNavigate();
                       <Form.Control type="password" placeholder="Password" onChange={(e) => {
                         setPassword(e.target.value);
                         // pwRegex.test(password) ? setPasswordError(false) : setPasswordError(true);
-                      }} className={passwordError ? "border-danger" : ""} />
+                      }} className={passwordError ? "border-danger" : ""} ref={passwordInputRef} />
                       {passwordError ?
                         <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                           8 ~ 16자 영문, 숫자, 특수문자를 최소 한가지씩 조합해서 입력하세요.
@@ -141,7 +146,7 @@ let navigate = useNavigate();
                       <Form.Control type="password" placeholder="Confirm Password" onChange={(e) => {
                         setConfirmPassword(e.target.value);
                         // password === confirmPassword ? setConfirmPasswordError(false) : setConfirmPasswordError(true);
-                      }} className={confirmPasswordError ? "border-danger" : ""} />
+                      }} className={confirmPasswordError ? "border-danger" : ""} ref={confirmPasswordInputRef} />
                       {confirmPasswordError ?
                         <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                           비밀번호가 일치하지 않습니다.
@@ -175,7 +180,16 @@ let navigate = useNavigate();
                     </Button>
                     <Button variant="primary" className="mx-3" onClick={() => {
                       setLoading(true);
-                      if ( id != '' && idError == false && password != '' && passwordError == false && confirmPassword != '' && confirmPasswordError == false) {
+                      if(id === '' || idError === true){
+                        setIdError(true);
+                        idInputRef.current.focus();
+                      } else if(password === '' || passwordError === true){
+                        setPasswordError(true);
+                        passwordInputRef.current.focus();
+                      } else if(confirmPassword === '' || confirmPasswordError === true){
+                        setConfirmPasswordError(true);
+                        confirmPasswordInputRef.current.focus();
+                      } else {
                         axiosApi.post("/idcheck", {
                           id: id
                         }).then((c) => {
@@ -195,16 +209,14 @@ let navigate = useNavigate();
                           
                         }).catch(() => {
                           console.log('실패함')
-                        }).finally(()=>{
-                          setLoading(false);
                         })
-                      } else{
+                      } 
                         setLoading(false);
                       }
                       // console.log(name, phoneNumber, id, password, confirmPassword, email) 
 
 
-                    }}>
+                    }>
                       다음 &gt;
                     </Button>
                   </div>
