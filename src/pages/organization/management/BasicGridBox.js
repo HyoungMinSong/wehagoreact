@@ -7,6 +7,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import axiosApi from "../../../AxiosApi";
 import BasicGridBoxItem from "./BasicGridBoxItem";
 import Swal from "sweetalert2";
+import { Slide } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   // isexpanded prop를 DOM 요소로 전달합니다.
@@ -367,6 +369,10 @@ const WrappingDetailBox = styled.div`
   }
 `;
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 function BasicGridBox(props) {
   // 선택한 직원 정보
   const [selectedUser, setSelectedUser] = useState(null);
@@ -376,6 +382,11 @@ function BasicGridBox(props) {
   const [selectedImage, setSelectedImage] = useState(null);
   // 로그인 유저 정보
   const loginedUser = useSelector((state) => state.loginUserData);
+  // 스낵바
+  const [snackOpen, setSnackOpen] = useState(false);
+  const [transition, setTransition] = useState(undefined);
+
+  // 유효성 검사
   let nameRegex = /^[가-힣a-zA-Z]+$/;
   let numberRegex = /^\d{11}$/;
   let emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
@@ -553,7 +564,7 @@ function BasicGridBox(props) {
   };
 
   // 저장버튼 유효성 검사
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
     if(props.updateSelectedUser.t_user_name == null || props.updateSelectedUser.t_user_name == '' ||
       props.updateSelectedUser.t_employee_position == null || props.updateSelectedUser.t_employee_position == '' ||
       props.updateSelectedUser.t_employee_duty == null || props.updateSelectedUser.t_employee_duty == '' ||
@@ -599,8 +610,27 @@ function BasicGridBox(props) {
         }
       });
     }else{
-      requestSaveClick();
+      const res = await axiosApi.get("/checkRegisterEmail", {
+        params: {
+          t_user_email: props.updateSelectedUser.t_user_email
+        }
+    });
+      console.log("res",res);
+      if(res.data===null || res.data===0){
+        // requestSaveClick();
+        console.log("res",res);
+      }else{
+        handleSnackOpen();
+      }
     }
+  };
+
+  const handleSnackOpen = () => {
+    setSnackOpen(true);
+  };
+
+  const handleSnackClose = () => {
+    setSnackOpen(false);
   };
 
   // 저장버튼 이벤트 등록
@@ -657,7 +687,7 @@ function BasicGridBox(props) {
   };
 
   // 저장버튼(수정) 유효성 검사
-  const handleUpdateClick = () => {
+  const handleUpdateClick = async () => {
     if(props.updateSelectedUser.t_employee_position == null || props.updateSelectedUser.t_employee_position == '' ||
       props.updateSelectedUser.t_employee_duty == null || props.updateSelectedUser.t_employee_duty == ''
       ){
@@ -1330,6 +1360,15 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
           </div>
         </WrappingDetailBox>
       </div>
+      <Snackbar
+        open={snackOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackClose}
+        anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
+        TransitionComponent={TransitionUp}
+        message="중복된 이메일 입니다."
+        // key={transition ? transition.name : ''}
+      />
     </WrappingGridBox>
   );
 }
