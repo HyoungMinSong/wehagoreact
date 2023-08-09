@@ -15,10 +15,10 @@ const ModalWrapper = styled.div`
     /* translate는 본인의 크기 기준으로 작동한다. */
     position: absolute;
     top: 75px;
-    left: 10%;
+    left: 6%;
 
     /* 모달창 디자인 */
-    background: white;
+    background: #EEEEEE;
     border: none;
     border-radius: 7px;
 

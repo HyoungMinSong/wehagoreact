@@ -24,20 +24,17 @@ function Main(props) {
 
     useEffect(() => {
         const fetchData = async () => {
-            // 쿠키에 있는 Access Token 가져오기
-            const getCookie = (name) => {
+          // 쿠키에 있는 Access Token 가져오기
+          const getCookie = (name) => {
               const value = `; ${document.cookie}`;
               const parts = value.split(`; ${name}=`);
               if (parts.length === 2) return parts.pop().split(';').shift();
-            };
+          };
           const accessToken = getCookie('accessToken');
         
           // Access Token이 있으면 헤더에 등록 시키기
           if (accessToken) {
             axiosApi.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-          } else {
-              alert('로그인 시간이 만료되어 재로그인이 필요합니다.');
-              window.location.replace('/login');
           }
 
           try {

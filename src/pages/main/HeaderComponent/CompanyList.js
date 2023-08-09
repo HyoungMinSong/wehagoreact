@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import CompanyListItem from "./CompanyListItem";
 
 const Wrapper = styled.div`
-    max-height: 154px;
+    max-height: 165px;
     padding: ${props => (props.exceedmaxheight === 'true' ? '3px 5px 10px 10px' : '3px 10px 10px 10px')} ;
 
     overflow-x: hidden;
@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 
 function CompanyList(props) {
     const {setCompanyModalOpen, company, companyName, setCompanyName} = props;
-    const exceedmaxheight = (company.length * (45 + 7) > 154).toString();
+    const exceedmaxheight = (company.length * (45 + 7) > 165).toString();
 
     return(
         <Wrapper exceedmaxheight={exceedmaxheight}>
