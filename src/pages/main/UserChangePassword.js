@@ -15,7 +15,7 @@ const Navbar = styled.nav `
     height: 48px;
     background: #1c90fb;
     color: white;
-    padding: 0px 100px;
+    padding: 0px 32px;
     margin-bottom: 40px;
 
     & > a {
@@ -41,11 +41,16 @@ const Navbar = styled.nav `
 const HeadLine = styled.div`
     display: flex;
     align-items: center;
-    margin: 30px 100px;
+    margin: 30px 35px;
     border-bottom: 1px solid #dddddd;
 
+    & > h3 {
+        font-size: 20px;
+        font-weight: 500;
+    }
+
     & > span {
-        font-size: 14px;
+        font-size: 13px;
         margin-left: 15px;
     }
 `;
@@ -73,7 +78,7 @@ const ContentWrapper = styled.div`
 `;
 
 const Table = styled.table`
-    width: 80%;
+    width: 95%;
     border-top: 2px solid gray;
     border-bottom: 1px solid #dddddd;
     margin: 30px 150px;
@@ -207,7 +212,7 @@ function UserChangePassword() {
           }).then((result) => {
             if (result.isConfirmed) {
               // 만약 모달창에서 confirm 버튼을 눌렀다면
-              axiosApi.post("/api/update_password", formData, {
+              axiosApi.post("/api/update/userPassword", formData, {
                 headers: {
                     "Content-Type": "form-data",
                 },
@@ -240,9 +245,24 @@ function UserChangePassword() {
                     });
                     e.target.currentPassword.focus();
                 }
-            }).catch((response) => {
-                console.error("통신 실패..");
-                return;
+            }).catch((error) => {
+                if(error.response.status === 500) {
+                    alert("로그인 시간이 만료되었습니다. 재로그인이 필요합니다.");
+                    window.location.replace('/login');
+                } else {
+                    Swal.fire({
+                        title: false,
+                        text: "정보 수정에 실패 했습니다.",
+                        icon: "error",
+                        showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                        cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                        cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                        // reverseButtons: true, // 버튼 순서 거꾸로
+                    });
+                    return;
+                }
             });
             }
         });

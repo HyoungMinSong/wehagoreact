@@ -384,7 +384,7 @@ function BasicGridBox(props) {
   const loginedUser = useSelector((state) => state.loginUserData);
   // 스낵바
   const [snackOpen, setSnackOpen] = useState(false);
-  const [transition, setTransition] = useState(undefined);
+
 
   // 유효성 검사
   let nameRegex = /^[가-힣a-zA-Z]+$/;
@@ -793,8 +793,36 @@ function BasicGridBox(props) {
     });
   };
 
+  // 메일 발송 요청
+  const requestSendMail = async () => {
+    dispatch(pushSwitch(true));
+    let tCompanyNo =
+      loginedUser.company && loginedUser.company.length > 0
+        ? loginedUser.company.find(
+            (item) => item.t_company_name === loginedUser.companyName
+          ).t_company_no
+        : loginedUser.company[0].t_company_no;
+    let myCheckedEmployee = [{
+      t_employee_no: props.updateSelectedUser.t_employee_no,
+      t_user_no: props.updateSelectedUser.t_user_no,
+      t_user_name: props.updateSelectedUser.t_user_name,
+      t_user_email: props.updateSelectedUser.t_user_email,
+      t_company_no: tCompanyNo,
+      t_company_name: loginedUser.companyName,
+      t_organization_name: props.updateSelectedUser.t_organization_name,
+      t_employee_duty: props.updateSelectedUser.t_employee_duty,
+      t_employee_position: props.updateSelectedUser.t_employee_position,
+    },];
+    console.log("myCheckedEmployee",myCheckedEmployee);
+    await axiosApi.post("/sendMailToEmployee", {
+      employer: loginedUser.user.name,
+      checkedEmployee: myCheckedEmployee,
+    });
+    dispatch(pushSwitch(false));
+  };
+
   // Detail 메일 발송 버튼
-  const handleSendMailButton = async () => {
+  const handleSendMailButton = () => {
     try {
       Swal.fire({
         title: "메일을 발송합니다.",
@@ -809,22 +837,13 @@ function BasicGridBox(props) {
         // 만약 Promise리턴을 받으면,
         if (result.isConfirmed) {
           // 만약 모달창에서 confirm 버튼을 눌렀다면
-      dispatch(pushSwitch(true));
-      let myCheckedEmployee = [{
-        t_employee_no: props.updateSelectedUser.t_employee_no,
-      }]
-      axiosApi.post("/sendMailToEmployee", {
-        employer: loginedUser.user.name,
-        checkedEmployee: myCheckedEmployee,
-      });
-      dispatch(clearChosenOnes());
+        requestSendMail();
+        dispatch(clearChosenOnes());
         }
       });
     } catch (error) {
       console.error("메일 전송 중 오류 발생:", error);
       // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
-    }finally{
-      dispatch(pushSwitch(false));
     }
   };
 

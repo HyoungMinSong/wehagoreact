@@ -15,6 +15,7 @@ const Item = styled.button`
     border-radius: 7px;
     cursor: pointer;
     box-shadow: 2px 3px 5px 0px gray;
+    background: white;
 
     & > div {
         display: flex;

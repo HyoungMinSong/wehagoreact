@@ -5,7 +5,7 @@ import UserModal from "./HeaderComponent/UserModal";
 
 const Wrapper = styled.div`
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     height: 70px;      
@@ -13,6 +13,7 @@ const Wrapper = styled.div`
     position: sticky;
     top: 0;
     z-index:10;
+    padding: 0px 30px;
 `;
 
 const Area = styled.div`
@@ -93,19 +94,18 @@ function MainHeader(props) {
                 </CompanyButton>
                 {companyModalOpen && <CompanyModal setCompanyModalOpen={setCompanyModalOpen} company={company} companyName={companyName} setCompanyName={setCompanyName} />}
             </Area>
-            <Area/><Area/>
             <Area>
                 <Button>
-                    <img src="https://cdn-icons-png.flaticon.com/128/8335/8335899.png" alt="알림" width="30px" height="30px"/>
+                    <img src="https://cdn-icons-png.flaticon.com/128/8335/8335899.png" alt="알림" width="25px" height="25px"/>
                 </Button>
                 <Button>
-                    <img src="https://cdn-icons-png.flaticon.com/128/4291/4291393.png" alt="포인트" width="30px" height="30px"/>
+                    <img src="https://cdn-icons-png.flaticon.com/128/4291/4291393.png" alt="포인트" width="25px" height="25px"/>
                 </Button>
                 <Button>
-                    <img src="https://cdn-icons-png.flaticon.com/128/8803/8803906.png" alt="이용가이드" width="30px" height="30px"/>
+                    <img src="https://cdn-icons-png.flaticon.com/128/8803/8803906.png" alt="이용가이드" width="25px" height="25px"/>
                 </Button>
                 <Button>
-                    <img src="https://cdn-icons-png.flaticon.com/128/2068/2068998.png" alt="웹봇" width="30px" height="30px"/>
+                    <img src="https://cdn-icons-png.flaticon.com/128/2068/2068998.png" alt="웹봇" width="25px" height="25px"/>
                 </Button>
                 <ProfileButton className="profile" onClick={showUserModal}>
                     <div>

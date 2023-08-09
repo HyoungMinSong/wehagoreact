@@ -14,7 +14,7 @@ const ModalWrapper = styled.div`
     /* top, bottom, left, right 는 브라우저 기준으로 작동 */
     position: absolute;
     top: 75px;
-    right: 5%;
+    right: 1%;
 
     /* 모달창 디자인 */
     background: linear-gradient(#9370DB 30%, #EEEEEE 30%, #EEEEEE 100%);
@@ -25,7 +25,7 @@ const ModalWrapper = styled.div`
         content: "";
         position: absolute;
         top: 0%;
-        left: 50%;
+        left: 72%;
         margin-left: -10px;
         border-width: 10px;
         border-style: solid;
