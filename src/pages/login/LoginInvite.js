@@ -103,8 +103,6 @@ const LoginPage = () => {
     }
     return false;
   };
-
-
   
   useEffect(() => {
     if (isAccessTokenValid()) {
