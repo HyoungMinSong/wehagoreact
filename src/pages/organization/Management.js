@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearChosenOnes } from "../../store";
 import { Spinner } from "react-bootstrap";
 import _ from "lodash";
+import { Slide, Snackbar } from "@mui/material";
 
 const CsContainer = styled.div`
   margin-bottom: 80px;
@@ -270,6 +271,10 @@ const BasicTreeViewDepth = styled.div`
   }
 `;
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 function Management() {
   // 로그인 유저 정보 리덕스에서 추출
   const loginedUser = useSelector((state) => state.loginUserData);
@@ -306,6 +311,8 @@ function Management() {
   const pushedSwitch = useSelector((state) => state.spinnerSwitch);
   // 검색 모드
   const [searchMode, setSearchMode] = useState(false);
+  // 스낵바
+  const [snackOpen, setSnackOpen] = useState(false);
 
   // 로그인한 회사로 첫 렌더링
   useEffect(() => {
@@ -365,6 +372,14 @@ function Management() {
     }
   };
 
+  const handleSnackOpen = () => {
+    setSnackOpen(true);
+  };
+
+  const handleSnackClose = () => {
+    setSnackOpen(false);
+  };
+
   // 조직별 인원수 세기 조직도,직원 변화때
   const countingEmplFromOrga = (orgaName) => {
     return employeeList.filter((emp) => emp.t_organization_name === orgaName)
@@ -377,12 +392,14 @@ function Management() {
       setIsExpanded("false");
     }
     setSearchMode(false);
-    // 직원 재 조회
-    fetchEmployeeList();
     // 조직 선택 구분
     setSelectedRowNum(rownum);
     // 조직 이름 선택 구분
     setSelectedOrgaName(orgaName);
+    if(!editingOrganization){
+      // 직원 재 조회
+      fetchEmployeeList();
+    }
   };
 
   // 편집, 취소 버튼 클릭
@@ -414,6 +431,8 @@ function Management() {
         // 만약 Promise리턴을 받으면,
         if (result.isConfirmed) {
           // 만약 모달창에서 confirm 버튼을 눌렀다면
+          setSelectedRowNum(0);
+          setSelectedOrgaName(loginedUser.companyName);
           const rollbackList = _.cloneDeep(copyOrganizationList);
           setOrganizationList(rollbackList);
           setEditingOrganization(false);
@@ -613,8 +632,12 @@ function Management() {
 
   // 조직도 input 입력값이 변경될 때마다 state 업데이트
   const handleInputKeyPress = (e, rownum) => {
+    if(e.key === "Enter" && e.target.value === ''){
+      handleSnackOpen();
+    }else if(e.key === "Enter" && organizationList.find((item) => item.t_organization_name === e.target.value)){
+      handleSnackOpen();
     // input에서 엔터키 입력시, 공백 아닐시
-    if (e.key === "Enter" && e.target.value !== "") {
+    }else if (e.key === "Enter" && e.target.value !== "") {
       // 기존 리스트 불러오기
       const updatedOrganizationList = [...organizationList];
       // 편집 대상 index 추출
@@ -670,6 +693,7 @@ function Management() {
               setRequestOrganizationList([]);
               setCopyOrganizationList([]);
               fetchOrganizationList();
+              fetchEmployeeList();
               setEditingOrganization(false);
             })
             .catch((error) => {
@@ -843,7 +867,6 @@ function Management() {
                         {loginedUser.companyName}
                       </span>
                     </div>
-
                     {organizationList &&
                       organizationList.map(
                         (organization, organizationIndex) => (
@@ -857,12 +880,8 @@ function Management() {
                               className="departmentItem"
                               onClick={() =>
                                 handleItemClick(
-                                  // organization.t_organization_name,
-                                  // organization.t_organization_no,
                                   organization.rownum,
                                   organization.t_organization_name
-                                  // selectedListTab,
-                                  // loginedUser.user[0].t_company_no
                                 )
                               }
                             >
@@ -877,9 +896,10 @@ function Management() {
                                 }`}
                               >
                                 <span className="num">
-                                  {countingEmplFromOrga(
-                                    organization.t_organization_name
-                                  )}
+                                  {editingOrganization
+                                    ? countingEmplFromOrga(copyOrganizationList[organizationIndex] ? copyOrganizationList[organizationIndex].t_organization_name : 0)
+                                    : countingEmplFromOrga(organization.t_organization_name)
+                                  }
                                 </span>
                                 {organization.t_organization_name === "" ? (
                                   <input
@@ -906,6 +926,15 @@ function Management() {
                 </div>
               </div>
             </div>
+            <Snackbar
+              open={snackOpen}
+              autoHideDuration={2000}
+              onClose={handleSnackClose}
+              anchorOrigin={{ vertical:'bottom', horizontal:'left' }}
+              TransitionComponent={TransitionUp}
+              message="중복된 부서명이거나 공백 입니다."
+              // key={transition ? transition.name : ''}
+            />
             {loading && (
               <div className="overlay-loading-box text-center">
                 {/* 로딩 스피너 컴포넌트 */}
