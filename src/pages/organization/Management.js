@@ -377,6 +377,8 @@ function Management() {
       setIsExpanded("false");
     }
     setSearchMode(false);
+    // 직원 재 조회
+    fetchEmployeeList();
     // 조직 선택 구분
     setSelectedRowNum(rownum);
     // 조직 이름 선택 구분
@@ -432,7 +434,7 @@ function Management() {
       // 부서 목록에 빈 부서 추가
       const newOrganization = {
         // 부서의 행번호는 1부터 시작, 인덱스는 0부터 시작이므로, 맨 뒤 행의 rownum의 +1
-        rownum: organizationList[organizationList.length - 1].rownum + 1,
+        rownum: organizationList.length!==0 ? organizationList[organizationList.length - 1].rownum + 1 : 1,
         t_organization_name: "",
         t_organization_no: "",
         t_organization_parent: tCompanyNo,
