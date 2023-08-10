@@ -33,7 +33,9 @@ function SignUpHeader() {
             <LogoImage src="https://static.wehago.com/imgs/common/wehago_w.svg" alt="Logo"/></StyledLink>
             </div>
             <div className=""style={{ float: 'right',color: 'white', fontSize: '18px', marginRight: '20px'}}>
-                <span className="px-3">서비스 소개</span>
+                <StyledLink to ="/">
+                  <span className="px-3">서비스 소개</span>
+                </StyledLink>
                 <StyledLink to ="/login">
                 <span className="px-3">로그인</span></StyledLink>
             </div>
