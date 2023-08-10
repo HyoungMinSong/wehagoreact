@@ -14,6 +14,7 @@ import SignUp_complete from './pages/signUp/SignUp_complete';
 import Organization from './pages/organization/Organization';
 import Services from './pages/organization/Services';
 import Management from './pages/organization/Management';
+import Administrator from './pages/organization/Administrator';
 import LoginPage from './pages/login/LoginPage';
 import FindIdForm from './pages/login/FindIdForm';
 import FindPwForm from './pages/login/FindpwForm';
@@ -61,6 +62,7 @@ root.render(
         <Route path='/organization/*' element={<Organization />} >
           <Route path="management" element={<Management />} />
           <Route path="services" element={<Services />} />
+          <Route path="administrator" element={<Administrator />} />
         </Route>
         <Route path="/about" element={ <div>라우트 테스트임2222</div> } />
         <Route path="/login" element={ <div className="d-flex align-items-center py-4 bg-body-tertiary">

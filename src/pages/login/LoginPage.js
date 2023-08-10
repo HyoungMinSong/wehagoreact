@@ -5,6 +5,7 @@ import axiosApi from "../../AxiosApi";
 import jwt_decode from 'jwt-decode';
 import SignUpHeader1 from '../signUp/SignUpHeaderlogin';
 import { Spinner } from "react-bootstrap";
+import { Slide, Snackbar } from '@mui/material';
 
 
 
@@ -18,12 +19,18 @@ const LoginForm = ({ handleLogin }) => {
   );
 };
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 const LoginPage = () => {
   const [formSuccess, setFormSuccess] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  // 스낵바
+  const [snackOpen, setSnackOpen] = useState(false);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -60,11 +67,13 @@ const LoginPage = () => {
         setLoading(false);
         setLoggedIn(false);
         setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
+        handleSnackOpen();
       } else {
         console.error('로그인 실패!');
         setLoading(false);
         setLoggedIn(false);
         setLoginError('로그인에 실패했습니다.');
+        handleSnackOpen();
       }
     } catch (error) {
       if (error.response && error.response.status === 500) {
@@ -72,13 +81,23 @@ const LoginPage = () => {
         setLoading(false);
         setLoggedIn(false);
         setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
+        handleSnackOpen();
       } else if (!error.response) {
         console.error('로그인 요청 중 오류 발생:', error);
         setLoading(false);
         setLoggedIn(false);
         setLoginError('네트워크 오류가 발생했습니다.');
+        handleSnackOpen();
       }
     }
+  };
+
+  const handleSnackOpen = () => {
+    setSnackOpen(true);
+  };
+
+  const handleSnackClose = () => {
+    setSnackOpen(false);
   };
 
      // 액세스 토큰이 유효한 경우 로그인 페이지 접속 차단
@@ -130,7 +149,7 @@ const LoginPage = () => {
             <div className="text-white">로그인 성공!</div>
           )}
 
-          {loginError && <div className="error text-white">{loginError}</div>}
+          {/* {loginError && <div className="error text-white">{loginError}</div>} */}
         </div>
 
         <ul className="bg-bubbles">
@@ -147,6 +166,15 @@ const LoginPage = () => {
         </ul>
       </div>
     </div>
+    <Snackbar
+              open={snackOpen}
+              autoHideDuration={2000}
+              onClose={handleSnackClose}
+              anchorOrigin={{ vertical:'bottom', horizontal:'center' }}
+              TransitionComponent={TransitionUp}
+              message={loginError}
+              // key={transition ? transition.name : ''}
+            />
     {loading && (
               <div className="overlay-loading-box text-center">
                 {/* 로딩 스피너 컴포넌트 */}
