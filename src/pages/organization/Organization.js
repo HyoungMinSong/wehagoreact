@@ -106,7 +106,7 @@ function Organization() {
     <SectionTag>
       <Header user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
       <SubHeader>
-        <h1>조직도</h1>
+        <h1>회사 설정</h1>
         <div className="organizationHeaderButton">
           <div className="tabsIn">
             <ul className="tabsListUl">
@@ -115,6 +115,9 @@ function Organization() {
               </li>
               <li className="tabsListLi">
                 <Link to={'/organization/services'}><h2>서비스관리</h2></Link>
+              </li>
+              <li className="tabsListLi">
+                <Link to={'/organization/administrator'}><h2>공지사항관리</h2></Link>
               </li>
             </ul>
           </div>
