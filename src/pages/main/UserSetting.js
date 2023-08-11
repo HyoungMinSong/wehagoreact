@@ -255,6 +255,7 @@ function UserSetting(props) {
                 axiosApi.post("/api/update/userInfo", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
+                        "Access-Control-Allow-Origin": "http://localhost:3000"
                     },
                 }).then((response) => {
                     if(response.data === '') {
@@ -297,8 +298,8 @@ function UserSetting(props) {
                           });
                     }
                 }).catch((error) => {
-                    if(error.response.status === 500) {
-                        alert("로그인 시간이 만료되었습니다. 재로그인이 필요합니다.");
+                    if(error.response.status === 401) { // 인증되지 않은 사용자(로그인 안되거나, 만료된 사용자)
+                        alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
                         window.location.replace('/login');
                     } else {
                         Swal.fire({
@@ -366,7 +367,7 @@ function UserSetting(props) {
                             <Tr>
                                 <LeftTd>이름</LeftTd>
                                 <RightTd>
-                                    {editClick ? <input type="text" name="name"/> : user.name}
+                                    {editClick ? <input type="text" defaultValue={user.name} name="name"/> : user.name}
                                     {nameValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>이름을 확인해 주세요.</small>}
                                 </RightTd>                   
                             </Tr>
@@ -377,14 +378,14 @@ function UserSetting(props) {
                             <Tr>
                                 <LeftTd>이메일주소</LeftTd>
                                 <RightTd>
-                                    {editClick ? <input type="text" name="email"/> : user.email}
+                                    {editClick ? <input type="text" defaultValue={user.email} name="email"/> : user.email}
                                     {emailValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>이메일을 확인해 주세요.</small>}
                                 </RightTd>                  
                             </Tr>
                             <Tr>
                                 <LeftTd>휴대전화번호</LeftTd>
                                 <RightTd>
-                                    {editClick ? <input type="text" name="phone"/> : user.phone}
+                                    {editClick ? <input type="text" defaultValue={user.phone} name="phone" /> : user.phone}
                                     {phoneValidate ? '' : <small style={{color:"red", marginLeft:"10px"}}>휴대전화번호를 확인해 주세요.</small>}
                                 </RightTd>
                             </Tr>

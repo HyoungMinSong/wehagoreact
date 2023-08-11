@@ -50,6 +50,15 @@
     margin-top: 50px;
 }
 
-.Alert1-Button:hover {
+.Alert2-Button {
+    background-color: gray;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 50px;
+}
+
+.Alert1-Button:hover, .Alert2-Button:hover {
     background-color: black;
 }

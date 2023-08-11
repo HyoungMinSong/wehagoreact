@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { RepeatOneSharp } from '@mui/icons-material';
 import SignUpHeader from '../signUp/SignUpHeader';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Swal from 'sweetalert2';
 
 
 const Updatepw = () => {
@@ -21,6 +22,7 @@ const Updatepw = () => {
     try {
       if (newPassword !== confirmNewPassword) {
         setError('새 비밀번호가 일치하지 않습니다.');
+        document.getElementById("confirmNewPassword").focus();
         return;
       }
 
@@ -29,10 +31,14 @@ const Updatepw = () => {
       }
 
       if(!pwRegex.test(newPassword)) {
+        setError('새 비밀번호를 확인하세요.');
+        document.getElementById("newPassword").focus();
         return;
       }
 
       if(!pwRegex.test(confirmNewPassword)) {
+        setError('새 비밀번호가 일치하지 않습니다.');
+        document.getElementById("confirmNewPassword").focus();
         return;
       }
 
@@ -46,9 +52,34 @@ const Updatepw = () => {
       const response = await axiosApi.post(url, data);
       
       if(response.data) {
-        setError('')
-        alert('비밀번호가 성공적으로 변경되었습니다.');
-        window.location.replace('/login');
+        setError('');
+        Swal.fire({
+          title: false,
+          text: "이대로 비밀번호를 변경하시겠습니까?",
+          icon: "warning",
+          showCancelButton: true, // cancel버튼 숨기기. 기본은 원래 없음
+          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+          cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+          // reverseButtons: true, // 버튼 순서 거꾸로
+        }).then((result) => {
+          if(result.isConfirmed) {
+            Swal.fire({
+              title: false,
+              text: "비밀번호가 성공적으로 변경되었습니다.",
+              icon: "success",
+              showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+              confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+              cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+              confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+              cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+              // reverseButtons: true, // 버튼 순서 거꾸로
+            }).then((result) => {
+              window.location.replace('/login');
+            });
+          }
+        });
       } else {
         setError('비밀번호 변경에 실패했습니다.');
         setIsPasswordChanged(false);

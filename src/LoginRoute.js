@@ -2,9 +2,9 @@ import React from 'react';
 import { Navigate  } from 'react-router-dom';
 import LoginPage from './pages/login/LoginPage';
 
-const LoginRoute = ({ isLogin, url}) => {
+const LoginRoute = ({ accessToken, url }) => {
   return(
-      isLogin ? <Navigate to={url} /> : <LoginPage/>
+    accessToken ? <Navigate to={url} /> : <LoginPage/>
   )
 }
 

@@ -43,7 +43,7 @@ function CompanyListItem(props) {
 
     const handleCompanyItemClick = () => {
         dispatch(setCompanyName(item.t_company_name));
-        setCompanyCookie(user.id + 'LastSelectedCompanyId', item.t_company_no, 30);
+        setCompanyCookie(user.id + 'LastSelectedCompanyName', encodeURI(item.t_company_name), 30);
         setCompanyModalOpen(false);
     };
 

@@ -91,7 +91,8 @@
 
 .update-password-error {
   color: #ff0000;
-  
+  font-size: 17px;
+  margin-top: 10px;
 }
 
 .update-password-success {
