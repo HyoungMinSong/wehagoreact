@@ -24,19 +24,6 @@ function Main(props) {
 
     useEffect(() => {
         const fetchData = async () => {
-          // 쿠키에 있는 Access Token 가져오기
-          const getCookie = (name) => {
-              const value = `; ${document.cookie}`;
-              const parts = value.split(`; ${name}=`);
-              if (parts.length === 2) return parts.pop().split(';').shift();
-          };
-          const accessToken = getCookie('accessToken');
-        
-          // Access Token이 있으면 헤더에 등록 시키기
-          if (accessToken) {
-            axiosApi.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-          }
-
           try {
             // 요청 데이터 가져오기
             const response = await axiosApi.get('/api/data');
@@ -57,17 +44,12 @@ function Main(props) {
               const userService = response.data.userServiceDtoList;
 
               // 쿠키 불러오기
-              let lastSelectedCompanyId = getCompanyCookie(response.data.userDto.t_user_id + 'LastSelectedCompanyId');
-              let lastSelectedCompanyName = '';
-              if(lastSelectedCompanyId) {
-                for (const companyDto of userCompany) {
-                  if(companyDto.t_company_no == lastSelectedCompanyId) {
-                    lastSelectedCompanyName = companyDto.t_company_name;
-                    break;
-                  }
-                }
-              } else {
+              let lastSelectedCompanyName = getCompanyCookie(response.data.userDto.t_user_id + 'LastSelectedCompanyName');
+              if(!lastSelectedCompanyName) {
                 lastSelectedCompanyName = userCompany[0].t_company_name;
+                setCompanyCookie(response.data.userDto.t_user_id + 'LastSelectedCompanyName', encodeURI(lastSelectedCompanyName), 30);
+              } else {
+                lastSelectedCompanyName = decodeURI(lastSelectedCompanyName);
               }
               
               // Redux의 액션을 호출해 데이터 업데이트
@@ -80,11 +62,23 @@ function Main(props) {
               window.location.replace('/login');
             }
           } catch (error) {
-            console.error(error);
+            if(error.response.status === 401) {
+              alert("로그인 시간이 만료되었습니다. 다시 로그인 하세요.");
+              window.location.replace('/login');
+            } else {
+              console.error(error);
+            }
           }
         };
         fetchData();
     }, []);
+
+    // 쿠키에 데이터 저장
+    function setCompanyCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+    }
 
     // 쿠키에서 데이터 불러오기
     function getCompanyCookie(name) {

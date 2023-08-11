@@ -26,11 +26,11 @@ const FindIdResult = () => {
             <div className="find-id-result-note">
               <p>가입 시 입력하신 정보는 로그인 후 [개인설정]에서 확인하실 수 있습니다.</p>
             </div>
-            <Link to="/login" className="find-id-result-login-button">
-              로그인
-            </Link>
             <Link to="/findpw" className="find-id-result-password-recovery-link">
               비밀번호 찾기
+            </Link>
+            <Link to="/login" className="find-id-result-login-button">
+              로그인
             </Link>
           </div>
         </div>

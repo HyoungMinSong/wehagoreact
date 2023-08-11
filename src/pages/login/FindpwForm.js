@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import './FindpwForm.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SignUpHeader from '../signUp/SignUpHeader';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axiosApi from '../../AxiosApi';
 import { async } from 'q';
+import Swal from 'sweetalert2';
 
 const FindpwForm = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const FindpwForm = () => {
     window.location.reload();
   };
 
-  const handleSendVerificationCode = async () => {
+  const handleSendVerificationCode = async (e) => {
     if(id == '') {
       setIdError(true);
       document.getElementById('id').focus();
@@ -50,15 +51,40 @@ const FindpwForm = () => {
       t_user_id: id,
       t_user_email: email,
     }).then((res) => {
-      setError('');
-      setShowVerificationField(true);
       axiosApi.post('/mailConfirm', {
         email: email
       }).then((response) => {
-        alert('입력하신 이메일로 인증 번호를 발송하였습니다.');
+        Swal.fire({
+          title: false,
+          text: "입력하신 이메일로 인증 번호를 발송하였습니다.",
+          icon: "success",
+          showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+          cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+          // reverseButtons: true, // 버튼 순서 거꾸로
+        }).then((result) => {
+          if(result.isConfirmed) {
+            document.getElementById("id").disabled = true;
+            document.getElementById("email").disabled = true;
+            setError('');
+            setShowVerificationField(true);
+          }
+        });
         setResponseCode(response.data);
       }).catch((response) => {
-        alert('인증 번호 발송 실패..');
+        Swal.fire({
+          title: false,
+          text: "인증 번호 발송에 실패했습니다.",
+          icon: "error",
+          showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+          cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+          cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+          // reverseButtons: true, // 버튼 순서 거꾸로
+        });
       })
     }).catch((res) => {
       setError('아이디 또는 이메일이 일치하지 않습니다.');
@@ -71,6 +97,7 @@ const FindpwForm = () => {
 
     if (verificationCode === '') {
       setError('인증번호를 입력해주세요.');
+      document.getElementById("verificationCode").focus();
       return;
     }
 
@@ -78,6 +105,7 @@ const FindpwForm = () => {
       navigate('/updatepw', {state: id});
     } else {
       setError('인증번호가 일치하지 않습니다.');
+      document.getElementById("verificationCode").focus();
       return;
     }
   };
@@ -102,6 +130,7 @@ const FindpwForm = () => {
               className="find-pw-form-input"
               type="text"
               id="id"
+              name='id'
               value={id}
               onChange={(e) => setId(e.target.value)}
               required
@@ -117,6 +146,7 @@ const FindpwForm = () => {
                 className="find-pw-form-input"
                 type="email"
                 id="email"
+                name='email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -124,13 +154,18 @@ const FindpwForm = () => {
               {emailError && <small className='input-email-error'>이메일을 입력하세요.</small>}
             </div>
           )}
-          <button
+          <Link to={"/findid"} className='find-id-link'>
+            아이디 찾기
+          </Link>
+          {!showVerificationField && (
+            <button
             type="button"
             className="find-pw-form-button"
             onClick={handleSendVerificationCode}
-          >
-            인증번호 발송
-          </button>
+            >
+              인증번호 발송
+            </button>
+          )}
           {showVerificationField && (
             <div className="find-pw-form-group">
               <label className="find-pw-form-label" htmlFor="verificationCode">
@@ -154,7 +189,7 @@ const FindpwForm = () => {
                 </button>
                 <button
                   type="button"
-                  className="find-id-link"
+                  className="find-pw-cancel-button"
                   onClick={handleCancel}
                 >
                   취소
@@ -162,7 +197,7 @@ const FindpwForm = () => {
               </div>
             </div>
           )}
-
+          
           {error && <div className="find-pw-error">{error}</div>}
         </form>
       </div>

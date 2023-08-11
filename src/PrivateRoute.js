@@ -1,9 +1,9 @@
 import React from 'react';
-import { Navigate  } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
-const PrivateRoute = ({ isLogin, component : Component}) => {
+const PrivateRoute = ({ accessToken, component : Component}) => {
   return(
-      isLogin ? Component : <Navigate to="/login" {...alert("로그인 후 이용 가능합니다.")} />
+    accessToken ? Component : <Navigate to={"/error/401"} />
   )
 }
 
