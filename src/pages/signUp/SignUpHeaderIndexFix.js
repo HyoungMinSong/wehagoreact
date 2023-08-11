@@ -19,6 +19,12 @@ const Area = styled.div`
     .grab{
       cursor: -webkit-grab;
     }
+    .horizonLine{
+      border-left : solid white;
+      border-left-width : thin;
+      margin-left : 10px;
+      margin-right : 10px;
+    }
 `;
 const StyledLink1 = styled(Link)`
   text-decoration: none;
@@ -40,6 +46,7 @@ function SignUpHeaderIndexFix(props) {
                 <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.serviceIntroduction)}>서비스 소개</span>
                 <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.mobile)}>모바일</span>
                 <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.pricingGuide)}>요금안내</span>
+                <span className="horizonLine"></span>
                 <StyledLink1 to="/signup">
                   <span className="px-3">회원가입</span>
                 </StyledLink1>
