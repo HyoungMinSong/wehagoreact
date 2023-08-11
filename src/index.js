@@ -34,6 +34,10 @@ import LoginRedirect from './pages/login/LoginRedirect';
 import LoginInvite from './pages/login/LoginInvite';
 import UserChangePassword from './pages/main/UserChangePassword';
 import Alert1 from './pages/login/Alert1';
+import TestChat from './pages/signUp/TestChat';
+import TestChat2 from './pages/signUp/TestChat2';
+import TestChat3 from './pages/signUp/TestChat3';
+import TestChat4 from './pages/signUp/TestChat4';
 
 
 export let persistor = persistStore(store);
@@ -81,7 +85,10 @@ root.render(
         <Route path="/l/:shortLink" element={ <LoginRedirect></LoginRedirect> }/>
         <Route path="/logininvite" element={ <LoginInvite></LoginInvite> }/>
         <Route path="/alert" element={ <Alert1></Alert1> }/>
-
+        <Route path="/chattest" element={ <TestChat></TestChat> }/>
+        <Route path="/chattest2" element={ <TestChat2></TestChat2> }/>
+        <Route path="/chattest3" element={ <TestChat3></TestChat3> }/>
+        <Route path="/chattest4" element={ <TestChat4></TestChat4> }/>
         </Routes>
       </BrowserRouter>
     </PersistGate>
