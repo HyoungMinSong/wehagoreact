@@ -37,7 +37,9 @@ function SignUpHeader1() {
             </StyledLink2>
           </div>
           <div className="" style={{ float: "right", color: "white", fontSize: "18px", marginRight: "20px" }}>
-            <span className="px-3">서비스 소개</span>
+            <StyledLink2 to ="/">
+              <span className="px-3">서비스 소개</span>
+            </StyledLink2>
           </div>
         </StyledDiv2>
       </div>

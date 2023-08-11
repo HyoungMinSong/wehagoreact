@@ -246,8 +246,8 @@ function UserChangePassword() {
                     e.target.currentPassword.focus();
                 }
             }).catch((error) => {
-                if(error.response.status === 500) {
-                    alert("로그인 시간이 만료되었습니다. 재로그인이 필요합니다.");
+                if(error.response.status === 401) { // 인증되지 않은 사용자(로그인 안되거나, 만료된 사용자)
+                    alert("로그인 시간이 만료되었습니다. 다시 로그인 해주세요.");
                     window.location.replace('/login');
                 } else {
                     Swal.fire({

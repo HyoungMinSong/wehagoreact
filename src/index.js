@@ -14,6 +14,7 @@ import SignUp_complete from './pages/signUp/SignUp_complete';
 import Organization from './pages/organization/Organization';
 import Services from './pages/organization/Services';
 import Management from './pages/organization/Management';
+import Administrator from './pages/organization/Administrator';
 import LoginPage from './pages/login/LoginPage';
 import FindIdForm from './pages/login/FindIdForm';
 import FindPwForm from './pages/login/FindpwForm';
@@ -38,18 +39,29 @@ import TestChat from './pages/signUp/TestChat';
 import TestChat2 from './pages/signUp/TestChat2';
 import TestChat3 from './pages/signUp/TestChat3';
 import TestChat4 from './pages/signUp/TestChat4';
+import { getAccessToken, getUserRole, setTokenHeader, getUserId } from './jwtUtils';
+import RoleRoute from './RoleRoute';
+import ExceptionLoginPage from './ExceptionLoginPage';
+import ExceptionRolePage from './ExceptionRolePage';
 
 
 export let persistor = persistStore(store);
 
-
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-};
-const accessToken = getCookie('accessToken');
+const accessToken = getAccessToken(); // Access Token 가져오기
+setTokenHeader(accessToken); // Access Token 헤더에 등록하기
 console.log("토큰 있는지 확인 : " + accessToken);
+
+// function getCompanyCookie(name) {
+//   const value = `; ${document.cookie}`;
+//   const parts = value.split(`; ${name}=`);
+//   if (parts.length === 2) return parts.pop().split(';').shift();
+// }
+
+// let lastCompanyName;
+// if(getUserId(accessToken) !== null) {
+//   lastCompanyName = decodeURI(getCompanyCookie(getUserId(accessToken) + 'LastSelectedCompanyName'));
+// }
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
@@ -62,20 +74,21 @@ root.render(
         <Route path='/signup/complete' element={<SignUp_complete />} />
         <Route path='/signup/package' element={<SignUp_package />} />
         <Route path="/detail" element={<div>라우트 테스트임</div>} />
-        <Route path='/organization/*' element={<Organization />} >
+        <Route path='/organization/*' element={<RoleRoute component={<Organization />} accessToken={accessToken} />} >
           <Route path="management" element={<Management />} />
           <Route path="services" element={<Services />} />
+          <Route path="administrator" element={<Administrator />} />
         </Route>
         <Route path="/about" element={ <div>라우트 테스트임2222</div> } />
         <Route path="/login" element={ <div className="d-flex align-items-center py-4 bg-body-tertiary">
-        <LoginRoute url='/main' isLogin={accessToken} /></div>} />
+        <LoginRoute url='/main' accessToken={accessToken} /></div>} />
         <Route path="/findId" element={ <FindIdForm></FindIdForm> } />
         <Route path="/findpw" element={ <FindPwForm></FindPwForm> } />
         <Route path="/findidresult" element={ <FindIdResult></FindIdResult> } />
         <Route path="/updatepw" element={ <Updatepw></Updatepw> } />
-        <Route path='/main' element={<PrivateRoute component={<Main />} isLogin={accessToken} />}/>
-        <Route path='/detailuserinfo' element={<PrivateRoute component={<UserSetting />} isLogin={accessToken} />}/>
-        <Route path='/changepassword' element={<PrivateRoute component={<UserChangePassword />} isLogin={accessToken} />}/>
+        <Route path='/main' element={<PrivateRoute component={<Main />} accessToken={accessToken} />}/>
+        <Route path='/detailuserinfo' element={<PrivateRoute component={<UserSetting />} accessToken={accessToken} />}/>
+        <Route path='/changepassword' element={<PrivateRoute component={<UserChangePassword />} accessToken={accessToken} />}/>
         <Route path="/test" element={ <Test_up></Test_up>} />
         <Route path="/test2" element={ <SignUpHeader></SignUpHeader>} />
         <Route path="/test3" element={ <SendTest></SendTest>} />
@@ -89,6 +102,8 @@ root.render(
         <Route path="/chattest2" element={ <TestChat2></TestChat2> }/>
         <Route path="/chattest3" element={ <TestChat3></TestChat3> }/>
         <Route path="/chattest4" element={ <TestChat4></TestChat4> }/>
+        <Route path="/error/401" element={ <ExceptionLoginPage></ExceptionLoginPage> }/>
+        <Route path="/error/403" element={ <ExceptionRolePage></ExceptionRolePage> }/>
         </Routes>
       </BrowserRouter>
     </PersistGate>
