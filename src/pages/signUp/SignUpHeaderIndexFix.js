@@ -32,6 +32,7 @@ const StyledLink1 = styled(Link)`
 `;
 
 function SignUpHeaderIndexFix(props) {
+  console.log("안녕");
 
     return(
         <Wrapper>
