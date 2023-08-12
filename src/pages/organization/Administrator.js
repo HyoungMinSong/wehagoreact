@@ -1,4 +1,16 @@
 import { styled } from "styled-components";
+import NoticeTable from "./management/NoticeTable";
+import React, { useEffect, useRef, useState } from "react";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import axiosApi from "../../AxiosApi";
+import { useSelector } from "react-redux";
+import { Spinner } from "react-bootstrap";
 
 
 const CsContainer = styled.div`
@@ -33,8 +45,102 @@ const CsSubTitle = styled.div`
 `;
 
 function Administrator() {
+  const [open, setOpen] = useState(false);
+  // 로그인 유저 정보 리덕스에서 추출
+  const loginedUser = useSelector((state) => state.loginUserData);
 
-  return(
+  const [tCompanyNo, setTCompanyNo] = useState('');
+
+  const [noticeTitle, setNoticeTitle] = useState('');
+
+  const [noticeContent, setNoticeContent] = useState('');
+
+  const [loading, setLoading] = useState(false);
+  //불리안 값인데 초기값은 false라고 정의한거
+
+  const [noticeList,setNoticeList] = useState([]);
+  //배열값인데 초기값이 비어있는 배열임
+
+  // 로그인한 회사로 첫 렌더링
+  useEffect(() => {
+    // 유저의 회사 중에 헤더의 회사이름과 같은 회사의 PK추출
+    const lastCompanyNo =
+      loginedUser.company && loginedUser.company.length > 0
+        ? loginedUser.company.find(
+          (item) => item.t_company_name === loginedUser.companyName
+        ).t_company_no
+        : loginedUser.company[0].t_company_no;
+    setTCompanyNo(lastCompanyNo);
+
+  }, []); // 첫 렌더링
+
+  // 회사 변경마다 회사 업데이트
+  useEffect(() => {
+    // 유저의 회사 중에 헤더의 회사이름과 같은 회사의 PK추출
+    const lastCompanyNo =
+      loginedUser.company && loginedUser.company.length > 0
+        ? loginedUser.company.find(
+          (item) => item.t_company_name === loginedUser.companyName
+        ).t_company_no
+        : loginedUser.company[0].t_company_no;
+    setTCompanyNo(lastCompanyNo);
+    console.log(tCompanyNo);
+  }, [loginedUser.companyName]); // 헤더의 선택된 회사이름
+
+  useEffect(() => {
+    if(tCompanyNo){
+  
+    selectAllNotice();    
+  }
+  }, [tCompanyNo])
+
+  // 공지사항 목록 불러오는 요청
+  const selectAllNotice = async () => {
+    setLoading(true);
+    //로딩값이 트루이고  // 로딩에 트루값을 대입
+    const res = await axiosApi.get("/selectNotice", {
+    // res 변수에 해당 주소로 요청 보냄 // res변수에 요청을 보낸 응답의 값을 저장
+      params: {
+        t_company_no: tCompanyNo,
+      //tCompanyNo를 key value로 데이터를 표현하는 방법
+      },
+    });
+    setNoticeList(res.data);
+    //res.data == tCompanyno
+    setLoading(false);
+  }
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const titleInput = (e) => {
+    setNoticeTitle(e.target.value);
+  }
+
+  const contentInput = (e) => {
+    setNoticeContent(e.target.value);
+  }
+
+  const requestCreateNotice = async () => {
+    console.log(noticeTitle, noticeContent, loginedUser.user.name, tCompanyNo);
+    await axiosApi.post("/createNotice",{
+      t_notice_title : noticeTitle,
+      t_notice_content : noticeContent,
+      t_user_name : loginedUser.user.name,
+      t_company_no : tCompanyNo
+    });
+    setOpen(false);
+    setNoticeTitle('');
+    setNoticeContent('');
+    selectAllNotice();
+  };
+
+  return (
     <div>
       <CsContainer>
         <CsSubTitle>
@@ -43,8 +149,64 @@ function Administrator() {
             <p>등록된 회사의 공지사항을 관리할 수 있습니다.</p>
           </div>
         </CsSubTitle>
-      </CsContainer>  
+        <NoticeTable noticeList = {noticeList} tCompanyNo = {tCompanyNo} />
+        <Button 
+        // variant="contained" endIcon={<SendIcon />}
+        onClick={handleClickOpen}
+        >
+          글쓰기
+        </Button>
+        <div>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>공지사항 작성</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                공지사항 작성 하는 설명
+              </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="title"
+                label="제목"
+                type="text"
+                fullWidth
+                onChange={(e) => titleInput(e)}
+                variant="standard"
+              />
+              <TextField
+                margin="dense"
+                id="content"
+                label="내용"
+                type="text"
+                fullWidth
+                multiline
+                onChange={(e) => contentInput(e)}
+                variant="standard"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={requestCreateNotice}>추가</Button>
+              <Button onClick={handleClose}>취소</Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+      </CsContainer>
+      {loading && (
+              <div className="overlay-loading-box text-center">
+                {/* 로딩 스피너 컴포넌트 */}
+                <Spinner
+                  animation="border"
+                  variant="primary"
+                  style={{ fontSize: "3rem", width: "6rem", height: "6rem" }}
+                />
+                <div className="mt-3">
+                  불러오는 중입니다.
+                  <br />
+                  잠시만 기다려주세요.
+                </div>
+              </div>
+            )}
     </div>
   );
 
-}export default Administrator;
+} export default Administrator;
