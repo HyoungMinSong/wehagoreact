@@ -14,6 +14,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from 'react-bootstrap';
 import { TextField } from '@mui/material';
+import axiosApi from '../../../AxiosApi';
 
 
 
@@ -42,13 +43,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function NoticeTable(props) {
   const [open, setOpen] = useState(false);
   const [noticeTitle, setNoticeTitle] = useState('');
-
+  const [noticeNo, setNoticeNo] = useState('');
   const [noticeContent, setNoticeContent] = useState('');
 
   const handleClickOpen = (user) => {
     console.log(user);
     setNoticeTitle(user.t_notice_title);
     setNoticeContent(user.t_notice_content);
+    setNoticeNo(user.t_notice_no);
     setOpen(true);
   };
 
@@ -59,6 +61,38 @@ function NoticeTable(props) {
   const titleInput = (e) => {
     setNoticeTitle(e.target.value);
   }
+
+  const handleUpdate = () => {
+    updateNotice();
+  } 
+
+  const handleDelete = () => {
+    deleteNotice();
+  }
+
+  const updateNotice = async () => {
+    console.log(noticeTitle, noticeContent, noticeNo);
+    await axiosApi.post("/updateNotice",{
+      t_notice_title : noticeTitle,
+      t_notice_content : noticeContent,
+      t_notice_no : noticeNo,
+    });
+    setOpen(false);
+    setNoticeTitle('');
+    setNoticeContent('');
+    setNoticeNo('');
+    props.selectAllNotice();
+  };
+
+  const deleteNotice = async () => {
+    console.log(noticeNo);
+    await axiosApi.post("/deleteNotice",{
+      t_notice_no : noticeNo,
+    });
+    setOpen(false);
+    setNoticeNo('');
+    props.selectAllNotice();
+  };
 
   const contentInput = (e) => {
     setNoticeContent(e.target.value);
@@ -119,9 +153,13 @@ function NoticeTable(props) {
                 variant="standard"
               />
             </DialogContent>
-            <DialogActions>
-              <Button>추가</Button>
-              <Button onClick={handleClose}>취소</Button>
+            <DialogActions style={{ marginBottom: '16px', justifyContent: 'space-between' }}>
+              <Button style={{ marginLeft: '16px', backgroundColor : 'red' }}onClick = {handleDelete}>삭제</Button>
+              <div>
+              <Button style={{ marginLeft: '16px' }} onClick = {handleUpdate}>수정</Button>
+              <Button style={{ marginLeft: '16px', marginRight: '16px' }} onClick={handleClose}>취소</Button>
+              </div>
+              
             </DialogActions>
           </Dialog>
     </TableContainer>
