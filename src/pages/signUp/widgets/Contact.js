@@ -1,8 +1,20 @@
 import React from "react";
 import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 import UrlIcon from "../icons/call.svg";
+import Options from "./Options";
 
-const ContactLink = () => {
+const ContactLink = (props) => {
+  const options = [
+    {
+        name: "처음으로",
+        handler: () => {
+          // '처음으로' 옵션이 선택되었을 때의 처리
+          props.actionProvider.handleOptions(); // ActionProvider의 handleOptions 함수 호출
+        },
+        id: 1,
+    },
+    // 다른 동영상 가이드 옵션들을 추가할 수 있습니다.
+];
   return (
     <div>
       <div className="stats">
@@ -22,6 +34,9 @@ const ContactLink = () => {
 
             </a>
           </div>
+        </div>
+        <div className=" my-4">
+        <Options options={options} title="" {...props} />
         </div>
       </div>
 

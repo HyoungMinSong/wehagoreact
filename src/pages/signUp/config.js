@@ -5,10 +5,14 @@ import LocalStatistics from "./widgets/LocalStatistics";
 import Contact from "./widgets/Contact";
 import MedicineDelivery from "./widgets/MedicineDelivery";
 import CoBotAvatar from "./CoBotAvatar";
+import VideoGuideOptions from "./widgets/VideoGuideOptions";
+import PricingOptions from "./widgets/PricingOptions";
+import ProFee from "./widgets/ProFee";
+import WehagoTGuide from "./widgets/WehagoTGuide";
 
 const config = {
   lang: "no",
-  botName: "CoBot",
+  botName: "WE봇",
   customStyles: {
     botMessageBox: {
       backgroundColor: "#04668a"
@@ -40,20 +44,36 @@ const config = {
     },
     {
       widgetName: "globalStatistics",
-      widgetFunc: (props) => <GlobalStatistics />
+      widgetFunc: (props) => <GlobalStatistics {...props} />
     },
     {
       widgetName: "localStatistics",
-      widgetFunc: (props) => <LocalStatistics />
+      widgetFunc: (props) => <LocalStatistics {...props} />
     },
     {
       widgetName: "emergencyContact",
-      widgetFunc: (props) => <Contact />
+      widgetFunc: (props) => <Contact  {...props}/>
     },
     {
       widgetName: "medicineDelivery",
-      widgetFunc: (props) => <MedicineDelivery />
-    }
+      widgetFunc: (props) => <MedicineDelivery {...props}/>
+    },
+    {
+      widgetName: "videoGuideOptions",
+      widgetFunc: (props) => <VideoGuideOptions {...props} />,
+    },
+    {
+      widgetName: "pricingOptions",
+      widgetFunc: (props) => <PricingOptions {...props} />,
+    },
+    {
+      widgetName: "proFee",
+      widgetFunc: (props) => <ProFee {...props} />
+    },
+    {
+      widgetName: "wehagoTGuide",
+      widgetFunc: (props) => <WehagoTGuide {...props} />
+    },
   ]
 };
 
