@@ -17,40 +17,47 @@ class MessageParser {
     }
 
     if (
-      message.includes("talk") ||
-      message.includes("speak") ||
-      message.includes("real person") ||
-      message.includes("call") ||
-      message.includes("emergency") ||
-      message.includes("contact")
+      message.includes("상담") ||
+      message.includes("전화") ||
+      message.includes("고객센터") ||
+      message.includes("문의") ||
+      message.includes("번호") ||
+      message.includes("연락")
     ) {
       return this.actionProvider.handleContact();
     }
 
     if (
-      message.includes("stats") ||
-      message.includes("statistics") ||
+      message.includes("회원") ||
+      message.includes("가입") ||
       message.includes("deaths")
     ) {
-      return [
-        this.actionProvider.handleGlobalStats(),
-        this.actionProvider.handleLocalStats()
-      ];
+      return this.actionProvider.handleGlobalStats();
+
     }
 
-    if (message.includes("medicine") || message.includes("delivery")) {
+    if (
+      message.includes("요금") ||
+      message.includes("가격") ||
+      message.includes("패키지")
+    ) {
+      return this.actionProvider.handleLocalStats();
+    }
+    
+
+    if (message.includes("사용") || message.includes("가이드")) {
       return this.actionProvider.handleMedicine();
     }
 
     if (
-      message.includes("joke") ||
-      message.includes("jokes") ||
-      message.includes("funny")
+      message.includes("농담") ||
+      message.includes("재밌는") ||
+      message.includes("재밋는")
     ) {
       return this.actionProvider.handleJoke();
     }
 
-    if (message.includes("thanks") || message.includes("thank you")) {
+    if (message.includes("고마워") || message.includes("땡큐") || message.includes("감사") || message.includes("고맙") ) {
       return this.actionProvider.handleThanks();
     }
 

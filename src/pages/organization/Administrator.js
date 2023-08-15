@@ -11,6 +11,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import axiosApi from "../../AxiosApi";
 import { useSelector } from "react-redux";
 import { Spinner } from "react-bootstrap";
+import { Slide, Snackbar } from "@mui/material";
 
 
 const CsContainer = styled.div`
@@ -44,6 +45,10 @@ const CsSubTitle = styled.div`
   }
 `;
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 function Administrator() {
   const [open, setOpen] = useState(false);
   // 로그인 유저 정보 리덕스에서 추출
@@ -60,6 +65,16 @@ function Administrator() {
 
   const [noticeList,setNoticeList] = useState([]);
   //배열값인데 초기값이 비어있는 배열임
+  // 스낵바
+  const [snackOpen, setSnackOpen] = useState(false);
+
+  const handleSnackOpen = () => {
+    setSnackOpen(true);
+  };
+
+  const handleSnackClose = () => {
+    setSnackOpen(false);
+  };
 
   // 로그인한 회사로 첫 렌더링
   useEffect(() => {
@@ -111,7 +126,11 @@ function Administrator() {
   }
 
   const handleClickOpen = () => {
-    setOpen(true);
+    if(noticeList && noticeList.length > 4){
+      handleSnackOpen();
+    }else{
+      setOpen(true);
+    }
   };
 
   const handleClose = () => {
@@ -149,7 +168,7 @@ function Administrator() {
             <p>등록된 회사의 공지사항을 관리할 수 있습니다.</p>
           </div>
         </CsSubTitle>
-        <NoticeTable noticeList = {noticeList} tCompanyNo = {tCompanyNo} />
+        <NoticeTable selectAllNotice = {selectAllNotice} noticeList = {noticeList} tCompanyNo = {tCompanyNo} />
         <Button 
         // variant="contained" endIcon={<SendIcon />}
         onClick={handleClickOpen}
@@ -206,6 +225,15 @@ function Administrator() {
                 </div>
               </div>
             )}
+            <Snackbar
+        open={snackOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackClose}
+        anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
+        TransitionComponent={TransitionUp}
+        message="최대 5개의 공지사항만 입력가능합니다."
+        // key={transition ? transition.name : ''}
+      />
     </div>
   );
 

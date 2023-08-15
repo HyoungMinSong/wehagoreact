@@ -6,16 +6,16 @@ import MessageParser from './MessageParser';
 import ActionProvider from './ActionProvider';
 
 export default function TestChat4() {
-    const [showBot, toggleBot] = useState(false);
+  const [showBot, toggleBot] = useState(false);
 
-    return (
-<div className="App">
+  return (
+    <div className="App">
 
-<div>
+      <div>
         <h1>COVID-19-Chatbot</h1>
         <h2>Start chatting with the COVID-19-Chatbot!</h2>
       </div>
-    {showBot && (
+      {showBot && (
         <div>
           <div className="app-chatbot-container">
             <Chatbot
@@ -27,7 +27,7 @@ export default function TestChat4() {
         </div>
       )}
 
-<div>
+      <div>
         <button
           className="app-chatbot-button"
           onClick={() => toggleBot((prev) => !prev)}
@@ -38,6 +38,6 @@ export default function TestChat4() {
           </svg>
         </button>
       </div>
-</div>
-      );
-    }
+    </div>
+  );
+}

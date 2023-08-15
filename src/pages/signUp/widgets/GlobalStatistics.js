@@ -4,22 +4,20 @@ import { Link } from 'react-router-dom';
 
 import { getData } from "../data";
 import { Image } from "react-bootstrap";
+import Options from "./Options";
 
-const Statistics = () => {
-  const [stats, setStats] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const getStats = async () => {
-      const stats = await getData();
-
-      // const filteredFlights = flights.filter((item) => item.Status === null);
-
-      setStats(stats);
-      setLoading(false);
-    };
-    getStats();
-  }, []);
+const Statistics = (props) => {
+  const options = [
+    {
+        name: "처음으로",
+        handler: () => {
+          // '처음으로' 옵션이 선택되었을 때의 처리
+          props.actionProvider.handleOptions(); // ActionProvider의 handleOptions 함수 호출
+        },
+        id: 1,
+    },
+    // 다른 동영상 가이드 옵션들을 추가할 수 있습니다.
+];
 
   return (
     <div>
@@ -35,7 +33,11 @@ const Statistics = () => {
       <div className="stats mt-3 ">
       <Image src={require('../howsignup.png')} alt="" className="rounded" style={{ width: '100%' }}/>
       </div>
+      <div className=" my-4">
+        <Options options={options} title="" {...props} />
+        </div>
     </div>
+    
   );
 };
 
