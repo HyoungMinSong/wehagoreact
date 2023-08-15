@@ -384,6 +384,8 @@ function BasicGridBox(props) {
   const loginedUser = useSelector((state) => state.loginUserData);
   // 스낵바
   const [snackOpen, setSnackOpen] = useState(false);
+  // 스낵바 메세지
+  const [snackText, setSnackText] = useState("중복된 이메일 입니다.");
 
 
   // 유효성 검사
@@ -610,18 +612,25 @@ function BasicGridBox(props) {
         }
       });
     }else{
-      const res = await axiosApi.get("/checkRegisterEmail", {
+      props.setLoading(true);
+      const res = await axiosApi.get("/checkRegister", {
         params: {
-          t_user_email: props.updateSelectedUser.t_user_email
+          t_user_email: props.updateSelectedUser.t_user_email,
+          t_user_phone: props.updateSelectedUser.t_user_phone
         }
     });
       console.log("res",res);
-      if(res.data===null || res.data===0){
-        requestSaveClick();
-        console.log("res",res);
-      }else{
+      if(res.data === 1){
+        setSnackText("중복된 핸드폰 번호 입니다.");
         handleSnackOpen();
+      }else if(res.data === 2){
+        setSnackText("중복된 이메일 입니다.");
+        handleSnackOpen();
+      }else{
+          requestSaveClick();
+          console.log("res",res);
       }
+      props.setLoading(false);
     }
   };
 
@@ -1385,7 +1394,7 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
         onClose={handleSnackClose}
         anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
         TransitionComponent={TransitionUp}
-        message="중복된 이메일 입니다."
+        message={snackText}
         // key={transition ? transition.name : ''}
       />
     </WrappingGridBox>
