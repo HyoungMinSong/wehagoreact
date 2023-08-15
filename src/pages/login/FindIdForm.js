@@ -5,6 +5,7 @@ import SignUpHeader from "../signUp/SignUpHeader";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import axiosApi from "../../AxiosApi";
 import Swal from "sweetalert2";
+import { Spinner } from "react-bootstrap";
 
 const FindpwForm = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const FindpwForm = () => {
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [foundId, setFoundId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSearchOptionChange = (e) => {
     setSearchOption(e.target.value);
@@ -34,20 +36,25 @@ const FindpwForm = () => {
   };
 
   const handleSendVerificationCode = async (e) => {
+    setLoading(true);
     if (name == "") {
       setNameError(true);
       document.getElementById("name").focus();
+      setLoading(false);
       return;
     } else {
       setNameError(false);
+      setLoading(false);
     }
 
     if (email == "") {
       setEmailError(true);
       document.getElementById("email").focus();
+      setLoading(false);
       return;
     } else {
       setEmailError(false);
+      setLoading(false);
     }
     // 회원이 있는지 확인
 
@@ -162,6 +169,7 @@ const FindpwForm = () => {
         setError("이름 또는 이메일이 일치하지 않습니다.");
       })
     }
+    setLoading(false);
   };
 
   const handleSubmit = (e) => {
@@ -325,6 +333,21 @@ const FindpwForm = () => {
           {error && <div className="find-pw-error">{error}</div>}
         </form>
       </div>
+        {loading && (
+              <div className="overlay-loading-box text-center">
+                {/* 로딩 스피너 컴포넌트 */}
+                <Spinner
+                  animation="border"
+                  variant="primary"
+                  style={{ fontSize: "3rem", width: "6rem", height: "6rem" }}
+                />
+                <div className="mt-3">
+                  불러오는 중입니다.
+                  <br />
+                  잠시만 기다려주세요.
+                </div>
+              </div>
+            )}
     </>
   );
 };
