@@ -1,5 +1,18 @@
 /* FindpwForm.css */
 
+.find-id-search-option {
+  display: flex;
+  flex-direction: row-reverse; /* Reverses the order of the options */
+  justify-content: flex-start; /* Aligns options to the right side */
+  margin-bottom: 20px;
+}
+
+.find-id-option {
+  display: flex;
+  align-items: center;
+  margin-right: 20px; /* Adds spacing between options */
+}
+
 .find-pw-container {
   display: flex;
   flex-direction: column;

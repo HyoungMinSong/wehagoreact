@@ -549,10 +549,10 @@ function Management() {
 
     if (!isExistEmptyOrganization) {
       // 해당 부서의 직원수 세오기
-      const countedEmpl = countingEmplFromOrga(
+      const countedEmpl = organizationList.find((orga) => orga.rownum === selectedRowNum) ? countingEmplFromOrga(
         organizationList.find((orga) => orga.rownum === selectedRowNum)
           .t_organization_name
-      );
+      ) : 0;
       if (selectedRowNum != 0 && countedEmpl != 0) {
         Swal.fire({
           title: "문제가 발생했습니다.",
@@ -685,26 +685,26 @@ function Management() {
       // 만약 Promise리턴을 받으면,
       if (result.isConfirmed) {
         // 만약 모달창에서 confirm 버튼을 눌렀다면
-        try {
-          const response = axiosApi
-            .post("/editingOrganization", requestOrganizationList)
-            .then(() => {
-              setSelectedRowNum(0);
-              setRequestOrganizationList([]);
-              setCopyOrganizationList([]);
-              fetchOrganizationList();
-              fetchEmployeeList();
-              setEditingOrganization(false);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        } catch (error) {
-          console.error(error);
-        }
+        requestOrganization();
       }
     });
   };
+
+  // 조직 수정 요청
+  const requestOrganization = async () => {
+    try {
+      await axiosApi.post("/editingOrganization", requestOrganizationList);
+          setSelectedRowNum(0);
+          setSelectedOrgaName(loginedUser.companyName);
+          setRequestOrganizationList([]);
+          setCopyOrganizationList([]);
+          fetchOrganizationList();
+          fetchEmployeeList();
+          setEditingOrganization(false);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   // 조직도 조회
   const fetchOrganizationList = async () => {
