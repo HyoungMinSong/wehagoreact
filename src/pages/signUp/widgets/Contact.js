@@ -29,7 +29,9 @@ const ContactLink = (props) => {
           <div className="small-text m-3">
             <a href="tel:1999" style={{
             color: 'white'}}>
+              <div style={{marginLeft : '33px'}}>
               <PermPhoneMsgIcon sx={{ fontSize: 35 }} />
+              </div>
               <h5 className="tel-header">  1000 - 5000  </h5>
 
             </a>
