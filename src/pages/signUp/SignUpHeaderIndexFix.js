@@ -32,6 +32,13 @@ const StyledLink1 = styled(Link)`
 `;
 
 function SignUpHeaderIndexFix(props) {
+    // 쿠키에서 데이터 불러오기
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    const accessToken = getCookie('accessToken');
 
     return(
         <Wrapper>
@@ -42,18 +49,25 @@ function SignUpHeaderIndexFix(props) {
             </Area>
             <Area/><Area/>
             <Area>
-              <div className="" style={{ float: "right", color: "white", fontSize: "18px", marginRight: "20px" }}>
+              <div className="" style={{ float: "right", color: "white", fontSize: "18px", marginRight: "20px", display:"flex" }}>
                 <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.serviceIntroduction)}>서비스 소개</span>
                 <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.mobile)}>모바일</span>
                 <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.pricingGuide)}>요금안내</span>
                 <span className="horizonLine"></span>
-                <StyledLink1 to="/signup">
-                  <span className="px-3">회원가입</span>
-                </StyledLink1>
-                <StyledLink1 to="/login">
-                  <span className="px-3">로그인</span>
-                </StyledLink1>
-              </div>
+                { accessToken ? 
+                    <StyledLink1 to="/main">
+                      <span className="px-3">메인</span>
+                    </StyledLink1> : 
+                    <div>
+                      <StyledLink1 to="/signup">
+                        <span className="px-3">회원가입</span>
+                      </StyledLink1>
+                      <StyledLink1 to="/login">
+                        <span className="px-3">로그인</span>
+                      </StyledLink1>
+                    </div>
+                }
+                </div>
             </Area>
         </Wrapper>
     );

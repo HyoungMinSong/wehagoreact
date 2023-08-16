@@ -1,11 +1,12 @@
+import { fontSize } from "@mui/system";
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
 const ModalWrapper = styled.div`
     /* 모달창 크기 */
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 310px;
 
     /* 최상단 위치 */
     z-index: 999;
@@ -43,6 +44,7 @@ const ProfileWrapper = styled.div`
     .user {
         display: flex;
         justify-content: center;
+        align-items: center;
         margin: 5px;
     }
 
@@ -155,6 +157,11 @@ function UserModal(props) {
                     <img src={user.photo} alt="프로필 사진" width="70px" height="70px" />
                 </div>
                 <div className="user">
+                    <span>
+                        {(company.find((item) => item.t_company_name == companyName).t_employee_auth == 0 || 
+                            company.find((item) => item.t_company_name == companyName).t_employee_auth == 1) ? 
+                                <img src="https://cdn-icons-png.flaticon.com/128/5985/5985874.png" width="25px" height="30px"/> : ''}
+                    </span>
                     <span>{user.name}</span>
                     <span>{selectedCompanyRank}</span>
                 </div>
@@ -165,7 +172,15 @@ function UserModal(props) {
                 <button className="group">
                 <Link className="a" to={'/organization/management'}>
                     <img src="https://cdn-icons-png.flaticon.com/128/5126/5126646.png" alt="회사" width="30px" height="30px" />
-                    <span>{companyName}</span>
+                    <span>
+                        {companyName}
+                        {
+                            company.find((item) => item.t_company_name === companyName).t_employee_auth == 0
+                            ? <label style={{background:"#d6c82b", borderRadius:"7px", color:"white", fontSize:"12px", marginLeft:"7px", padding:"3px"}}>마스터</label>
+                            : company.find((item) => item.t_company_name === companyName).t_employee_auth == 1
+                                ? <label style={{background:"#8f8f8c", borderRadius:"7px", color:"white", fontSize:"12px", marginLeft:"7px", padding:"3px"}}>관리자</label> : <label style={{background:"brown", borderRadius:"7px", color:"white", fontSize:"12px", marginLeft:"7px", padding:"3px"}}>일반</label>
+                        }
+                    </span>
                 </Link>
                 </button>
             </ProfileWrapper>

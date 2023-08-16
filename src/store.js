@@ -36,7 +36,8 @@ let loginUserData = createSlice({
     user: {},
     service: [],
     company: [],
-    companyName: ''
+    companyName: '',
+    employeeNo: ''
   },
   reducers : {
     setUser: (state, action) => {
@@ -50,6 +51,9 @@ let loginUserData = createSlice({
     },
     setCompanyName: (state, action) => {
       state.companyName = action.payload;
+    },
+    setEmployeeNo: (state, action) => {
+      state.employeeNo = action.payload;
     }
   }
 });
@@ -87,7 +91,7 @@ const persistedReducer = persistReducer(persistConfig, reducers);
   export let { increase } = user.actions 
   export let { beTheChosenOnes } = areThereAnyChosenOnes.actions
   export let { clearChosenOnes } = areThereAnyChosenOnes.actions
-  export let { setUser, setService, setCompany, setCompanyName } = loginUserData.actions;
+  export let { setUser, setService, setCompany, setCompanyName, setEmployeeNo } = loginUserData.actions;
   export let { pushSwitch } = spinnerSwitch.actions 
   // 저장소 추출
   export default configureStore({
