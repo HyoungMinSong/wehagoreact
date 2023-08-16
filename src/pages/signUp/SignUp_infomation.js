@@ -63,6 +63,10 @@ function SignUp_infomation() {
   const handleClose2 = () => setShow2(false);
   const handleShow2 = () => setShow2(true);
 
+  const [show3, setShow3] = useState(false);
+  const handleClose3 = () => setShow3(false);
+  const handleShow3 = () => setShow3(true);
+
   let dispatch = useDispatch();
 
   let navigate = useNavigate();
@@ -253,12 +257,14 @@ function SignUp_infomation() {
                             emailInputRef.current.focus();
                           } else {
                             axiosApi.post("/idcheck", {
-                              id: id, email : email
+                              id: id, email : email, phoneNumber : phoneNumber
                             }).then((c) => {
                               if (c.data.checkId === id) {
                                 handleShow();
                               } else if (c.data.checkEmail === email){
                                 handleShow2();
+                              } else if (c.data.checkPhoneNumber === phoneNumber){
+                                handleShow3()
                               } else {
                                 dispatch(increase({
                                   name: name, phoneNumber: phoneNumber, id: id,
@@ -310,6 +316,20 @@ function SignUp_infomation() {
             <Modal.Body>중복된 이메일입니다</Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose2}>
+                Close
+              </Button>
+              {/* <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button> */}
+            </Modal.Footer>
+          </Modal>
+          <Modal show={show3} onHide={handleClose3} style={{ color: "black" }}>
+            <Modal.Header closeButton>
+              <Modal.Title>회원가입 에러</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>중복된 휴대전화번호입니다</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose3}>
                 Close
               </Button>
               {/* <Button variant="primary" onClick={handleClose}>

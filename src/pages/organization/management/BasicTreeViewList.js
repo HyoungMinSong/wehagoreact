@@ -149,22 +149,26 @@ function BasicTreeViewList(props) {
 
   const handleSearchButtonClick = () => {
     // 검색 입력값에 따라 employeeList를 필터링합니다.
-    const filteredEmployeeList = props.employeeList.filter((user) => {
-      const { t_user_name, t_organization_name, t_user_email, t_user_phone } = user;
-      return (
-        t_user_name.includes(searchInput) ||
-        t_organization_name.includes(searchInput) ||
-        t_user_email.includes(searchInput) ||
-        t_user_phone.includes(searchInput)
-      );
-    });
-    // 필터링된 employeeList를 BasicGridBox로 전달합니다.
-    setSearchInputText(searchInput);
-    props.setSearchMode(true);
-    setSearchEmployeeList(filteredEmployeeList);
-  };
-
-  // 직원 등록 클릭 이벤트
+    if(searchInput === ""){
+      
+    }else{
+      const filteredEmployeeList = props.employeeList.filter((user) => {
+        const { t_user_name, t_organization_name, t_user_email, t_user_phone } = user;
+        return (
+          t_user_name.includes(searchInput) ||
+          t_organization_name.includes(searchInput) ||
+          t_user_email.includes(searchInput) ||
+          t_user_phone.includes(searchInput)
+          );
+        });
+        // 필터링된 employeeList를 BasicGridBox로 전달합니다.
+        setSearchInputText(searchInput);
+        props.setSearchMode(true);
+        setSearchEmployeeList(filteredEmployeeList);
+      }
+    };
+      
+      // 직원 등록 클릭 이벤트
   const handleRegistrationClick = () => {
     setSelectedDate(new Date());
     setUpdateSelectedUser({

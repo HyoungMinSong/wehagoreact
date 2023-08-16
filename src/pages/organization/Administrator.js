@@ -67,8 +67,11 @@ function Administrator() {
   //배열값인데 초기값이 비어있는 배열임
   // 스낵바
   const [snackOpen, setSnackOpen] = useState(false);
+  // 스낵바 메세지
+  const [snackText, setSnackText] = useState("최대 5개의 공지사항만 입력가능합니다.");
 
-  const handleSnackOpen = () => {
+  const maxSnackOpen = async () => {
+    setSnackText("최대 5개의 공지사항만 입력가능합니다.");
     setSnackOpen(true);
   };
 
@@ -127,7 +130,7 @@ function Administrator() {
 
   const handleClickOpen = () => {
     if(noticeList && noticeList.length > 4){
-      handleSnackOpen();
+      maxSnackOpen();
     }else{
       setOpen(true);
     }
@@ -143,6 +146,18 @@ function Administrator() {
 
   const contentInput = (e) => {
     setNoticeContent(e.target.value);
+  }
+
+  const handleRequestCreateNotice = async () => {
+    if(noticeTitle ==="" || noticeTitle.length > 30){
+      setSnackText("제목을 올바르게 입력해주세요.");
+      setSnackOpen(true);
+    }else if(noticeContent === "" || noticeContent.length > 150){
+      setSnackText("내용을 올바르게 입력해주세요.");
+      setSnackOpen(true);
+    }else{
+      requestCreateNotice();
+    }
   }
 
   const requestCreateNotice = async () => {
@@ -168,6 +183,7 @@ function Administrator() {
             <p>등록된 회사의 공지사항을 관리할 수 있습니다.</p>
           </div>
         </CsSubTitle>
+
         <NoticeTable selectAllNotice = {selectAllNotice} noticeList = {noticeList} tCompanyNo = {tCompanyNo} />
         <Button style={{marginTop:'30px'}}
         // variant="contained" endIcon={<SendIcon />}
@@ -191,6 +207,7 @@ function Administrator() {
                 fullWidth
                 onChange={(e) => titleInput(e)}
                 variant="standard"
+                placeholder="최대 30글자까지 입력 가능합니다."
               />
               <TextField
                 margin="dense"
@@ -201,10 +218,11 @@ function Administrator() {
                 multiline
                 onChange={(e) => contentInput(e)}
                 variant="standard"
+                placeholder="최대 150글자까지 입력 가능합니다."
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={requestCreateNotice}>추가</Button>
+              <Button onClick={handleRequestCreateNotice}>추가</Button>
               <Button onClick={handleClose}>취소</Button>
             </DialogActions>
           </Dialog>
@@ -231,7 +249,7 @@ function Administrator() {
         onClose={handleSnackClose}
         anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
         TransitionComponent={TransitionUp}
-        message="최대 5개의 공지사항만 입력가능합니다."
+        message={snackText}
         // key={transition ? transition.name : ''}
       />
     </div>

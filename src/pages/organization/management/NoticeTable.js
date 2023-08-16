@@ -62,8 +62,16 @@ function NoticeTable(props) {
     setNoticeTitle(e.target.value);
   }
 
-  const handleUpdate = () => {
-    updateNotice();
+  const handleUpdate = async () => {
+    if(noticeTitle ==="" || noticeTitle.length > 30){
+      props.setSnackText("제목을 올바르게 입력해주세요.");
+      props.setSnackOpen(true);
+    }else if(noticeContent === "" || noticeContent.length > 150){
+      props.setSnackText("내용을 올바르게 입력해주세요.");
+      props.setSnackOpen(true);
+    }else{
+      updateNotice();
+    }
   } 
 
   const handleDelete = () => {
@@ -140,6 +148,7 @@ function NoticeTable(props) {
                 value={noticeTitle}
                 onChange={(e) => titleInput(e)}
                 variant="standard"
+                placeholder="최대 30글자까지 입력 가능합니다."
               />
               <TextField
                 margin="dense"
@@ -151,6 +160,7 @@ function NoticeTable(props) {
                 multiline
                 onChange={(e) => contentInput(e)}
                 variant="standard"
+                placeholder="최대 150글자까지 입력 가능합니다."
               />
             </DialogContent>
             <DialogActions style={{ marginBottom: '16px', justifyContent: 'space-between' }}>

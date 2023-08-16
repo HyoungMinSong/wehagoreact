@@ -2,6 +2,16 @@ import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import CompanyModal from "./HeaderComponent/CompanyModal";
 import UserModal from "./HeaderComponent/UserModal";
+// import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import NotificationsNoneSharpIcon from '@mui/icons-material/NotificationsNoneSharp';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import ChatBotImg from "./chatbotimg.svg";
+import Chatbot from "react-chatbot-kit";
+import config from '../signUp/config';
+import MessageParser from '../signUp/MessageParser';
+import ActionProvider from '../signUp/ActionProvider';
+import "../signUp/chat.css";
+
 
 const Wrapper = styled.div`
     display: flex;
@@ -68,6 +78,7 @@ const ProfileButton = styled.button`
 `;
 
 function MainHeader(props) {
+    const [showBot, toggleBot] = useState(false);
     const {user, company, companyName, setCompanyName} = props;
     const [companyModalOpen, setCompanyModalOpen] = useState(false);
     const [userModalOpen, setUserModalOpen] = useState(false);
@@ -83,6 +94,7 @@ function MainHeader(props) {
     }
 
     return(
+        <>
         <Wrapper>
             <Area>
                 <a href="/main">
@@ -96,16 +108,21 @@ function MainHeader(props) {
             </Area>
             <Area>
                 <Button>
-                    <img src="https://cdn-icons-png.flaticon.com/128/8335/8335899.png" alt="알림" width="25px" height="25px"/>
+                    <NotificationsNoneSharpIcon style={{ color: 'white',width: '28px', height: '28px', }}/>
+                    {/* <img src="https://cdn-icons-png.flaticon.com/128/8335/8335899.png" alt="알림" width="25px" height="25px"/> */}
                 </Button>
-                <Button>
+                {/* <Button>
                     <img src="https://cdn-icons-png.flaticon.com/128/4291/4291393.png" alt="포인트" width="25px" height="25px"/>
-                </Button>
+                </Button> */}
                 <Button>
-                    <img src="https://cdn-icons-png.flaticon.com/128/8803/8803906.png" alt="이용가이드" width="25px" height="25px"/>
+                <HelpOutlineOutlinedIcon style={{ color: 'white',width: '28px', height: '28px', }}/>
+                    {/* <img src="https://cdn-icons-png.flaticon.com/128/8803/8803906.png" alt="이용가이드" width="25px" height="25px"/> */}
                 </Button>
-                <Button>
-                    <img src="https://cdn-icons-png.flaticon.com/128/2068/2068998.png" alt="웹봇" width="25px" height="25px"/>
+                <Button onClick={() => toggleBot((prev) => !prev)}>
+                    {/* <img src="https://cdn-icons-png.flaticon.com/128/2068/2068998.png" alt="웹봇" width="25px" height="25px"/> */}
+
+                    <img src={ChatBotImg} alt="웹봇" width="40px" height="40px" />
+
                 </Button>
                 <ProfileButton className="profile" onClick={showUserModal}>
                     <div>
@@ -117,7 +134,32 @@ function MainHeader(props) {
                 </ProfileButton>
                 {userModalOpen && <UserModal setUserModalOpen={setUserModalOpen} user={user} company={company} companyName={companyName} selectedCompanyRank={selectedCompanyRank} />}
             </Area>
+
         </Wrapper>
+        {showBot && (
+        <div>
+          <div className="app-chatbot-container">
+            <Chatbot
+              config={config}
+              messageParser={MessageParser}
+              actionProvider={ActionProvider}
+            />
+          </div>
+        </div>
+      )}
+
+      <div>
+        <button
+          className="app-chatbot-button"
+          onClick={() => toggleBot((prev) => !prev)}
+        >
+          <div>Bot</div>
+          <svg viewBox="0 0 640 512" className="app-chatbot-button-icon">
+            <path d="M192,408h64V360H192ZM576,192H544a95.99975,95.99975,0,0,0-96-96H344V24a24,24,0,0,0-48,0V96H192a95.99975,95.99975,0,0,0-96,96H64a47.99987,47.99987,0,0,0-48,48V368a47.99987,47.99987,0,0,0,48,48H96a95.99975,95.99975,0,0,0,96,96H448a95.99975,95.99975,0,0,0,96-96h32a47.99987,47.99987,0,0,0,48-48V240A47.99987,47.99987,0,0,0,576,192ZM96,368H64V240H96Zm400,48a48.14061,48.14061,0,0,1-48,48H192a48.14061,48.14061,0,0,1-48-48V192a47.99987,47.99987,0,0,1,48-48H448a47.99987,47.99987,0,0,1,48,48Zm80-48H544V240h32ZM240,208a48,48,0,1,0,48,48A47.99612,47.99612,0,0,0,240,208Zm160,0a48,48,0,1,0,48,48A47.99612,47.99612,0,0,0,400,208ZM384,408h64V360H384Zm-96,0h64V360H288Z"></path>
+          </svg>
+        </button>
+      </div>
+        </>
     );
 }
 
