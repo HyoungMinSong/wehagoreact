@@ -15,6 +15,24 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   isexpanded: $isexpanded,
 }))`
   height: 100%;
+  .noEmpl{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90%;
+  }
+  .noEmpl > img{
+    width: 70px;
+    height: 70px;
+    vertical-align: middle;
+  }
+  .noEmpl > span{
+    margin-top: 10px;
+    width: 150px;
+    vertical-align: middle;
+    color: gray;
+  }
   .searchThing{
     color: #1c90fb;
   }
@@ -386,7 +404,8 @@ function BasicGridBox(props) {
   const [snackOpen, setSnackOpen] = useState(false);
   // 스낵바 메세지
   const [snackText, setSnackText] = useState("중복된 이메일 입니다.");
-
+  // 직원 목록 필터링
+  const [filteredEmployeeList, setFilteredEmployeeList] = useState([]);
 
   // 유효성 검사
   let nameRegex = /^[가-힣a-zA-Z]+$/;
@@ -396,6 +415,20 @@ function BasicGridBox(props) {
   useEffect(() => {
     updateOnesDate(props.selectedDate);
   }, [props.selectedDate]);
+
+  // 직원 필터링
+  useEffect(() => {
+    setFilteredEmployeeList((props.searchMode && props.searchEmployeeList.length > 0
+      ? props.searchEmployeeList
+      : props.employeeList
+    ).filter((user) => {
+      const isTabSelected = props.selectedListTab === -1 ||
+      user.t_employee_state === props.selectedListTab;
+      const isOrgaNameSelected = props.selectedOrgaName === loginedUser.companyName ||
+        props.selectedOrgaName === user.t_organization_name;
+      return isTabSelected && isOrgaNameSelected;    
+    }));
+  }, [props.searchMode, props.searchEmployeeList, props.employeeList, props.selectedListTab]);
 
   // 직원 행 클릭 이벤트
   const handleRowClick = (user) => {
@@ -1015,17 +1048,8 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                 </tr>
               </thead>
               <tbody>
-              {(props.searchMode && props.searchEmployeeList.length > 0
-                  ? props.searchEmployeeList
-                  : props.employeeList
+              {filteredEmployeeList && (filteredEmployeeList
                 ).map((user) => {
-                  const isStateMatched =
-                    props.selectedListTab === -1 ||
-                    user.t_employee_state === props.selectedListTab;
-                  const isOrgaNameMatched =
-                    props.selectedOrgaName === loginedUser.companyName ||
-                    props.selectedOrgaName === user.t_organization_name;
-                  if (isStateMatched && isOrgaNameMatched) {
                     return (
                       <BasicGridBoxItem
                         key={user.t_user_no} // 유니크한 key를 반드시 지정해줘야 합니다.
@@ -1038,12 +1062,14 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                         selectedListTab={props.selectedListTab}
                       />
                     );
-                  } else {
-                    return null; // 조건에 맞지 않는 경우 컴포넌트를 반환하지 않습니다.
-                  }
                 })}
               </tbody>
             </table>
+            {filteredEmployeeList.length < 1 && 
+              (<div className="noEmpl">
+                      <img src="https://static.wehago.com/script/assets/cimgs/ico_nodata.png" />
+                      <span className="small-text text-muted">직원이 없습니다.</span>
+                    </div>)}
           </div>
         </div>
       </div>
