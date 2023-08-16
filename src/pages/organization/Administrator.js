@@ -177,20 +177,15 @@ function Administrator() {
   return (
     <div>
       <CsContainer>
-        <CsSubTitle>
+        <CsSubTitle style={{marginBottom : "50px" }}>
           <div>
             <h2>공지사항 관리</h2>
             <p>등록된 회사의 공지사항을 관리할 수 있습니다.</p>
           </div>
         </CsSubTitle>
-        <NoticeTable 
-          selectAllNotice = {selectAllNotice} 
-          noticeList = {noticeList} 
-          tCompanyNo = {tCompanyNo} 
-          setSnackText = {setSnackText}
-          setSnackOpen = {setSnackOpen}
-        />
-        <Button 
+
+        <NoticeTable selectAllNotice = {selectAllNotice} noticeList = {noticeList} tCompanyNo = {tCompanyNo} />
+        <Button style={{marginTop:'30px'}}
         // variant="contained" endIcon={<SendIcon />}
         onClick={handleClickOpen}
         >

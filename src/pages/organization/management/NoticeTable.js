@@ -12,7 +12,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Button } from 'react-bootstrap';
+import Button from '@mui/material/Button';
 import { TextField } from '@mui/material';
 import axiosApi from '../../../AxiosApi';
 
@@ -109,9 +109,9 @@ function NoticeTable(props) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
+        <TableHead >
           <TableRow>
-            <StyledTableCell>번호</StyledTableCell>
+            <StyledTableCell >번호</StyledTableCell>
             <StyledTableCell align="right">제목</StyledTableCell>
             <StyledTableCell align="right">공지사항</StyledTableCell>
             <StyledTableCell align="right">작성자</StyledTableCell>
@@ -164,7 +164,7 @@ function NoticeTable(props) {
               />
             </DialogContent>
             <DialogActions style={{ marginBottom: '16px', justifyContent: 'space-between' }}>
-              <Button style={{ marginLeft: '16px', backgroundColor : 'red' }}onClick = {handleDelete}>삭제</Button>
+              <Button style={{ marginLeft: '16px', color: 'red' }}onClick = {handleDelete}>삭제</Button>
               <div>
               <Button style={{ marginLeft: '16px' }} onClick = {handleUpdate}>수정</Button>
               <Button style={{ marginLeft: '16px', marginRight: '16px' }} onClick={handleClose}>취소</Button>

@@ -298,7 +298,7 @@ const IndexBackground = () => {
                 <div ref={sectionsRef.pricingGuide}>
                   <IndexPackage/>
                 </div>
-                <div style={{ background: "#333948" }}>
+                <div style={{ background: "#333948",  marginTop: "80px" }}>
                   <Footer />
                 </div>
               </div>
