@@ -258,10 +258,22 @@ function UserSetting(props) {
                         "Access-Control-Allow-Origin": "http://localhost:3000"
                     },
                 }).then((response) => {
-                    if(response.data === '') {
+                    if(response.data.photo_name === 'duplicatedEmail') {
                         Swal.fire({
                             title: false,
                             text: "중복된 이메일 입니다.",
+                            icon: "warning",
+                            showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
+                            confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+                            cancelButtonColor: "#d33", // cancel 버튼 색깔 지정
+                            confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+                            cancelButtonText: "취소", // cancel 버튼 텍스트 지정
+                            // reverseButtons: true, // 버튼 순서 거꾸로
+                        });
+                    } else if(response.data.photo_name === 'duplicatedPhone') {
+                        Swal.fire({
+                            title: false,
+                            text: "중복된 휴대전화번호 입니다.",
                             icon: "warning",
                             showCancelButton: false, // cancel버튼 숨기기. 기본은 원래 없음
                             confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정

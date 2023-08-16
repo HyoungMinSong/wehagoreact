@@ -6,7 +6,7 @@ import axiosApi from "../../AxiosApi";
 import { styled } from "styled-components";
 import { Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from 'react-redux';
-import { setUser, setService, setCompany, setCompanyName } from '../../store'
+import { setUser, setService, setCompany, setCompanyName, setEmployeeNo } from '../../store'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -45,11 +45,14 @@ function Main(props) {
 
               // 쿠키 불러오기
               let lastSelectedCompanyName = getCompanyCookie(response.data.userDto.t_user_id + 'LastSelectedCompanyName');
+              let lastSelectedEmployeeNo;
               if(!lastSelectedCompanyName) {
                 lastSelectedCompanyName = userCompany[0].t_company_name;
+                lastSelectedEmployeeNo = userCompany[0].t_employee_no;
                 setCompanyCookie(response.data.userDto.t_user_id + 'LastSelectedCompanyName', encodeURI(lastSelectedCompanyName), 30);
               } else {
                 lastSelectedCompanyName = decodeURI(lastSelectedCompanyName);
+                lastSelectedEmployeeNo = userCompany.find((item) => item.t_company_name === lastSelectedCompanyName).t_employee_no;
               }
               
               // Redux의 액션을 호출해 데이터 업데이트
@@ -57,6 +60,7 @@ function Main(props) {
               dispatch(setService(userService));
               dispatch(setCompany(userCompany));
               dispatch(setCompanyName(lastSelectedCompanyName));
+              dispatch(setEmployeeNo(lastSelectedEmployeeNo));
               
             } else {
               window.location.replace('/login');

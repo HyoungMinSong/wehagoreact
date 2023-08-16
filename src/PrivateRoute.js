@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 const PrivateRoute = ({ accessToken, component : Component}) => {
   return(
-    accessToken ? Component : <Navigate to={"/error/401"} />
+    accessToken ? Component : <Navigate to={"/login"} />
   )
 }
 
