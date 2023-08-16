@@ -43,6 +43,7 @@ import { getAccessToken, getUserRole, setTokenHeader, getUserId } from './jwtUti
 import RoleRoute from './RoleRoute';
 import ExceptionLoginPage from './ExceptionLoginPage';
 import ExceptionRolePage from './ExceptionRolePage';
+import ExceptionNotFound from './ExceptionNotFound';
 
 
 export let persistor = persistStore(store);
@@ -104,6 +105,7 @@ root.render(
         <Route path="/chattest4" element={ <TestChat4></TestChat4> }/>
         <Route path="/error/401" element={ <ExceptionLoginPage></ExceptionLoginPage> }/>
         <Route path="/error/403" element={ <ExceptionRolePage></ExceptionRolePage> }/>
+        <Route path="/error/444" element={<ExceptionNotFound></ExceptionNotFound>} />
         </Routes>
       </BrowserRouter>
     </PersistGate>
