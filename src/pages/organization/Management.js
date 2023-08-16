@@ -161,7 +161,7 @@ const BasicTreeViewDepth = styled.div`
     font-size: 13px;
   }
   .organizationList {
-    height: 392px;
+    height: 100%;
     border-bottom: 1px solid #f0f0f0;
     max-height: 100%;
     overflow-y: auto;
@@ -433,6 +433,7 @@ function Management() {
           // 만약 모달창에서 confirm 버튼을 눌렀다면
           setSelectedRowNum(0);
           setSelectedOrgaName(loginedUser.companyName);
+          setRequestOrganizationList([]);
           const rollbackList = _.cloneDeep(copyOrganizationList);
           setOrganizationList(rollbackList);
           setEditingOrganization(false);
