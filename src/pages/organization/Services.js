@@ -224,10 +224,10 @@ const showCompanySerivces = async() => {
                               setStateAssociatedConfirm(true);
                               setShow(true);
                             }}>
-                              <div className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                              <div className="feature-icon d-inline-flex align-items-center justify-content-center  bg-gradient fs-2 mb-3">
                                 {/* <CategoryOutlinedIcon style={{ fontSize: '80px' }} />
                            */}
-                                <img src={a.serviceMainIconPath} alt="서비스 이미지" width="80px" height="80px" />
+                                <img src={a.serviceMainIconPath} alt="서비스 이미지" width="80px" height="80px" style={{ borderRadius: '12px' }} />
                               </div>
                               <h3 className="fs-2 text-body-emphasis">{a.serviceName}</h3>
                               <p>사용자의 수 [<span className="text-primary">{a.count}</span>/{packageCount}]</p>
