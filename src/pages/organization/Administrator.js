@@ -116,16 +116,24 @@ function Administrator() {
   const selectAllNotice = async () => {
     setLoading(true);
     //로딩값이 트루이고  // 로딩에 트루값을 대입
-    const res = await axiosApi.get("/selectNotice", {
+    await axiosApi.get("/selectNotice", {
     // res 변수에 해당 주소로 요청 보냄 // res변수에 요청을 보낸 응답의 값을 저장
       params: {
         t_company_no: tCompanyNo,
       //tCompanyNo를 key value로 데이터를 표현하는 방법
       },
+    }).then((res) => {
+      setNoticeList(res.data);
+      //res.data == tCompanyno
+      setLoading(false);
+    }).catch((error) => {
+      if(error.response.status === 401) {
+        alert("로그인 시간이 만료되었습니다. 다시 로그인 하세요.");
+        window.location.replace('/login');
+      } else {
+        console.error(error);
+      }
     });
-    setNoticeList(res.data);
-    //res.data == tCompanyno
-    setLoading(false);
   }
 
   const handleClickOpen = () => {

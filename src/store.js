@@ -37,7 +37,8 @@ let loginUserData = createSlice({
     service: [],
     company: [],
     companyName: '',
-    employeeNo: ''
+    employeeNo: '',
+    companyNo: ''
   },
   reducers : {
     setUser: (state, action) => {
@@ -54,6 +55,9 @@ let loginUserData = createSlice({
     },
     setEmployeeNo: (state, action) => {
       state.employeeNo = action.payload;
+    },
+    setCompanyNo: (state, action) => {
+      state.companyNo = action.payload;
     }
   }
 });
@@ -88,11 +92,11 @@ const persistedReducer = persistReducer(persistConfig, reducers);
 
   
   // 함수명 추출
-  export let { increase } = user.actions 
-  export let { beTheChosenOnes } = areThereAnyChosenOnes.actions
-  export let { clearChosenOnes } = areThereAnyChosenOnes.actions
-  export let { setUser, setService, setCompany, setCompanyName, setEmployeeNo } = loginUserData.actions;
-  export let { pushSwitch } = spinnerSwitch.actions 
+  export let { increase } = user.actions; 
+  export let { beTheChosenOnes } = areThereAnyChosenOnes.actions;
+  export let { clearChosenOnes } = areThereAnyChosenOnes.actions;
+  export let { setUser, setService, setCompany, setCompanyName, setEmployeeNo, setCompanyNo } = loginUserData.actions;
+  export let { pushSwitch } = spinnerSwitch.actions;
   // 저장소 추출
   export default configureStore({
     reducer: persistedReducer,

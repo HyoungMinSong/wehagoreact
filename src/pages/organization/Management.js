@@ -722,7 +722,12 @@ function Management() {
       console.log("조직도 리스트data", orgaList.data);
       setOrganizationList(orgaList.data);
     } catch (error) {
-      console.error(error);
+      if(error.response.status === 401) {
+        alert("로그인 시간이 만료되었습니다. 다시 로그인 하세요.");
+        window.location.replace('/login');
+      } else {
+        console.error(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -744,7 +749,11 @@ function Management() {
         console.log("직원 리스트", emplList);
         setEmployeeList(emplList.data);
       } catch (error) {
-        console.error(error);
+        if(error.response.status === 401) {
+          window.location.replace('/login');
+        } else {
+          console.error(error);
+        }
       } finally {
         setLoading(false);
       }
