@@ -30,6 +30,13 @@ const ExceptionNotFound = () => {
     setModalSwitch(true);
   }
 
+  // 로그아웃 버튼 눌렀을 때
+  const logoutHandler = () => {
+    document.cookie = `accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`; // 쿠키에 있는 Access Token 지우기
+    localStorage.removeItem("persist:root");
+    window.location.replace('/login'); // 로그인 창으로 가기
+  }
+
   return (
     <>
     <div style={{background:"#333948"}}><SignUpHeaderLogin1/></div>
@@ -40,13 +47,11 @@ const ExceptionNotFound = () => {
         <div className='Alert1-Content'>
           소속된 회사가 없어 WEHAGO 서비스를 이용할 수 없습니다.<br/>
           연결을 원하는 회사의 관리자에게 초대메일을 요청해 연결한 후 접속해주세요.<br />
-          더 이상 WEHAGO 이용을 원하지 않을 경우, <a onClick={handleWithdraw}>회원탈퇴</a>가 가능합니다.
+          더 이상 WEHAGO 이용을 원하지 않을 경우, <a className='aTag' onClick={handleWithdraw}>회원탈퇴</a>가 가능합니다.
         </div>
         {modalSwitch && <WithdrawalModal setModalSwitch={setModalSwitch} />}
         <div style={{display:"flex", justifyContent:"space-between", width:"300px"}}>
-            <Link to="/login">
-            <button className='Alert2-Button'>로그인</button>
-            </Link>
+            <button className='Alert2-Button' onClick={logoutHandler}>로그아웃</button>
             <Link to="/">
             <button className='Alert1-Button'>WEHAGO 홈</button>
             </Link>

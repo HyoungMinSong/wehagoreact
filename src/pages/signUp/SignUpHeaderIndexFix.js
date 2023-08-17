@@ -40,6 +40,13 @@ function SignUpHeaderIndexFix(props) {
     }
     const accessToken = getCookie('accessToken');
 
+    // 로그아웃 버튼 눌렀을 때
+    const logoutHandler = () => {
+      document.cookie = `accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`; // 쿠키에 있는 Access Token 지우기
+      localStorage.removeItem("persist:root");
+      window.location.replace('/'); // 로그인 창으로 가기
+  }
+
     return(
         <Wrapper>
             <Area>
@@ -55,17 +62,23 @@ function SignUpHeaderIndexFix(props) {
                 <span className="px-3 grab" onClick={() => props.handleScroll(props.sectionsRef.pricingGuide)}>요금안내</span>
                 <span className="horizonLine"></span>
                 { accessToken ? 
+                  <div>
                     <StyledLink1 to="/main">
                       <span className="px-3">메인</span>
-                    </StyledLink1> : 
-                    <div>
-                      <StyledLink1 to="/signup">
-                        <span className="px-3">회원가입</span>
-                      </StyledLink1>
-                      <StyledLink1 to="/login">
-                        <span className="px-3">로그인</span>
-                      </StyledLink1>
-                    </div>
+                    </StyledLink1> 
+                    <StyledLink1>
+                        <span className="px-3" onClick={logoutHandler} >로그아웃</span>
+                    </StyledLink1>
+                  </div>
+                  : 
+                  <div>
+                    <StyledLink1 to="/signup">
+                      <span className="px-3">회원가입</span>
+                    </StyledLink1>
+                    <StyledLink1 to="/login">
+                      <span className="px-3">로그인</span>
+                    </StyledLink1>
+                  </div>
                 }
                 </div>
             </Area>
