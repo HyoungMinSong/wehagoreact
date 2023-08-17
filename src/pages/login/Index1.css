@@ -1,7 +1,8 @@
 /* 스타일 수정된 부분은 주석으로 표시되어 있습니다. */
 .wrappingContainer{
   height: 3000px;
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
+  font-family: IBMPlexSansKR-Regular;
 }
 .background-image-insert{
   background-size: contain !important;
