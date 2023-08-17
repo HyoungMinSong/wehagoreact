@@ -26,6 +26,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
   },
+  maxWidth: '100px',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -111,11 +115,11 @@ function NoticeTable(props) {
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead >
           <TableRow>
-            <StyledTableCell >번호</StyledTableCell>
-            <StyledTableCell align="right">제목</StyledTableCell>
-            <StyledTableCell align="right">공지사항</StyledTableCell>
-            <StyledTableCell align="right">작성자</StyledTableCell>
-            <StyledTableCell align="right">작성일자</StyledTableCell>
+            <StyledTableCell className='col-1'>번호</StyledTableCell>
+            <StyledTableCell align="right" className='col-3'>제목</StyledTableCell>
+            <StyledTableCell align="right" className='col-4'>공지사항</StyledTableCell>
+            <StyledTableCell align="right" className='col-2'>작성자</StyledTableCell>
+            <StyledTableCell align="right" className='col-2'>작성일자</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
