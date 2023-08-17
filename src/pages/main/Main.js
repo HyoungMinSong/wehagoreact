@@ -6,7 +6,8 @@ import axiosApi from "../../AxiosApi";
 import { styled } from "styled-components";
 import { Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from 'react-redux';
-import { setUser, setService, setCompany, setCompanyName, setEmployeeNo } from '../../store'
+import { setUser, setService, setCompany, setCompanyName, setEmployeeNo, setCompanyNo } from '../../store'
+import NoticeModal from "./NoticeModal";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -17,10 +18,11 @@ const Wrapper = styled.div`
 `;
 
 function Main(props) {
-  const dispatch = useDispatch();
-  const prefixImgUrl = "http://localhost:8080/images/";
-  const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
-  const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
+    const prefixImgUrl = "http://localhost:8080/images/";
+    const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
+    const [loading, setLoading] = useState(true);
+    const [noticeModalOpen, setNoticeModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,16 +45,24 @@ function Main(props) {
               const userCompany = response.data.userCompanyDtoList;
               const userService = response.data.userServiceDtoList;
 
+              if(userCompany.length === 0) {
+                window.location.replace('/error/444');
+              }
+
               // 쿠키 불러오기
               let lastSelectedCompanyName = getCompanyCookie(response.data.userDto.t_user_id + 'LastSelectedCompanyName');
               let lastSelectedEmployeeNo;
+              let lastSelectedCompanyNo;
+
               if(!lastSelectedCompanyName) {
                 lastSelectedCompanyName = userCompany[0].t_company_name;
                 lastSelectedEmployeeNo = userCompany[0].t_employee_no;
+                lastSelectedCompanyNo = userCompany[0].t_company_no;
                 setCompanyCookie(response.data.userDto.t_user_id + 'LastSelectedCompanyName', encodeURI(lastSelectedCompanyName), 30);
               } else {
                 lastSelectedCompanyName = decodeURI(lastSelectedCompanyName);
                 lastSelectedEmployeeNo = userCompany.find((item) => item.t_company_name === lastSelectedCompanyName).t_employee_no;
+                lastSelectedCompanyNo = userCompany.find((item) => item.t_company_name === lastSelectedCompanyName).t_company_no;
               }
               
               // Redux의 액션을 호출해 데이터 업데이트
@@ -61,14 +71,15 @@ function Main(props) {
               dispatch(setCompany(userCompany));
               dispatch(setCompanyName(lastSelectedCompanyName));
               dispatch(setEmployeeNo(lastSelectedEmployeeNo));
-              
+              dispatch(setCompanyNo(lastSelectedCompanyNo));
+
             } else {
               window.location.replace('/login');
             }
-          } catch (error) {
+          } catch(error) {
             if(error.response.status === 401) {
               alert("로그인 시간이 만료되었습니다. 다시 로그인 하세요.");
-              window.location.replace('/login');
+              window.location.replace("/login");
             } else {
               console.error(error);
             }
@@ -93,12 +104,7 @@ function Main(props) {
 
     return(
         <Wrapper>
-            {loading && (
-            <div className="overlay-loading-box text-center">
-                {/* 로딩 스피너 컴포넌트 */}
-                <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
-                <div className="mt-3">유저 정보를 불러오는 중입니다.<br />잠시만 기다려주세요.</div>
-            </div>)}
+            {noticeModalOpen && <NoticeModal setNoticeModalOpen={setNoticeModalOpen}/>}
             <MainHeader user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
             <Section user={user} companyName={companyName} service={service}/>
             <Footer/>
