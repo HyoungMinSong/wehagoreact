@@ -22,13 +22,17 @@ const ModalBackGround = styled.div`
     left: 0px;
 `;
 
+
 const ExceptionNotFound = () => {
 
   const [modalSwitch, setModalSwitch] = useState(false);
 
+  
+
   const handleWithdraw = () => {
     setModalSwitch(true);
   }
+
 
   // 로그아웃 버튼 눌렀을 때
   const logoutHandler = () => {

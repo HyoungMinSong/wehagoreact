@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, Navigate } from "react-router-dom";
 import { styled } from "styled-components";
 import axiosApi from "../../AxiosApi";
 import Swal from "sweetalert2";
+import { Slide, Snackbar } from "@mui/material";
+import { Spinner } from "react-bootstrap";
 
 const ModalWrapper = styled.div`
   /* 모달창 크기 */
@@ -99,10 +100,20 @@ const ModalWrapper = styled.div`
   }
 `;
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
+
 function WithdrawalModal(props) {
   const [userNo, setUserNo] = useState("");
   const [userDeleteReason, setUserDeleteReason] = useState("");
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  // 스낵바
+  const [snackOpen, setSnackOpen] = useState(false);
+  // 스낵바 메세지
+  const [snackText, setSnackText] = useState("");
+  // 로딩 스피너
+  const [loading, setLoading] = useState(false);
   const loginedUser = useSelector((state) => state.loginUserData);
   //user정보 불러오는 행위
 
@@ -113,26 +124,13 @@ function WithdrawalModal(props) {
 
   const handleWithdrawal = async () => {
     if (!isCheckboxChecked) {
-      Swal.fire({
-        title: "오류",
-        text: "회원탈퇴에 동의해야 합니다.",
-        icon: "error",
-        confirmButtonColor: "#3085d6",
-      });
-      return;
-    }
-
-    if (userDeleteReason.length > 60) {
-      Swal.fire({
-        title: "오류",
-        text: "탈퇴사유는 최대 60자까지 입력 가능합니다.",
-        icon: "error",
-        confirmButtonColor: "#3085d6",
-      });
-      return;
-    }
-
-    // "정말로 탈퇴하시겠습니까?" 알림 창
+      setSnackText("회원탈퇴에 동의해야 합니다.");
+      setSnackOpen(true);
+    }else if (userDeleteReason.length > 60) {
+      setSnackText("탈퇴사유는 최대 60자까지 입력 가능합니다.");
+      setSnackOpen(true);
+    }else { 
+      // "정말로 탈퇴하시겠습니까?" 알림 창
     const result = await Swal.fire({
       title: "회원탈퇴",
       text: "정말로 탈퇴하시겠습니까?",
@@ -140,43 +138,55 @@ function WithdrawalModal(props) {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "네, 탈퇴하겠습니다",
+      confirmButtonText: "탈퇴",
       cancelButtonText: "취소",
     });
-
     if (result.isConfirmed) {
-      try {
-        await axiosApi.post("/withDrawal", {
-          t_user_no: userNo,
-          t_user_delete_reason: userDeleteReason,
-        });
-
-         // 입력값 초기화
-      setUserNo("");
-      setUserDeleteReason("");
-
-      // 모달 닫기
-      props.setModalSwitch(false);
-
-       // 탈퇴 완료 알림 창 띄우기
-       Swal.fire({
-        title: "탈퇴 완료",
-        text: "회원탈퇴가 완료되었습니다.",
-        icon: "success",
-        confirmButtonColor: "#3085d6",
-      }).then((result) => {
-        // "OK" 버튼을 눌렀을 때 페이지 이동
-        if (result.isConfirmed) {
-          window.location.href = "/";
-        }
-      });
-    } catch (error) {
-      // 필요한 경우 에러 처리
+      requestWithdrawal();
+      }
     }
-  }
-};
+  };
+  
+  const requestWithdrawal = async () =>{
+    try {
+      setLoading(true);
+      await axiosApi.put("/withDrawal", {
+        t_user_no: userNo,
+      t_user_delete_reason: userDeleteReason,
+    });
+
+     // 입력값 초기화
+  setUserNo("");
+  setUserDeleteReason("");
+
+  setLoading(false);
+   // 탈퇴 완료 알림 창 띄우기
+   Swal.fire({
+    title: "탈퇴 완료",
+    text: "회원탈퇴가 완료되었습니다.",
+    icon: "success",
+    confirmButtonColor: "#3085d6",
+  }).then((result) => {
+    // "OK" 버튼을 눌렀을 때 페이지 이동
+    if (result.isConfirmed) {
+      document.cookie = `accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`; // 쿠키에 있는 Access Token 지우기
+      localStorage.removeItem("persist:root");
+      window.location.href = "/";
+    }
+  });
+} catch (error) {
+  // 필요한 경우 에러 처리
+}
+}
 
   
+const handleSnackOpen = () => {
+  setSnackOpen(true);
+};
+
+const handleSnackClose = () => {
+  setSnackOpen(false);
+};
 
   const handleXClick = () => {
     props.setModalSwitch(false);
@@ -233,7 +243,7 @@ function WithdrawalModal(props) {
             onChange={(e) => setUserDeleteReason(e.target.value)}
             variant="standard"
             type="text"
-            placeholder="탈퇴사유를 적어주세요."
+            placeholder="탈퇴사유를 60자 이내로 적어주세요."
           />
         </div>
         {userDeleteReason.length > 60 && (
@@ -262,6 +272,30 @@ function WithdrawalModal(props) {
           </button>
         </div>
       </div>
+      {loading && (
+              <div className="overlay-loading-box text-center">
+                {/* 로딩 스피너 컴포넌트 */}
+                <Spinner
+                  animation="border"
+                  variant="primary"
+                  style={{ fontSize: "3rem", width: "6rem", height: "6rem" }}
+                />
+                <div className="mt-3">
+                  불러오는 중입니다.
+                  <br />
+                  잠시만 기다려주세요.
+                </div>
+              </div>
+            )}
+      <Snackbar
+        open={snackOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackClose}
+        anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
+        TransitionComponent={TransitionUp}
+        message={snackText}
+        // key={transition ? transition.name : ''}
+      />
     </ModalWrapper>
   );
 }
