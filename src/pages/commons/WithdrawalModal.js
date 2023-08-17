@@ -68,6 +68,7 @@ const ModalWrapper = styled.div`
   }
   .flex-start{
     display: flex;
+    margin-top: 7px;
   }
   .flex-center{
     display: flex;
@@ -149,7 +150,7 @@ function WithdrawalModal(props) {
           </span>
         </div>
         <div>
-          <input type="text" placeholder="탈퇴사유를 적어라" />
+          <input type="text" placeholder="탈퇴사유를 적어주세요." />
         </div>
         <div className="flex-start">
           <input type="checkbox" />
@@ -157,7 +158,7 @@ function WithdrawalModal(props) {
         </div>
         <br></br>
         <div className="flex-center">
-          <button type="button">회원탈퇴</button>
+          <button type="button" className="btn btn-outline-secondary">회원탈퇴</button>
         </div>
       </div>
     </ModalWrapper>
