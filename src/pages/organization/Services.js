@@ -67,26 +67,39 @@ function Services() {
   }, [show, loginedUser.companyName])
   // 모달창 띄우기 유무
 
-  const showCompanySerivces = async () => {
-    setLoading(true);
-    if (!show && !stateAssociatedConfirm) {
-
-      await axiosApi.post("/findservicelistbycomno", {
-        comNo: comNo
-      }).then((c) => {
-        setCompanyServices(c.data);
-        console.log(c.data);
-      }).catch(() => { console.log('실패실패') });
-      await axiosApi.post("/findpackagecount", {
-        comNo: comNo
-      }).then((c) => {
-        setPackageCount(c.data);
-        console.log(c.data);
-      }).catch(() => { console.log('실패실패2') })
-      // }
-    }
-    setLoading(false);
+const showCompanySerivces = async() => {
+  setLoading(true);
+  if (!show && !stateAssociatedConfirm) {
+    
+    await axiosApi.post("/findservicelistbycomno", {
+      comNo: comNo
+    }).then((c) => {
+      setCompanyServices(c.data);
+      console.log(c.data);
+    }).catch((error) => {
+      if(error.response.status === 401) {
+        alert("로그인 시간이 만료되었습니다. 다시 로그인 하세요.");
+        window.location.replace('/login');
+      } else {
+        console.error(error);
+      }
+    });
+    await axiosApi.post("/findpackagecount", {
+      comNo: comNo
+    }).then((c) => {
+      setPackageCount(c.data);
+      console.log(c.data);
+    }).catch((error) => {
+      if(error.response.status === 401) {
+        window.location.replace('/login');
+      } else {
+        console.error(error);
+      }
+    });
+    // }
   }
+  setLoading(false);
+}
 
   useEffect(() => {
     if (showListAfterConfirm) {

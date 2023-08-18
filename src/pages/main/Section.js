@@ -4,6 +4,11 @@ import { styled } from "styled-components";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import ServiceList from "./ServiceList";
+import axiosApi from "../../AxiosApi";
+import { useSelector } from "react-redux";
+import { Spinner } from "react-bootstrap";
+import NoticeList from "./NoticeList";
+import NoticeModal from "./NoticeModal";
 
 const Wrapper = styled.div`
     width: 100%;
@@ -76,19 +81,23 @@ const NoticeHeader = styled.div`
     padding: 15px;
     background-color: #dddddd;
     border-radius: 10px 10px 0px 0px;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: bold;
 `;
 
 const NoticeBody = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     height: 210px;
     color: gray;
 
-    & > img {
+    & > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    & > div > img {
+        margin-top: 30px;
         width: 150px;
         height: 125px;
     }
@@ -104,7 +113,7 @@ const CompanyLabel = styled.span`
         display: inline-block;
         width: 1px;
         height: 11px;
-        background-color: #dddddd;
+        background-color: gray;
         margin-right: 7px;
     }
 `;
@@ -117,9 +126,33 @@ const A = styled.a`
 
 function Section(props) {
     const {companyName, service} = props;
+    const { companyNo } = useSelector((state) => state.loginUserData);
+    const [loading, setLoading] = useState(true);
+    const [notices, setNotices] = useState([]);
+    const [noticeModalOpen, setNoticeModalOpen] = useState(false);
+
+    useEffect(() => {
+        setLoading(true);
+        axiosApi.get('/api/select/notice/limit5', {
+            params: {
+               companyNo: companyNo,
+            },
+        }).then((res) => {
+            setLoading(false);
+            setNotices(res.data);
+        }).catch((error) => {
+            console.error(error);
+        });
+    }, [companyName]);
 
     return(
         <Wrapper>
+            {loading && (
+            <div className="overlay-loading-box text-center">
+                {/* 로딩 스피너 컴포넌트 */}
+                <Spinner animation="border" variant="primary" style={{ fontSize: '3rem', width: "6rem", height: "6rem" }} />
+                <div className="mt-3">유저 정보를 불러오는 중입니다.<br />잠시만 기다려주세요.</div>
+            </div>)}
             <ServiceWrapper>
                 <MyService>내 서비스</MyService>
                 <ServiceList service={service} />
@@ -137,11 +170,18 @@ function Section(props) {
                         <A href="#">더보기 &gt;</A>
                     </NoticeHeader>
                     <NoticeBody>
-                        <img src="https://static.wehago.com/imgs/common/ico_nodata76.png"/>
-                        <span>작성된 공지사항이 없습니다.</span>
+                        {!loading ? 
+                            (notices.length === 0 ? 
+                                <div>
+                                    <img src="https://static.wehago.com/imgs/common/ico_nodata76.png"/>
+                                    <span>작성된 공지사항이 없습니다.</span>
+                                </div>  : <NoticeList notices={notices} setNoticeModalOpen={setNoticeModalOpen}/>) 
+                            : ''
+                        }
                     </NoticeBody>
                 </Notice>
             </SideWrapper>
+            {noticeModalOpen && <NoticeModal setNoticeModalOpen={setNoticeModalOpen}/>}
         </Wrapper>
     );
 }

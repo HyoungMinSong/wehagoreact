@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import { useSelector, useDispatch } from 'react-redux';
-import { setEmployeeNo } from '../../../store';
+import { setEmployeeNo, setCompanyNo } from '../../../store';
 
 const Item = styled.button`
     display: flex;
@@ -45,6 +45,7 @@ function CompanyListItem(props) {
     const handleCompanyItemClick = () => {
         dispatch(setCompanyName(item.t_company_name));
         dispatch(setEmployeeNo(item.t_employee_no));
+        dispatch(setCompanyNo(item.t_company_no));
         setCompanyCookie(user.id + 'LastSelectedCompanyName', encodeURI(item.t_company_name), 30);
         setCompanyModalOpen(false);
     };

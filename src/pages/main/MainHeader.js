@@ -83,7 +83,7 @@ function MainHeader(props) {
     const [companyModalOpen, setCompanyModalOpen] = useState(false);
     const [userModalOpen, setUserModalOpen] = useState(false);
     const selectedCompanyRank = company.find((item) => item.t_company_name === companyName) ? 
-                                company.find((item) => item.t_company_name === companyName).t_employee_position : '직급없음';
+                                company.find((item) => item.t_company_name === companyName).t_employee_position : '';
 
     const showCompanyModal = () => {
         setCompanyModalOpen(preState => !preState);
