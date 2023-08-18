@@ -51,7 +51,7 @@ const ExceptionNotFound = () => {
         <div className='Alert1-Content'>
           소속된 회사가 없어 WEHAGO 서비스를 이용할 수 없습니다.<br/>
           연결을 원하는 회사의 관리자에게 초대메일을 요청해 연결한 후 접속해주세요.<br />
-          더 이상 WEHAGO 이용을 원하지 않을 경우, <a className='aTag' onClick={handleWithdraw}>회원탈퇴</a>가 가능합니다.
+          더 이상 WEHAGO 이용을 원하지 않을 경우, <a className='aTag' style={{cursor:"pointer"}} onClick={handleWithdraw}>회원탈퇴</a>가 가능합니다.
         </div>
         {modalSwitch && <WithdrawalModal setModalSwitch={setModalSwitch} />}
         <div style={{display:"flex", justifyContent:"space-between", width:"300px"}}>

@@ -11,6 +11,8 @@ import config from '../signUp/config';
 import MessageParser from '../signUp/MessageParser';
 import ActionProvider from '../signUp/ActionProvider';
 import "../signUp/chat.css";
+import AlarmModal from "./HeaderComponent/AlarmModal";
+import GuideModal from "./HeaderComponent/GuideModal";
 
 
 const Wrapper = styled.div`
@@ -77,11 +79,21 @@ const ProfileButton = styled.button`
     }
 `;
 
+const AlarmContainer = styled.div`
+    position: relative;
+`;
+
+const GuideContainer = styled.div`
+    position: relative;
+`;
+
 function MainHeader(props) {
     const [showBot, toggleBot] = useState(false);
     const {user, company, companyName, setCompanyName} = props;
     const [companyModalOpen, setCompanyModalOpen] = useState(false);
     const [userModalOpen, setUserModalOpen] = useState(false);
+    const [alarmModalOpen, setAlarmModalOpen] = useState(false);
+    const [guideModalOpen, setGuideModalOpen] = useState(false);
     const selectedCompanyRank = company.find((item) => item.t_company_name === companyName) ? 
                                 company.find((item) => item.t_company_name === companyName).t_employee_position : '';
 
@@ -91,6 +103,14 @@ function MainHeader(props) {
 
     const showUserModal = () => {
         setUserModalOpen(preState => !preState);
+    }
+
+    const showAlarmModal = () => {
+        setAlarmModalOpen(preState => !preState);
+    }
+
+    const showGuideModal = () => {
+        setGuideModalOpen(preState => !preState);
     }
 
     return(
@@ -107,22 +127,20 @@ function MainHeader(props) {
                 {companyModalOpen && <CompanyModal setCompanyModalOpen={setCompanyModalOpen} company={company} companyName={companyName} setCompanyName={setCompanyName} />}
             </Area>
             <Area>
-                <Button>
-                    <NotificationsNoneSharpIcon style={{ color: 'white',width: '28px', height: '28px', }}/>
-                    {/* <img src="https://cdn-icons-png.flaticon.com/128/8335/8335899.png" alt="알림" width="25px" height="25px"/> */}
-                </Button>
-                {/* <Button>
-                    <img src="https://cdn-icons-png.flaticon.com/128/4291/4291393.png" alt="포인트" width="25px" height="25px"/>
-                </Button> */}
-                <Button>
-                <HelpOutlineOutlinedIcon style={{ color: 'white',width: '28px', height: '28px', }}/>
-                    {/* <img src="https://cdn-icons-png.flaticon.com/128/8803/8803906.png" alt="이용가이드" width="25px" height="25px"/> */}
-                </Button>
+                <AlarmContainer>
+                    <Button className="alarm" onClick={showAlarmModal}>
+                        <NotificationsNoneSharpIcon className="alarm" style={{ color: 'white',width: '28px', height: '28px', }}/>
+                    </Button>
+                    {alarmModalOpen && <AlarmModal setAlarmModalOpen={setAlarmModalOpen}/>}
+                </AlarmContainer>
+                <GuideContainer>
+                    <Button className="guide" onClick={showGuideModal}>
+                        <HelpOutlineOutlinedIcon className="guide" style={{ color: 'white',width: '28px', height: '28px', }}/>
+                    </Button>
+                    {guideModalOpen && <GuideModal setGuideModalOpen={setGuideModalOpen}/>}
+                </GuideContainer>
                 <Button onClick={() => toggleBot((prev) => !prev)}>
-                    {/* <img src="https://cdn-icons-png.flaticon.com/128/2068/2068998.png" alt="웹봇" width="25px" height="25px"/> */}
-
                     <img src={ChatBotImg} alt="웹봇" width="40px" height="40px" />
-
                 </Button>
                 <ProfileButton className="profile" onClick={showUserModal}>
                     <div>

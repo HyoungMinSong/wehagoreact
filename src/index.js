@@ -41,6 +41,7 @@ import TestChat3 from './pages/signUp/TestChat3';
 import TestChat4 from './pages/signUp/TestChat4';
 import { getAccessToken, getUserRole, setTokenHeader, getUserId } from './jwtUtils';
 import RoleRoute from './RoleRoute';
+import ServicePage from './pages/main/ServicePage';
 import ExceptionLoginPage from './ExceptionLoginPage';
 import ExceptionRolePage from './ExceptionRolePage';
 import ExceptionNotFound from './ExceptionNotFound';
@@ -90,6 +91,7 @@ root.render(
         <Route path='/main' element={<PrivateRoute component={<Main />} accessToken={accessToken} />}/>
         <Route path='/detailuserinfo' element={<PrivateRoute component={<UserSetting />} accessToken={accessToken} />}/>
         <Route path='/changepassword' element={<PrivateRoute component={<UserChangePassword />} accessToken={accessToken} />}/>
+        <Route path="/service/:serviceName" element={<ServicePage />} />
         <Route path="/test" element={ <Test_up></Test_up>} />
         <Route path="/test2" element={ <SignUpHeader></SignUpHeader>} />
         <Route path="/test3" element={ <SendTest></SendTest>} />
@@ -105,7 +107,7 @@ root.render(
         <Route path="/chattest4" element={ <TestChat4></TestChat4> }/>
         <Route path="/error/401" element={ <ExceptionLoginPage></ExceptionLoginPage> }/>
         <Route path="/error/403" element={ <ExceptionRolePage></ExceptionRolePage> }/>
-        <Route path="/error/444" element={<ExceptionNotFound></ExceptionNotFound>} />
+        <Route path="/error/444" element={<PrivateRoute component={<ExceptionNotFound />} accessToken={accessToken} />} />
         </Routes>
       </BrowserRouter>
     </PersistGate>
