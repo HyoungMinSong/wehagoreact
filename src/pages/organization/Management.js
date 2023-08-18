@@ -859,7 +859,12 @@ function Management() {
                     >
                       <span
                         className="accordionIcon"
-                        onClick={() => handleCompanyClick()}
+                        onClick={(e) => {
+                          // 이벤트 전파 중단
+                          e.stopPropagation();
+                          // 원하는 로직 처리
+                          handleCompanyClick();
+                        }}
                       >
                         ＞
                       </span>
