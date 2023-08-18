@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Col, Container, Form, Modal, Row, Spinner } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import InputMask from 'react-input-mask';
 import { useDispatch, useSelector } from "react-redux";
 import { increase } from "../../store";
@@ -7,7 +7,11 @@ import { useNavigate } from "react-router-dom";
 import SignUpHeader from "./SignUpHeader";
 import axiosApi from "../../AxiosApi";
 import { useRef } from "react";
+import { Slide, Snackbar } from "@mui/material";
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
 
 // className="border-danger"
 function SignUp_company() {
@@ -35,11 +39,6 @@ function SignUp_company() {
   let reNameRegex = /^[가-힣a-zA-Z]{1,20}$/; // 한글단어나 영문20자리까지 /^\d{11}$/;
   // let cpNumberRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
   let cpNumberRegex = /^\d{11}$/;
-
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
 
   let dispatch = useDispatch();
 
@@ -76,7 +75,12 @@ function SignUp_company() {
   let businessCategoryInputRef = useRef(null);
   let representativeNameInputRef = useRef(null);
 
-
+  const handleSnackClose = () => {
+    setSnackOpen(false);
+  };
+  const [snackOpen, setSnackOpen] = useState(false);
+  // 스낵바 메세지
+  const [snackText, setSnackText] = useState("오류");
 
   return (
     <>
@@ -245,6 +249,7 @@ function SignUp_company() {
                         </Button>
                         <Button variant="primary" className="mx-3" onClick={() => {
                             setLoading(true);
+                            console.log(companyName);
                           // console.log(companyName, businessType, businessRegistrationNumber, businessStatus, businessCategory, representativeName, companyPhoneNumber)
                           if (companyName === '' || companyNameError === true) {
                             setCompanyNameError(true);
@@ -278,7 +283,10 @@ function SignUp_company() {
                               companyName: companyName
                             }).then((c) => {
                               if (c.data === companyName) {
-                                handleShow();
+                                console.log("킹능성")
+                                // handleShow();
+                                setSnackText("중복된 회사 이름입니다.");
+                                setSnackOpen(true);
                               } else {
                                 dispatch(increase({
                                   ...test, companyName: companyName, businessType: businessType, businessRegistrationNumber: businessRegistrationNumber,
@@ -308,20 +316,6 @@ function SignUp_company() {
           </Row>
         </Container>
       </div>
-      <Modal show={show} onHide={handleClose} style={{ color: "black" }}>
-        <Modal.Header closeButton>
-          <Modal.Title>회원가입 에러</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>중복된 회사 이름입니다</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          {/* <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button> */}
-        </Modal.Footer>
-      </Modal>
       {loading && (
             <div className="overlay-loading-box text-center">
         
@@ -330,6 +324,15 @@ function SignUp_company() {
           <div className="mt-3">회원가입이 진행 중입니다.<br />잠시만 기다려주세요.</div>
         </div>
       )}
+            <Snackbar
+        open={snackOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        TransitionComponent={TransitionUp}
+        message={snackText}
+      // key={transition ? transition.name : ''}
+      />
     </>
   );
 }
