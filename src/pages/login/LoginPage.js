@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import './LoginPage.css';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosApi from "../../AxiosApi";
@@ -31,6 +31,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   // 스낵바
   const [snackOpen, setSnackOpen] = useState(false);
+  const inputRef = useRef();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -92,6 +93,11 @@ const LoginPage = () => {
     }
   };
 
+  useEffect(() => {
+    inputRef.current.focus();
+  },[]);
+  
+
   const handleSnackOpen = () => {
     setSnackOpen(true);
   };
@@ -132,7 +138,7 @@ const LoginPage = () => {
 
           {!loggedIn ? (
             <form onSubmit={handleLogin}>
-              <input type="text" placeholder="아이디" name="username"/>
+              <input ref={inputRef}type="text" placeholder="아이디" name="username"/>
               <input type="password" placeholder="비밀번호" name="password" />
               <button type="submit" id="login-button">
                 로그인
