@@ -46,6 +46,7 @@ function Main(props) {
               const userService = response.data.userServiceDtoList;
 
               if(userCompany.length === 0) {
+                dispatch(setUser(userInfo));
                 window.location.replace('/error/444');
               }
 
@@ -77,12 +78,7 @@ function Main(props) {
               window.location.replace('/login');
             }
           } catch(error) {
-            if(error.response.status === 401) {
-              alert("로그인 시간이 만료되었습니다. 다시 로그인 하세요.");
-              window.location.replace("/login");
-            } else {
-              console.error(error);
-            }
+            console.error(error);
           }
         };
         fetchData();

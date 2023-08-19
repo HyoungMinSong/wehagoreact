@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
+import { useNavigate } from 'react-router-dom';
 
 const Item = styled.button`
     position: relative;
@@ -64,9 +65,15 @@ const Item = styled.button`
 `;
 
 function ServiceListItem(props) {
-    const {item, onClick} = props;
+    const { item } = props;
+    const navigate = useNavigate();
+
+    const serviceClickHandler = () => {
+        navigate(`${item.t_service_path}`);
+    }
+
     return (
-        <Item>
+        <Item onClick={serviceClickHandler}>
             <img src={item.t_service_main_icon_path} alt="서비스 이미지" width="80px" height="80px"/>
             <small>{item.t_service_name}</small>
             <span className="Tooltip">{item.t_service_description}</span>
