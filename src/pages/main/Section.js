@@ -132,17 +132,19 @@ function Section(props) {
     const [noticeModalOpen, setNoticeModalOpen] = useState(false);
 
     useEffect(() => {
-        setLoading(true);
-        axiosApi.get('/api/select/notice/limit5', {
-            params: {
-               companyNo: companyNo,
-            },
-        }).then((res) => {
-            setLoading(false);
-            setNotices(res.data);
-        }).catch((error) => {
-            console.error(error);
-        });
+        if(companyNo !== '') {
+            setLoading(true);
+            axiosApi.get('/api/select/notice/limit5', {
+                params: {
+                   companyNo: companyNo,
+                },
+            }).then((res) => {
+                setLoading(false);
+                setNotices(res.data);
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
     }, [companyName]);
 
     return(
@@ -167,7 +169,6 @@ function Section(props) {
                             <span>공지사항</span>
                             <CompanyLabel>{companyName}</CompanyLabel>
                         </div>
-                        <A href="#">더보기 &gt;</A>
                     </NoticeHeader>
                     <NoticeBody>
                         {!loading ? 

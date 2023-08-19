@@ -1,22 +1,22 @@
 import { useState,useEffect, useRef } from "react";
 import { useLocation  } from 'react-router-dom'
 import axiosApi from "../../AxiosApi";
-import { Button, Card, Col, Container, Form, Modal, Row, Spinner } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import InputMask from 'react-input-mask';
 import { increase } from "../../store";
 import { useNavigate } from "react-router-dom";
 import SignUpHeader from "./SignUpHeader";
+import { Slide, Snackbar } from "@mui/material";
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
 
-
-// className="border-danger"
 function SignUp_invite() {
     let location = useLocation();
 let queryParams = new URLSearchParams(location.search);
 let userName = queryParams.get('t_user_name');
 let userPhone = queryParams.get('t_user_phone');
-// let userPhotoPath = queryParams.get('t_user_photo_path');
-// let userPhotoName = queryParams.get('t_user_photo_name');
 let userEmail = queryParams.get('t_user_email');
 
 let [id, setId] = useState('');
@@ -49,13 +49,16 @@ useEffect(() => {
 }, [id, password, confirmPassword]);
 
 
-
-const [show, setShow] = useState(false);
-const handleClose = () => setShow(false);
-const handleShow = () => setShow(true);
 const { abc } = location.state || {};
 
 let navigate = useNavigate();
+
+const handleSnackClose = () => {
+  setSnackOpen(false);
+};
+const [snackOpen, setSnackOpen] = useState(false);
+// 스낵바 메세지
+const [snackText, setSnackText] = useState("오류");
   return (
 
     <>
@@ -193,8 +196,12 @@ let navigate = useNavigate();
                         axiosApi.post("/idcheck", {
                           id: id
                         }).then((c) => {
-                          if (c.data === id) {
-                            handleShow();
+                          console.log(c.data + "이거 ")
+                          if (c.data.checkId === id) {
+                            
+                            // handleShow();
+                            setSnackText("중복된 ID입니다.");
+                            setSnackOpen(true);
                           }else{
                             axiosApi.post("/signupinviteupdate", {
                               empNo: abc, userId : id, userPw : password
@@ -226,20 +233,6 @@ let navigate = useNavigate();
           </div>
         </Col>
       </Row>
-      <Modal show={show} onHide={handleClose} style={{ color: "black" }}>
-        <Modal.Header closeButton>
-          <Modal.Title>회원가입 에러</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>중복된 ID입니다</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          {/* <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button> */}
-        </Modal.Footer>
-      </Modal>
       {loading && (
             <div className="overlay-loading-box text-center">
         
@@ -250,6 +243,15 @@ let navigate = useNavigate();
       )}
     </Container>
     </div>
+    <Snackbar
+        open={snackOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        TransitionComponent={TransitionUp}
+        message={snackText}
+      // key={transition ? transition.name : ''}
+      />
     </>
     
   );

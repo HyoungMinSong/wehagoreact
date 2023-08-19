@@ -11,6 +11,8 @@ import config from '../../signUp/config';
 import MessageParser from '../../signUp/MessageParser';
 import ActionProvider from '../../signUp/ActionProvider';
 import "../../signUp/chat.css";
+import AlarmModal from "./AlarmModal";
+import GuideModal from "./GuideModal";
 
 const Wrapper = styled.div`
     display: flex;
@@ -76,11 +78,21 @@ const ProfileButton = styled.button`
     }
 `;
 
+const AlarmContainer = styled.div`
+    position: relative;
+`;
+
+const GuideContainer = styled.div`
+    position: relative;
+`;
+
 function Header(props) {
     const [showBot, toggleBot] = useState(false);
     const {user, company, companyName, setCompanyName} = props;
     const [companyModalOpen, setCompanyModalOpen] = useState(false);
     const [userModalOpen, setUserModalOpen] = useState(false);
+    const [alarmModalOpen, setAlarmModalOpen] = useState(false);
+    const [guideModalOpen, setGuideModalOpen] = useState(false);
     const selectedCompanyRank = company.find((item) => item.t_company_name === companyName) ? 
                                 company.find((item) => item.t_company_name === companyName).t_employee_position : '';
 
@@ -90,6 +102,14 @@ function Header(props) {
 
     const showUserModal = () => {
         setUserModalOpen(preState => !preState);
+    }
+
+    const showAlarmModal = () => {
+        setAlarmModalOpen(preState => !preState);
+    }
+
+    const showGuideModal = () => {
+        setGuideModalOpen(preState => !preState);
     }
 
     return(
@@ -106,14 +126,20 @@ function Header(props) {
                 {companyModalOpen && <CompanyModal setCompanyModalOpen={setCompanyModalOpen} company={company} companyName={companyName} setCompanyName={setCompanyName} />}
             </Area>
             <Area>
-                <Button>
-                <NotificationsNoneSharpIcon style={{width: '28px', height: '28px', color: '#353535'}}/>
-                </Button>
-                <Button>
-                <HelpOutlineOutlinedIcon style={{width: '28px', height: '28px', color: '#353535' }}/>
-                </Button>
+                <AlarmContainer>
+                  <Button className="alarm" onClick={showAlarmModal}>
+                    <NotificationsNoneSharpIcon className="alarm" style={{width: '28px', height: '28px', color: '#353535'}}/>
+                  </Button>
+                  {alarmModalOpen && <AlarmModal setAlarmModalOpen={setAlarmModalOpen}/>}
+                </AlarmContainer>
+                <GuideContainer>
+                  <Button className="guide" onClick={showGuideModal}>
+                    <HelpOutlineOutlinedIcon className="guide" style={{width: '28px', height: '28px', color: '#353535' }}/>
+                  </Button>
+                  {guideModalOpen && <GuideModal setGuideModalOpen={setGuideModalOpen}/>}
+                </GuideContainer>
                 <Button onClick={() => toggleBot((prev) => !prev)}>
-                <img src={ChatBotImg} alt="웹봇" width="40px" height="40px" />
+                  <img src={ChatBotImg} alt="웹봇" width="40px" height="40px" />
                 </Button>
                 <ProfileButton className="profile" onClick={showUserModal}>
                     <div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Col, Container, Form, Modal, Row, Spinner } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import InputMask from 'react-input-mask';
 import axiosApi from "../../AxiosApi";
 import { useDispatch } from "react-redux";
@@ -7,7 +7,11 @@ import { increase } from "../../store";
 import { useNavigate } from "react-router-dom";
 import SignUpHeader from "./SignUpHeader";
 import { useRef } from "react";
+import { Slide, Snackbar } from "@mui/material";
 
+function TransitionUp(props) {
+  return <Slide {...props} direction="up" />;
+}
 
 // className="border-danger"
 function SignUp_infomation() {
@@ -54,19 +58,6 @@ function SignUp_infomation() {
     }
   }, [name, phoneNumber, id, password, confirmPassword, email]);
 
-
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const [show2, setShow2] = useState(false);
-  const handleClose2 = () => setShow2(false);
-  const handleShow2 = () => setShow2(true);
-
-  const [show3, setShow3] = useState(false);
-  const handleClose3 = () => setShow3(false);
-  const handleShow3 = () => setShow3(true);
-
   let dispatch = useDispatch();
 
   let navigate = useNavigate();
@@ -76,6 +67,13 @@ function SignUp_infomation() {
   let passwordInputRef = useRef(null);
   let confirmPasswordInputRef = useRef(null);
   let emailInputRef = useRef(null);
+
+  const handleSnackClose = () => {
+    setSnackOpen(false);
+  };
+  const [snackOpen, setSnackOpen] = useState(false);
+  // 스낵바 메세지
+  const [snackText, setSnackText] = useState("오류");
 
   return (
     <>
@@ -131,7 +129,7 @@ function SignUp_infomation() {
                               setPhoneNumber(e.target.value.replace(/-/g, ''));
                               // numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
                             }}
-                            
+
                             className={phoneNumberError ? "form-control border-danger" : "form-control"}
 
 
@@ -156,7 +154,7 @@ function SignUp_infomation() {
                           <Form.Control type="text" placeholder="Enter id" onChange={(e) => {
                             setId(e.target.value);
                             // idRegex.test(id) ? setIdError(false) : setIdError(true);
-                          }} className={idError ? "border-danger" : ""}  ref={idInputRef}/>
+                          }} className={idError ? "border-danger" : ""} ref={idInputRef} />
                           {idError ?
                             <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                               영문자로 시작하는 영문자 또는 숫자 6~20자를 입력하세요.
@@ -176,7 +174,7 @@ function SignUp_infomation() {
                           <Form.Control type="password" placeholder="Password" onChange={(e) => {
                             setPassword(e.target.value);
                             // pwRegex.test(password) ? setPasswordError(false) : setPasswordError(true);
-                          }} className={passwordError ? "border-danger" : ""}  ref={passwordInputRef} />
+                          }} className={passwordError ? "border-danger" : ""} ref={passwordInputRef} />
                           {passwordError ?
                             <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                               8 ~ 16자 영문, 숫자, 특수문자를 최소 한가지씩 조합해서 입력하세요.
@@ -195,7 +193,7 @@ function SignUp_infomation() {
                           <Form.Control type="password" placeholder="Confirm Password" onChange={(e) => {
                             setConfirmPassword(e.target.value);
                             // password === confirmPassword ? setConfirmPasswordError(false) : setConfirmPasswordError(true);
-                          }} className={confirmPasswordError ? "border-danger" : ""}  ref={confirmPasswordInputRef} />
+                          }} className={confirmPasswordError ? "border-danger" : ""} ref={confirmPasswordInputRef} />
                           {confirmPasswordError ?
                             <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                               비밀번호가 일치하지 않습니다.
@@ -208,7 +206,7 @@ function SignUp_infomation() {
                           <Form.Control type="email" placeholder="Enter email" onChange={(e) => {
                             setEmail(e.target.value);
                             // emailRegex.test(email) ? setEmailError(false) : setEmailError(true);
-                          }} className={emailError ? "border-danger" : ""} ref={emailInputRef}  />
+                          }} className={emailError ? "border-danger" : ""} ref={emailInputRef} />
                           {emailError ?
                             <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
                               이메일 형식이 아닙니다.
@@ -243,28 +241,34 @@ function SignUp_infomation() {
                           } else if (phoneNumber === '' || phoneNumberError === true) {
                             setphoneNumberError(true);
                             window.document.getElementById("phoneInput").focus();
-                          } else if(id === '' || idError === true){
+                          } else if (id === '' || idError === true) {
                             setIdError(true);
                             idInputRef.current.focus();
-                          } else if(password === '' || passwordError === true){
+                          } else if (password === '' || passwordError === true) {
                             setPasswordError(true);
                             passwordInputRef.current.focus();
-                          } else if(confirmPassword === '' || confirmPasswordError === true){
+                          } else if (confirmPassword === '' || confirmPasswordError === true) {
                             setConfirmPasswordError(true);
                             confirmPasswordInputRef.current.focus();
-                          } else if(email === '' || emailError === true){
+                          } else if (email === '' || emailError === true) {
                             setEmailError(true);
                             emailInputRef.current.focus();
                           } else {
                             axiosApi.post("/idcheck", {
-                              id: id, email : email, phoneNumber : phoneNumber
+                              id: id, email: email, phoneNumber: phoneNumber
                             }).then((c) => {
                               if (c.data.checkId === id) {
-                                handleShow();
-                              } else if (c.data.checkEmail === email){
-                                handleShow2();
-                              } else if (c.data.checkPhoneNumber === phoneNumber){
-                                handleShow3()
+                                // handleShow();
+                                setSnackText("중복된 ID입니다.");
+                                setSnackOpen(true);
+                              } else if (c.data.checkEmail === email) {
+                                // handleShow2();
+                                setSnackText("중복된 이메일입니다.");
+                                setSnackOpen(true);
+                              } else if (c.data.checkPhoneNumber === phoneNumber) {
+                                // handleShow3()
+                                setSnackText("중복된 휴대전화번호입니다.");
+                                setSnackOpen(true);
                               } else {
                                 dispatch(increase({
                                   name: name, phoneNumber: phoneNumber, id: id,
@@ -280,9 +284,9 @@ function SignUp_infomation() {
                             // .finally(() => {
                             //   setLoading(false);
                             // })
-                          } 
-                            setLoading(false);
-                          
+                          }
+                          setLoading(false);
+
                           // console.log(name, phoneNumber, id, password, confirmPassword, email) 
 
                         }}>
@@ -295,48 +299,6 @@ function SignUp_infomation() {
               </div>
             </Col>
           </Row>
-          <Modal show={show} onHide={handleClose} style={{ color: "black" }}>
-            <Modal.Header closeButton>
-              <Modal.Title>회원가입 에러</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>중복된 ID입니다</Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              {/* <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button> */}
-            </Modal.Footer>
-          </Modal>
-          <Modal show={show2} onHide={handleClose2} style={{ color: "black" }}>
-            <Modal.Header closeButton>
-              <Modal.Title>회원가입 에러</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>중복된 이메일입니다</Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose2}>
-                Close
-              </Button>
-              {/* <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button> */}
-            </Modal.Footer>
-          </Modal>
-          <Modal show={show3} onHide={handleClose3} style={{ color: "black" }}>
-            <Modal.Header closeButton>
-              <Modal.Title>회원가입 에러</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>중복된 휴대전화번호입니다</Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose3}>
-                Close
-              </Button>
-              {/* <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button> */}
-            </Modal.Footer>
-          </Modal>
           {loading && (
             <div className="overlay-loading-box text-center">
 
@@ -347,6 +309,15 @@ function SignUp_infomation() {
           )}
         </Container>
       </div>
+      <Snackbar
+        open={snackOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        TransitionComponent={TransitionUp}
+        message={snackText}
+      // key={transition ? transition.name : ''}
+      />
     </>
   );
 }
