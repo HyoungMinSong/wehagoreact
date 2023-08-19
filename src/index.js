@@ -91,7 +91,7 @@ root.render(
         <Route path='/main' element={<PrivateRoute component={<Main />} accessToken={accessToken} />}/>
         <Route path='/detailuserinfo' element={<PrivateRoute component={<UserSetting />} accessToken={accessToken} />}/>
         <Route path='/changepassword' element={<PrivateRoute component={<UserChangePassword />} accessToken={accessToken} />}/>
-        <Route path="/service/:serviceName" element={<ServicePage />} />
+        <Route path="/service/:serviceName" element={<PrivateRoute component={<ServicePage />} accessToken={accessToken} />} />
         <Route path="/test" element={ <Test_up></Test_up>} />
         <Route path="/test2" element={ <SignUpHeader></SignUpHeader>} />
         <Route path="/test3" element={ <SendTest></SendTest>} />

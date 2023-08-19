@@ -16,7 +16,7 @@ const Navbar = styled.nav `
     height: 48px;
     background: #1c90fb;
     color: white;
-    padding: 0px 32px;
+    padding: 0px 50px;
     margin-bottom: 40px;
 
     & > a {
@@ -42,7 +42,7 @@ const Navbar = styled.nav `
 const HeadLine = styled.div`
     display: flex;
     align-items: center;
-    margin: 30px 35px;
+    margin: 30px 55px;
     border-bottom: 1px solid #dddddd;
 
     & > h3 {
@@ -57,7 +57,7 @@ const HeadLine = styled.div`
 `;
 
 const TableWrapper = styled.div`
-    padding: 30px 35px;
+    padding: 30px 55px;
 
     & > span {
         font-weight: bold;
