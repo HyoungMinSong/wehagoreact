@@ -64,13 +64,13 @@ const LoginPage = () => {
         // 메인 페이지로 넘어가기
         window.location.replace('/main');
       } else if (response.status === 401) {
-        console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
+        // console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
         setLoading(false);
         setLoggedIn(false);
         setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
         handleSnackOpen();
       } else {
-        console.error('로그인 실패!');
+        // console.error('로그인 실패!');
         setLoading(false);
         setLoggedIn(false);
         setLoginError('로그인에 실패했습니다.');
@@ -78,13 +78,13 @@ const LoginPage = () => {
       }
     } catch (error) {
       if (error.response && error.response.status === 500) {
-        console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
+        // console.error('아이디 또는 비밀번호가 올바르지 않습니다.');
         setLoading(false);
         setLoggedIn(false);
         setLoginError('아이디 또는 비밀번호가 올바르지 않습니다.');
         handleSnackOpen();
       } else if (!error.response) {
-        console.error('로그인 요청 중 오류 발생:', error);
+        // console.error('로그인 요청 중 오류 발생:', error);
         setLoading(false);
         setLoggedIn(false);
         setLoginError('네트워크 오류가 발생했습니다.');
