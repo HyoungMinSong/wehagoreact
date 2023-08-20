@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 function Main(props) {
     const dispatch = useDispatch();
     const prefixImgUrl = "http://localhost:8080/images/";
-    const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
+    const { user, employeeNo, service, company, companyName } = useSelector((state) => state.loginUserData);
     const [loading, setLoading] = useState(true);
     const [noticeModalOpen, setNoticeModalOpen] = useState(false);
 
@@ -101,7 +101,7 @@ function Main(props) {
     return(
         <Wrapper>
             {noticeModalOpen && <NoticeModal setNoticeModalOpen={setNoticeModalOpen}/>}
-            <MainHeader user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
+            <MainHeader user={user} employeeNo={employeeNo} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
             <Section user={user} companyName={companyName} service={service}/>
             <Footer/>
         </Wrapper>

@@ -100,11 +100,11 @@ const SubHeader = styled.div`
 function Organization() {
 
   const dataOfTheChosenOnes = useSelector(state => state.areThereAnyChosenOnes);
-  const { user, service, company, companyName } = useSelector((state) => state.loginUserData);
+  const { user, employeeNo, company, companyName } = useSelector((state) => state.loginUserData);
 
   return(
     <SectionTag>
-      <Header user={user} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
+      <Header user={user} employeeNo={employeeNo} company={company} companyName={companyName} setCompanyName={setCompanyName}/>
       <SubHeader>
         <h1>회사 설정</h1>
         <div className="organizationHeaderButton">

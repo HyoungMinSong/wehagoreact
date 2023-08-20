@@ -1,7 +1,11 @@
 import { fontSize } from "@mui/system";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
+import AlarmModalItem from "./AlarmModalItem";
+import { Button } from "react-bootstrap";
+import axiosApi from "../../../AxiosApi";
+import Paging from "../../commons/Paging";
 
 const ModalWrapper = styled.div`
     /* 모달창 크기 */
@@ -38,6 +42,7 @@ const ModalWrapper = styled.div`
 
 const ModalHeader = styled.div`
     display: flex;
+    justify-content: space-between;
     align-items: center;
     padding-left: 20px; 
     height: 50px;
@@ -72,6 +77,14 @@ const ModalBody = styled.div`
     }
 `;
 
+const ListBody = styled.div`
+    padding: 20px; 
+    height: 250px;
+    background: #eeeeee;
+
+`;
+
+
 function AlarmModal(props) {
     const {setAlarmModalOpen} = props;
     const alarmModalRef = useRef(null);
@@ -83,6 +96,7 @@ function AlarmModal(props) {
                     setAlarmModalOpen(true);
                 } else {
                     setAlarmModalOpen(false);
+                    props.fetchLogList();
                 }
             }
         };
@@ -94,17 +108,37 @@ function AlarmModal(props) {
         };
     }, [setAlarmModalOpen]);
 
+    const handleDeleteLog = async () => {
+        await axiosApi.put("/deleteLogByEmployee", parseInt(props.employeeNo));
+        props.fetchLogList();
+    };
+
     return (
         <ModalWrapper ref={alarmModalRef}>
             <ModalHeader>
                 <span>알림</span>
+                {props.alarmList && props.alarmList.length>0 && 
+                <Button onClick={handleDeleteLog} style={{ marginRight: '10px'}}>전체 삭제</Button>
+                }
             </ModalHeader>
-            <ModalBody>
-                
-                    <img src="https://cdn-icons-png.flaticon.com/128/1321/1321678.png" alt="알림없음"/>
-                    <small>새로운 알림이 없습니다.</small>
-                
-            </ModalBody>
+            {props.alarmList && props.alarmList.length<1 ? (
+                <ModalBody>
+                        <img src="https://cdn-icons-png.flaticon.com/128/1321/1321678.png" alt="알림없음"/>
+                        <small>새로운 알림이 없습니다.</small>
+                </ModalBody>
+            ) : (
+                <ListBody>
+                    <div style={{borderBottom: 'solid 1px'}}></div>
+                    {props.currentPosts
+                    .map((log) => {
+                        return (
+                            <AlarmModalItem log={log} key={log.t_log_no} />
+                        );
+                    }
+            )}
+            <Paging page={props.currentPage} count={props.count} setPage={props.setCurrentPage} />
+                    </ListBody>
+            )}
         </ModalWrapper>
     );
 }
