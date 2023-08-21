@@ -356,7 +356,7 @@ function UserSetting(props) {
                                 <RightTd>
                                     <img src={user.photo} alt="프로필 사진" id="profileImg" ref={profileImgRef}/>
                                     {editClick ? 
-                                        <div style={{height: "70px"}}>
+                                        <div style={{height: "70px", marginLeft: "15px"}}>
                                             <ul>
                                                 <li>프로필 사진을 등록해주세요.</li>
                                                 <li>이미지 파일 최대 크기 2MB 미만</li>
