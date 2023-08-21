@@ -760,7 +760,7 @@ function BasicGridBox(props) {
       const prevImagePath = props.updateSelectedUser.t_user_photo_path_prev;
       console.log("여까진 오는가벼",prevImagePath);
       // 이전 이미지 경로가 'http:'로 시작하는지 확인합니다.
-      if (prevImagePath && prevImagePath.startsWith("http:")) {
+      if (prevImagePath !== props.updateSelectedUser.t_user_photo_path && prevImagePath.startsWith("http:")) {
         console.log("여까진 못 오는가벼");
         // '...images/' 뒷부분만 추출하여 파일명으로 사용합니다.
         const fileName = prevImagePath.substring(prevImagePath.lastIndexOf("images/") + 7);
