@@ -231,9 +231,7 @@ function SignUp_company() {
                             : ""
                           }
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                          <Form.Check type="checkbox" label="Check me out" />
-                        </Form.Group>
+
                       </div>
                       <div className="pt-3 pb-2 text-muted" style={{ backgroundColor: '#F8FFFF', fontSize: '11px' }}>
                         <p>- 회사이름, 구분 등 기본정보는 입력 후 변경할 수 없으므로 정확한 정보를 입력하세요.
