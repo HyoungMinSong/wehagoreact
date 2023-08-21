@@ -81,7 +81,6 @@ const ListBody = styled.div`
     padding: 20px; 
     height: 250px;
     background: #eeeeee;
-
 `;
 
 
@@ -118,7 +117,7 @@ function AlarmModal(props) {
             <ModalHeader>
                 <span>알림</span>
                 {props.alarmList && props.alarmList.length>0 && 
-                <Button onClick={handleDeleteLog} style={{ marginRight: '10px'}}>전체 삭제</Button>
+                <Button onClick={handleDeleteLog} style={{ marginRight:'15px', fontSize:'13px', fontWeight:'bold', background:'#eb4034', border:'none'}}>전체 삭제</Button>
                 }
             </ModalHeader>
             {props.alarmList && props.alarmList.length<1 ? (
