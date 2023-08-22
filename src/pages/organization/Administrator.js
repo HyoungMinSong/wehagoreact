@@ -204,7 +204,7 @@ function Administrator() {
             <DialogTitle>공지사항 작성</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                공지사항 작성 하는 설명
+              공지사항은 최대 5개까지 작성가능합니다.
               </DialogContentText>
               <TextField
                 autoFocus
