@@ -84,7 +84,7 @@ function NoticeTable(props) {
 
   const updateNotice = async () => {
     console.log(noticeTitle, noticeContent, noticeNo);
-    await axiosApi.post("/updateNotice",{
+    await axiosApi.put("/updateNotice",{
       t_notice_title : noticeTitle,
       t_notice_content : noticeContent,
       t_notice_no : noticeNo,
@@ -115,23 +115,23 @@ function NoticeTable(props) {
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead >
           <TableRow>
-            <StyledTableCell className='col-1'>번호</StyledTableCell>
-            <StyledTableCell align="right" className='col-3'>제목</StyledTableCell>
-            <StyledTableCell align="right" className='col-4'>공지사항</StyledTableCell>
-            <StyledTableCell align="right" className='col-2'>작성자</StyledTableCell>
-            <StyledTableCell align="right" className='col-2'>작성일자</StyledTableCell>
+            <StyledTableCell align="left" className='col-1' style={{ fontWeight: 'bold'}}>번호</StyledTableCell>
+            <StyledTableCell align="left" className='col-3' style={{ fontWeight: 'bold'}}>제목</StyledTableCell>
+            <StyledTableCell align="left" className='col-4' style={{ fontWeight: 'bold'}}>공지사항</StyledTableCell>
+            <StyledTableCell align="left" className='col-2' style={{ fontWeight: 'bold'}}>작성자</StyledTableCell>
+            <StyledTableCell align="left" className='col-2' style={{ fontWeight: 'bold'}}>작성일자</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.noticeList && props.noticeList.map((row, rowIndex) => (
             <StyledTableRow key={rowIndex} onClick={() => handleClickOpen(row)}>
-              <StyledTableCell component="th" scope="row">
+              <StyledTableCell component="th" scope="row" align="left" >
               {rowIndex+1}
               </StyledTableCell>
-              <StyledTableCell align="right">{row.t_notice_title}</StyledTableCell>
-              <StyledTableCell align="right">{row.t_notice_content}</StyledTableCell>
-              <StyledTableCell align="right">{row.t_user_name}</StyledTableCell>
-              <StyledTableCell align="right">{row.t_notice_date}</StyledTableCell>
+              <StyledTableCell align="left">{row.t_notice_title}</StyledTableCell>
+              <StyledTableCell align="left">{row.t_notice_content}</StyledTableCell>
+              <StyledTableCell align="left">{row.t_user_name}</StyledTableCell>
+              <StyledTableCell align="left">{row.t_notice_date}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

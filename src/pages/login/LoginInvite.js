@@ -35,6 +35,12 @@ const LoginPage = () => {
 
     try {
       setLoading(true);
+      // 로그인한 id, pw 로 user_no를 조회하고 업데이트
+      await axiosApi.post('/updateinvite',  {
+        t_user_id: username,
+        t_user_password: password,
+        t_employee_no : empNo
+      });
       // JWT 토큰 발급
       const response = await axiosApi.post('/api/login', {
         userid: username,
@@ -55,17 +61,7 @@ const LoginPage = () => {
         // Access Token을 쿠키에 등록
         const expires = accessTokenExpiration.toUTCString();
         document.cookie = `accessToken=${accessToken}; path=/; expires=${expires}`;
-        // 로그인한 id, pw 로 user_no를 조회하고 업데이트
-        console.log("하이");
-        console.log(empNo + typeof(empNo))
-        await axiosApi.post('/updateinvite',  {
-          t_user_id: username,
-          t_user_password: password,
-          t_employee_no : empNo
-        });
-        console.log(empNo);
-
-
+        
         // 메인 페이지로 넘어가기
         window.location.replace('/main');
       } else if (response.status === 401) {
