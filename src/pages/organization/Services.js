@@ -86,13 +86,16 @@ function Services() {
   useEffect(() => {
     // return () => {
     showCompanySerivces();
-  }, [show, loginedUser.companyName])
+  }, [loginedUser.companyName])
   // 모달창 띄우기 유무
+
+  useEffect(() => {
+    if (!show && !stateAssociatedConfirm) {
+    showCompanySerivces()
+  }}, [show])
 
   const showCompanySerivces = async () => {
     setLoading(true);
-    if (!show && !stateAssociatedConfirm) {
-
       await axiosApi.post("/findservicelistbycomno", {
         comNo: comNo
       }).then((c) => {
@@ -119,7 +122,7 @@ function Services() {
         }
       });
       // }
-    }
+    
     setLoading(false);
   }
 
@@ -395,7 +398,7 @@ function Services() {
               <Table bordered hover>
                 <thead>
                   <tr>
-                    <th><FormControlLabel
+                    <th className="col-1"><FormControlLabel
                       control={
                         <Checkbox
                           checked={isParentChecked}
@@ -405,10 +408,10 @@ function Services() {
                       }
 
                     /></th>
-                    <th>이름</th>
-                    <th>아이디</th>
-                    <th>소속</th>
-                    <th>직급</th>
+                    <th className="col-3">이름</th>
+                    <th className="col-3">아이디</th>
+                    <th className="col-3">소속</th>
+                    <th className="col-2">직급</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -457,7 +460,7 @@ function Services() {
               <Table bordered hover>
                 <thead>
                   <tr>
-                    <th><FormControlLabel
+                    <th className="col-1"><FormControlLabel
                       control={
                         <Checkbox
                           checked={isParentChecked2}
@@ -467,10 +470,10 @@ function Services() {
                       }
 
                     /></th>
-                    <th>이름</th>
-                    <th>아이디</th>
-                    <th>소속</th>
-                    <th>직급</th>
+                    <th className="col-3">이름</th>
+                    <th className="col-3">아이디</th>
+                    <th className="col-3">소속</th>
+                    <th className="col-2">직급</th>
                   </tr>
                 </thead>
                 <tbody>

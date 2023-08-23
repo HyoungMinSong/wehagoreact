@@ -19,6 +19,12 @@ let userName = queryParams.get('t_user_name');
 let userPhone = queryParams.get('t_user_phone');
 let userEmail = queryParams.get('t_user_email');
 
+let [name, setName] = useState(userName);
+let [nameError, setNameError] = useState(false);
+let [phoneNumber, setPhoneNumber] = useState(userPhone);
+let [phoneNumberError, setphoneNumberError] = useState(false);
+let [email, setEmail] = useState(userEmail);
+let [emailError, setEmailError] = useState(false);
 let [id, setId] = useState('');
 let [idError, setIdError] = useState(false);
 let [password, setPassword] = useState('');
@@ -27,16 +33,29 @@ let [confirmPassword, setConfirmPassword] = useState('');
 let [confirmPasswordError, setConfirmPasswordError] = useState(false);
 let [loading, setLoading] = useState(false);
 
+let regex = /^[가-힣a-zA-Z]+$/;
+let numberRegex = /^\d{11}$/;
 let idRegex = /^[a-zA-Z0-9]*$/;
 let pwRegex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+let emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
 
-
+let nameInputRef = useRef(null);
 let idInputRef = useRef(null);
+let emailInputRef = useRef(null);
 let passwordInputRef = useRef(null);
 let confirmPasswordInputRef = useRef(null);
 
 
 useEffect(() => {
+  if (name != '') {
+    regex.test(name) ? setNameError(false) : setNameError(true);
+  }
+  if (phoneNumber != '') {
+    numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
+  }
+  if (email != '') {
+    emailRegex.test(email) ? setEmailError(false) : setEmailError(true);
+  }
   if (id != '') {
     idRegex.test(id) ? setIdError(false) : setIdError(true);
   }
@@ -46,7 +65,7 @@ useEffect(() => {
   if (confirmPassword != '') {
     password === confirmPassword ? setConfirmPasswordError(false) : setConfirmPasswordError(true);
   }
-}, [id, password, confirmPassword]);
+}, [name,id,phoneNumber,email, password, confirmPassword]);
 
 
 const { abc } = location.state || {};
@@ -89,7 +108,16 @@ const [snackText, setSnackText] = useState("오류");
 
                       <Form.Label style={{ fontWeight: 'bold' }}>사용자 이름</Form.Label>
 
-                      <Form.Control type="text" placeholder="Enter name" disabled value={userName} />
+                      <Form.Control type="text" placeholder="Enter name" value={name} onChange={(e) => {
+                            setName(e.target.value);
+                            // regex.test(name) ? setNameError(false) : setNameError(true);
+                          }} className={nameError ? "border-danger" : ""} ref={nameInputRef} />
+                          {nameError ?
+                            <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
+                              한글과 영문만 입력 가능합니다.
+                            </Form.Text>
+                            : ""
+                          }
 
                     </Form.Group>
 
@@ -99,14 +127,24 @@ const [snackText, setSnackText] = useState("오류");
                         mask="999-9999-9999"
                         maskChar="_"
                         placeholder="Enter phone number"
-                        disabled
-                        value={userPhone}
-                        className= "form-control"
+                        value={phoneNumber}
+                        onChange={(e) => {
+
+                          setPhoneNumber(e.target.value.replace(/-/g, ''));
+                          // numberRegex.test(phoneNumber) ? setphoneNumberError(false) : setphoneNumberError(true);
+                        }}
+
+                        className={phoneNumberError ? "form-control border-danger" : "form-control"}
                       />
-                        <Form.Text className="text-muted" style={{ fontSize: '11px' }}   >
-                          * 입력된 휴대전화번호는 아이디, 비밀번호 찾기 등 본인 확인 용도 또는 WEHAGO로부터 알림
-                          을 받을 때 사용됩니다.
-                        </Form.Text>
+                          {phoneNumberError ?
+                            <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
+                              휴대전화번호 11자리를 입력하세요.
+                            </Form.Text>
+                            : <Form.Text className="text-muted" style={{ fontSize: '11px' }}   >
+                              * 입력된 휴대전화번호는 아이디, 비밀번호 찾기 등 본인 확인 용도 또는 WEHAGO로부터 알림
+                              을 받을 때 사용됩니다.
+                            </Form.Text>
+                          }
                     </Form.Group>
 
                     <Form.Group className="my-2" controlId="formBasicEmail" >
@@ -159,11 +197,20 @@ const [snackText, setSnackText] = useState("오류");
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicEmail" >
                       <Form.Label style={{ fontWeight: 'bold' }}>이메일 주소</Form.Label>
-                      <Form.Control type="email" placeholder="Enter email" disabled
-                        value={userEmail} />
-                      <Form.Text className="text-muted" style={{ fontSize: '11px' }} >
-                          * 아이디, 비밀번호 찾기 등 본인확인이 필요한 경우 사용할 이메일 주소입니다.
-                        </Form.Text>
+                      <Form.Control type="email" placeholder="Enter email" 
+                        value={email} onChange={(e) => {
+                          setEmail(e.target.value);
+                          // emailRegex.test(email) ? setEmailError(false) : setEmailError(true);
+                        }} className={emailError ? "border-danger" : ""} ref={emailInputRef} />
+                        {emailError ?
+                          <Form.Text className="text-danger" style={{ fontSize: '11px' }}   >
+                            이메일 형식이 아닙니다.
+                          </Form.Text>
+                          : <Form.Text className="text-muted" style={{ fontSize: '11px' }} >
+                            * 아이디, 비밀번호 찾기 등 본인확인이 필요한 경우 사용할 이메일 주소입니다.
+
+                          </Form.Text>
+                        }
 
                     </Form.Group>
 
@@ -181,28 +228,43 @@ const [snackText, setSnackText] = useState("오류");
                     </Button>
                     <Button variant="primary" className="mx-3" onClick={() => {
                       setLoading(true);
-                      if(id === '' || idError === true){
+                      if (name === '' || nameError === true) {
+                        setNameError(true);
+                        nameInputRef.current.focus();
+                      } else if (phoneNumber === '' || phoneNumberError === true) {
+                        setphoneNumberError(true);
+                        window.document.getElementById("phoneInput").focus();
+                      } else if (id === '' || idError === true) {
                         setIdError(true);
                         idInputRef.current.focus();
-                      } else if(password === '' || passwordError === true){
+                      } else if (password === '' || passwordError === true) {
                         setPasswordError(true);
                         passwordInputRef.current.focus();
-                      } else if(confirmPassword === '' || confirmPasswordError === true){
+                      } else if (confirmPassword === '' || confirmPasswordError === true) {
                         setConfirmPasswordError(true);
                         confirmPasswordInputRef.current.focus();
+                      } else if (email === '' || emailError === true) {
+                        setEmailError(true);
+                        emailInputRef.current.focus();
                       } else {
                         axiosApi.post("/idcheck", {
-                          id: id
+                          id: id, email: email, phoneNumber: phoneNumber
                         }).then((c) => {
-                          console.log(c.data + "이거 ")
                           if (c.data.checkId === id) {
-                            
                             // handleShow();
                             setSnackText("중복된 ID입니다.");
                             setSnackOpen(true);
-                          }else{
+                          } else if (c.data.checkEmail === email) {
+                            // handleShow2();
+                            setSnackText("중복된 이메일입니다.");
+                            setSnackOpen(true);
+                          } else if (c.data.checkPhoneNumber === phoneNumber) {
+                            // handleShow3()
+                            setSnackText("중복된 휴대전화번호입니다.");
+                            setSnackOpen(true);
+                          } else {
                             axiosApi.post("/signupinviteupdate", {
-                              empNo: abc, userId : id, userPw : password
+                              empNo: abc, userId : id, userPw : password, userName : name, userEmail : email, userPhone : phoneNumber
                             }).then((d) => {
                               console.log(d.data)
                                navigate('/signup/complete')

@@ -70,9 +70,6 @@ function SignUp_package() {
           <Badge pill bg="primary" style={{ fontSize: '30px' }}>
             WEHAGO 기본팩
           </Badge>
-          <Badge pill bg="light" text="dark" style={{ fontSize: '30px' }}>
-            싱글팩
-          </Badge>
         </div>
         <Row className="mt-5 justify-content-center">
           <Col sm={5}>
@@ -301,7 +298,7 @@ function SignUp_package() {
                   <span className="text-primary" style={{ fontSize: "17px" }}><b>{rangeValue}명</b></span> 사용자 추가설정 = <span style={{ fontSize: "17px" }}><b>{rangeValue}명</b></span> 전체사용직원
                 </div>
                 <hr />
-                <span>{packagePrice.perUserPrice * rangeValue}원/월</span><br /><span className="text-muted small-text">사용자당 {packagePrice.perUserPrice}원</span>
+                <span>{(packagePrice.perUserPrice * rangeValue).toLocaleString()}원/월</span><br /><span className="text-muted small-text">사용자당 {(packagePrice.perUserPrice).toLocaleString()}원</span>
               </div>
               {/* </span> */}
             </div>
@@ -327,15 +324,15 @@ function SignUp_package() {
 
 
                   <span>{packagePrice.selectPackge}</span><span style={{ float: 'right' }}><b>
-                    {payPeriod == 0 ? packagePrice.servicePrice : packagePrice.servicePrice * 12}
+                    {payPeriod == 0 ? (packagePrice.servicePrice).toLocaleString() : (packagePrice.servicePrice * 12).toLocaleString()}
                   </b><span>원</span></span><br />
                   <span>사용자 추가({rangeValue}명)</span><span style={{ float: 'right' }}><b>
-                    {payPeriod == 0 ? packagePrice.perUserPrice * rangeValue : packagePrice.perUserPrice * rangeValue * 12}
+                    {payPeriod == 0 ? (packagePrice.perUserPrice * rangeValue).toLocaleString() : (packagePrice.perUserPrice * rangeValue * 12).toLocaleString()}
                   </b><span>원</span></span>
                 </div>
                 <hr />
                 <div className="text-start mt-0" style={{ color: "#5ea5e6", fontSize: '14px' }}>
-                  <span>합계</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue) : packagePrice.servicePrice * 12 + packagePrice.perUserPrice * rangeValue * 12}</b><span>원</span></span><br />
+                  <span>합계</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)).toLocaleString() : (packagePrice.servicePrice * 12 + packagePrice.perUserPrice * rangeValue * 12).toLocaleString()}</b><span>원</span></span><br />
                 </div>
               </div>
             </Col>
@@ -360,12 +357,12 @@ function SignUp_package() {
                 <hr />
                 <div className="text-start"><b>납부주기 설정</b></div>
                 <div className="text-start my-1" style={{ fontSize: '14px' }}>
-                  <span>총 이용금액</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue) : (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12}</b><span>원</span></span><br />
-                  <span>부가세</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1 : ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1}</b><span>원</span></span>
+                  <span>총 이용금액</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)).toLocaleString() : ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12).toLocaleString()}</b><span>원</span></span><br />
+                  <span>부가세</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1).toLocaleString() : (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1).toLocaleString()}</b><span>원</span></span>
                 </div>
                 <hr />
                 <div className="text-start mt-0" style={{ fontSize: '21px' }}>
-                  <span><b>최종 결제금액</b></span><span style={{ float: 'right' }}><b style={{ color: "#ff003c" }}>{payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) + ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1) : ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) + (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1)}</b><span>원</span></span><br />
+                  <span><b>최종 결제금액</b></span><span style={{ float: 'right' }}><b style={{ color: "#ff003c" }}>{payPeriod == 0 ? ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) + ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1)).toLocaleString() : (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) + (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1)).toLocaleString()}</b><span>원</span></span><br />
                 </div>
               </div>
             </Col>
@@ -373,7 +370,7 @@ function SignUp_package() {
           <Row className="justify-content-center my-4" style={{ marginLeft: '31px', marginRight: '31px' }}>
             <div style={{ border: '1px dotted #000', background: '#f5f5f5' }} className="">
               <div className="text-start m-3" style={{ fontSize: '14px' }}>
-                <span>다음 결제금액</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) + ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1) : ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) + (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1)}</b><span>원</span></span><br />
+                <span>다음 결제금액</span><span style={{ float: 'right' }}><b>{payPeriod == 0 ? ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) + ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1)).toLocaleString() : (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) + (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1)).toLocaleString()}</b><span>원</span></span><br />
                 <span className="text-muted small-text">결제 예정일 :사용 시작일로부터 {payPeriod == 0 ? '1개월' : '1년'}</span>
               </div>
             </div>
@@ -386,7 +383,7 @@ function SignUp_package() {
             </div>
             <div className="d-grid gap-2">
               <Button variant="primary" size="lg" onClick={() => {
-                let test = payPeriod == 0 ? (packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) + ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1) : ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) + (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1)
+                let test = payPeriod == 0 ? ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) + ((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 0.1)).toLocaleString() : (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) + (((packagePrice.servicePrice + (packagePrice.perUserPrice * rangeValue)) * 12) * 0.1)).toLocaleString()
                 Swal.fire({
                   title: " 최종 결제 금액 " + test + "원입니다.",
                   text: "위의 금액으로 최종 결제를 진행합니다.",
