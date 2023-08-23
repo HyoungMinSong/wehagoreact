@@ -116,9 +116,9 @@ function MainHeader(props) {
 
   useEffect(() => {
     if (!alarmModalOpen) {
-      alarmList.some((item) => item.t_log_state === 0) && requestUpdateLog();
-    } else {
       fetchLogList();
+    } else {
+      alarmList.some((item) => item.t_log_state === 0) && requestUpdateLog();
     }
   }, [alarmModalOpen]);
 
