@@ -230,7 +230,7 @@ function Services() {
       if (result.isConfirmed) {
         // 만약 모달창에서 confirm 버튼을 눌렀다면
         setLoading2(true);
-        axiosApi.post("/updateunpublish", {
+        axiosApi.put("/updateunpublish", {
           empNo: en, serviceNo: cs
         }).then((c) => {
           console.log(c.data);
@@ -312,7 +312,7 @@ function Services() {
         setLoading2(true);
         let newArray = countCheckBoxArray2.map(index => publishedUserList[index].empNo);
         // 만약 모달창에서 confirm 버튼을 눌렀다면
-        axiosApi.post("/updatearrayunpublish", {
+        axiosApi.put("/updatearrayunpublish", {
           arrayEmployeeNo: newArray, serviceNo: checkedService
         }).then((c) => {
           console.log(c.data);
