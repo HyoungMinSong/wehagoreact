@@ -646,22 +646,6 @@ function BasicGridBox(props) {
       });
     }else{
       props.setLoading(true);
-    //   const res = await axiosApi.get("/checkRegister", {
-    //     params: {
-    //       t_user_email: props.updateSelectedUser.t_user_email,
-    //       t_user_phone: props.updateSelectedUser.t_user_phone
-    //     }
-    // });
-    //   console.log("res",res);
-    //   if(res.data === 1){
-    //     setSnackText("중복된 핸드폰 번호 입니다.");
-    //     handleSnackOpen();
-    //   }else if(res.data === 2){
-    //     setSnackText("중복된 이메일 입니다.");
-    //     handleSnackOpen();
-    //   }else{
-    //     console.log("res",res);
-    //   }
       requestSaveClick();
       props.setLoading(false);
     }
