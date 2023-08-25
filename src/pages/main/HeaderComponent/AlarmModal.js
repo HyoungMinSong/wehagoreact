@@ -79,7 +79,7 @@ const ModalBody = styled.div`
 
 const ListBody = styled.div`
     padding: 20px; 
-    height: 250px;
+    max-height: 320px;
     background: #eeeeee;
 `;
 
@@ -135,8 +135,8 @@ function AlarmModal(props) {
                         );
                     }
             )}
-            <Paging page={props.currentPage} count={props.count} setPage={props.setCurrentPage} />
-                    </ListBody>
+                    <Paging page={props.currentPage} count={props.count} setPage={props.setCurrentPage} />
+                </ListBody>
             )}
         </ModalWrapper>
     );
