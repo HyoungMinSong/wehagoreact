@@ -1,4 +1,4 @@
-import { styled, css } from "styled-components";
+import { styled } from "styled-components";
 import React, { useEffect, useRef, useState } from "react";
 import { beTheChosenOnes, clearChosenOnes, pushSwitch } from "../../../store";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,32 +8,32 @@ import axiosApi from "../../../AxiosApi";
 import BasicGridBoxItem from "./BasicGridBoxItem";
 import Swal from "sweetalert2";
 import { Slide } from "@mui/material";
-import Snackbar from '@mui/material/Snackbar';
+import Snackbar from "@mui/material/Snackbar";
 
 const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
   // isexpanded prop를 DOM 요소로 전달합니다.
   isexpanded: $isexpanded,
 }))`
   height: 100%;
-  .noEmpl{
+  .noEmpl {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 90%;
   }
-  .noEmpl > img{
+  .noEmpl > img {
     width: 70px;
     height: 70px;
     vertical-align: middle;
   }
-  .noEmpl > span{
+  .noEmpl > span {
     margin-top: 10px;
     width: 150px;
     vertical-align: middle;
     color: gray;
   }
-  .searchThing{
+  .searchThing {
     color: #1c90fb;
   }
   .unrealGridBox {
@@ -53,7 +53,7 @@ const WrappingGridBox = styled.div.attrs(({ $isexpanded }) => ({
     position: relative;
     display: block;
     height: 100%;
-    width: ${(props) => (props.isexpanded == "true" ? "50%" : "100%")};
+    width: ${(props) => (props.isexpanded === "true" ? "50%" : "100%")};
     transition: width 0.5s;
   }
   .unrealTable {
@@ -410,7 +410,8 @@ function BasicGridBox(props) {
   // 유효성 검사
   let nameRegex = /^[가-힣a-zA-Z]+$/;
   let numberRegex = /^\d{11}$/;
-  let emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+  let emailRegex =
+    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
 
   useEffect(() => {
     updateOnesDate(props.selectedDate);
@@ -418,17 +419,26 @@ function BasicGridBox(props) {
 
   // 직원 필터링
   useEffect(() => {
-    setFilteredEmployeeList((props.searchMode && props.searchEmployeeList.length > 0
-      ? props.searchEmployeeList
-      : props.employeeList
-    ).filter((user) => {
-      const isTabSelected = props.selectedListTab === -1 ||
-      user.t_employee_state === props.selectedListTab;
-      const isOrgaNameSelected = props.selectedOrgaName === loginedUser.companyName ||
-        props.selectedOrgaName === user.t_organization_name;
-      return isTabSelected && isOrgaNameSelected;    
-    }));
-  }, [props.searchMode, props.searchEmployeeList, props.employeeList, props.selectedListTab]);
+    setFilteredEmployeeList(
+      (props.searchMode && props.searchEmployeeList.length > 0
+        ? props.searchEmployeeList
+        : props.employeeList
+      ).filter((user) => {
+        const isTabSelected =
+          props.selectedListTab === -1 ||
+          user.t_employee_state === props.selectedListTab;
+        const isOrgaNameSelected =
+          props.selectedOrgaName === loginedUser.companyName ||
+          props.selectedOrgaName === user.t_organization_name;
+        return isTabSelected && isOrgaNameSelected;
+      })
+    );
+  }, [
+    props.searchMode,
+    props.searchEmployeeList,
+    props.employeeList,
+    props.selectedListTab,
+  ]);
 
   // 직원 행 클릭 이벤트
   const handleRowClick = (user) => {
@@ -600,35 +610,42 @@ function BasicGridBox(props) {
 
   // 저장버튼 유효성 검사
   const handleSaveClick = async () => {
-    if(props.updateSelectedUser.t_user_name == null || props.updateSelectedUser.t_user_name == '' ||
-      props.updateSelectedUser.t_employee_position == null || props.updateSelectedUser.t_employee_position == '' ||
-      props.updateSelectedUser.t_employee_duty == null || props.updateSelectedUser.t_employee_duty == '' ||
-      props.updateSelectedUser.t_user_phone == null || props.updateSelectedUser.t_user_phone == '' ||
-      props.updateSelectedUser.t_user_email == null || props.updateSelectedUser.t_user_email == ''
-      ){
-        Swal.fire({
-          title: "등록에 실패했습니다.",
-          text: "입력하지 않은 항목이 존재합니다.",
-          icon: "warning",
-          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
-          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        }).then((result) => {
-          // 만약 Promise리턴을 받으면,
-          if (result.isConfirmed) {
-            // 만약 모달창에서 confirm 버튼을 눌렀다면
-            console.log(result);
-          }
-        });
-    }else if(!nameRegex.test(props.updateSelectedUser.t_user_name) ||
+    if (
+      props.updateSelectedUser.t_user_name == null ||
+      props.updateSelectedUser.t_user_name === "" ||
+      props.updateSelectedUser.t_employee_position == null ||
+      props.updateSelectedUser.t_employee_position === "" ||
+      props.updateSelectedUser.t_employee_duty == null ||
+      props.updateSelectedUser.t_employee_duty === "" ||
+      props.updateSelectedUser.t_user_phone == null ||
+      props.updateSelectedUser.t_user_phone === "" ||
+      props.updateSelectedUser.t_user_email == null ||
+      props.updateSelectedUser.t_user_email === ""
+    ) {
+      Swal.fire({
+        title: "등록에 실패했습니다.",
+        text: "입력하지 않은 항목이 존재합니다.",
+        icon: "warning",
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+          console.log(result);
+        }
+      });
+    } else if (
+      !nameRegex.test(props.updateSelectedUser.t_user_name) ||
       !numberRegex.test(props.updateSelectedUser.t_user_phone) ||
       !emailRegex.test(props.updateSelectedUser.t_user_email)
-    ){
-      let swalText = '';
-      if(!nameRegex.test(props.updateSelectedUser.t_user_name)){
+    ) {
+      let swalText = "";
+      if (!nameRegex.test(props.updateSelectedUser.t_user_name)) {
         swalText = "이름은 한글과 영문만 입력 가능합니다.";
-      }else if(!numberRegex.test(props.updateSelectedUser.t_user_phone)){
+      } else if (!numberRegex.test(props.updateSelectedUser.t_user_phone)) {
         swalText = "휴대전화번호 11자리를 올바르게 입력해주세요.";
-      }else{
+      } else {
         swalText = "올바른 이메일 형식이 아닙니다.";
       }
       Swal.fire({
@@ -644,15 +661,11 @@ function BasicGridBox(props) {
           console.log(result);
         }
       });
-    }else{
+    } else {
       props.setLoading(true);
       requestSaveClick();
       props.setLoading(false);
     }
-  };
-
-  const handleSnackOpen = () => {
-    setSnackOpen(true);
   };
 
   const handleSnackClose = () => {
@@ -714,23 +727,26 @@ function BasicGridBox(props) {
 
   // 저장버튼(수정) 유효성 검사
   const handleUpdateClick = async () => {
-    if(props.updateSelectedUser.t_employee_position == null || props.updateSelectedUser.t_employee_position == '' ||
-      props.updateSelectedUser.t_employee_duty == null || props.updateSelectedUser.t_employee_duty == ''
-      ){
-        Swal.fire({
-          title: "수정에 실패했습니다.",
-          text: "입력하지 않은 항목이 존재합니다.",
-          icon: "warning",
-          confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
-          confirmButtonText: "확인", // confirm 버튼 텍스트 지정
-        }).then((result) => {
-          // 만약 Promise리턴을 받으면,
-          if (result.isConfirmed) {
-            // 만약 모달창에서 confirm 버튼을 눌렀다면
-            console.log(result);
-          }
-        });
-    }else{
+    if (
+      props.updateSelectedUser.t_employee_position == null ||
+      props.updateSelectedUser.t_employee_position == "" ||
+      props.updateSelectedUser.t_employee_duty == null ||
+      props.updateSelectedUser.t_employee_duty == ""
+    ) {
+      Swal.fire({
+        title: "수정에 실패했습니다.",
+        text: "입력하지 않은 항목이 존재합니다.",
+        icon: "warning",
+        confirmButtonColor: "#3085d6", // confrim 버튼 색깔 지정
+        confirmButtonText: "확인", // confirm 버튼 텍스트 지정
+      }).then((result) => {
+        // 만약 Promise리턴을 받으면,
+        if (result.isConfirmed) {
+          // 만약 모달창에서 confirm 버튼을 눌렀다면
+          console.log(result);
+        }
+      });
+    } else {
       requestUpdateClick();
     }
   };
@@ -742,13 +758,18 @@ function BasicGridBox(props) {
       props.setLoading(true);
       // 이전 이미지 경로를 만듭니다.
       const prevImagePath = props.updateSelectedUser.t_user_photo_path_prev;
-      console.log("여까진 오는가벼",prevImagePath);
+      console.log("여까진 오는가벼", prevImagePath);
       // 이전 이미지 경로가 'http:'로 시작하는지 확인합니다.
-      if (prevImagePath !== props.updateSelectedUser.t_user_photo_path && prevImagePath.startsWith("http:")) {
+      if (
+        prevImagePath !== props.updateSelectedUser.t_user_photo_path &&
+        prevImagePath.startsWith("http:")
+      ) {
         console.log("여까진 못 오는가벼");
         // '...images/' 뒷부분만 추출하여 파일명으로 사용합니다.
-        const fileName = prevImagePath.substring(prevImagePath.lastIndexOf("images/") + 7);
-        console.log("fileName",fileName);
+        const fileName = prevImagePath.substring(
+          prevImagePath.lastIndexOf("images/") + 7
+        );
+        console.log("fileName", fileName);
         // 이미지 삭제 함수 호출
         await deleteEmployeePhoto(fileName);
       }
@@ -828,18 +849,20 @@ function BasicGridBox(props) {
             (item) => item.t_company_name === loginedUser.companyName
           ).t_company_no
         : loginedUser.company[0].t_company_no;
-    let myCheckedEmployee = [{
-      t_employee_no: props.updateSelectedUser.t_employee_no,
-      t_user_no: props.updateSelectedUser.t_user_no,
-      t_user_name: props.updateSelectedUser.t_user_name,
-      t_user_email: props.updateSelectedUser.t_user_email,
-      t_company_no: tCompanyNo,
-      t_company_name: loginedUser.companyName,
-      t_organization_name: props.updateSelectedUser.t_organization_name,
-      t_employee_duty: props.updateSelectedUser.t_employee_duty,
-      t_employee_position: props.updateSelectedUser.t_employee_position,
-    },];
-    console.log("myCheckedEmployee",myCheckedEmployee);
+    let myCheckedEmployee = [
+      {
+        t_employee_no: props.updateSelectedUser.t_employee_no,
+        t_user_no: props.updateSelectedUser.t_user_no,
+        t_user_name: props.updateSelectedUser.t_user_name,
+        t_user_email: props.updateSelectedUser.t_user_email,
+        t_company_no: tCompanyNo,
+        t_company_name: loginedUser.companyName,
+        t_organization_name: props.updateSelectedUser.t_organization_name,
+        t_employee_duty: props.updateSelectedUser.t_employee_duty,
+        t_employee_position: props.updateSelectedUser.t_employee_position,
+      },
+    ];
+    console.log("myCheckedEmployee", myCheckedEmployee);
     await axiosApi.post("/sendMailToEmployee", {
       employer: loginedUser.user.name,
       checkedEmployee: myCheckedEmployee,
@@ -863,8 +886,8 @@ function BasicGridBox(props) {
         // 만약 Promise리턴을 받으면,
         if (result.isConfirmed) {
           // 만약 모달창에서 confirm 버튼을 눌렀다면
-        requestSendMail();
-        dispatch(clearChosenOnes());
+          requestSendMail();
+          dispatch(clearChosenOnes());
         }
       });
     } catch (error) {
@@ -878,18 +901,18 @@ function BasicGridBox(props) {
     try {
       let alertText = "";
 
-    // state에 따라 다른 문구 설정
-    switch (empState) {
-      case 3:
-        alertText = "선택한 직원을 정말로 사용중지 하시겠습니까?";
-        break;
-      case 2:
-        alertText = "선택한 직원을 정말로 중지해제 하시겠습니까?";
-        break;
-      default: // -1
-        alertText = "선택한 직원을 정말로 내보내시겠습니까?";
-        break;
-    }
+      // state에 따라 다른 문구 설정
+      switch (empState) {
+        case 3:
+          alertText = "선택한 직원을 정말로 사용중지 하시겠습니까?";
+          break;
+        case 2:
+          alertText = "선택한 직원을 정말로 중지해제 하시겠습니까?";
+          break;
+        default: // -1
+          alertText = "선택한 직원을 정말로 내보내시겠습니까?";
+          break;
+      }
 
       Swal.fire({
         title: "직원을 관리합니다.",
@@ -911,15 +934,17 @@ function BasicGridBox(props) {
       console.error("메일 전송 중 오류 발생:", error);
       // 오류 상황을 처리하거나 오류 메시지를 표시하는 등의 작업을 수행합니다.
     }
-    // detail 닫고, updateempl 초기화 
+    // detail 닫고, updateempl 초기화
   };
 
   // 상태 수정 요청 함수
   const requestUpdateEmployeeState = async (empState) => {
     dispatch(pushSwitch(true));
-    let myCheckedEmployee = [{
-      t_employee_no: props.updateSelectedUser.t_employee_no,
-    }]
+    let myCheckedEmployee = [
+      {
+        t_employee_no: props.updateSelectedUser.t_employee_no,
+      },
+    ];
     await axiosApi.put("/updateEmployeeState", {
       t_employee_state: empState,
       checkedEmployee: myCheckedEmployee,
@@ -931,9 +956,13 @@ function BasicGridBox(props) {
   // 컴포넌트 내의 모든 체크박스의 체크 함수
   const checkAllCheckboxes = () => {
     let checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    let enabledCheckboxes = Array.from(checkboxes).filter((checkbox) => !checkbox.disabled);
-    let checkedCheckboxes = Array.from(enabledCheckboxes).filter((checkbox) => checkbox.checked);
-  
+    let enabledCheckboxes = Array.from(checkboxes).filter(
+      (checkbox) => !checkbox.disabled
+    );
+    let checkedCheckboxes = Array.from(enabledCheckboxes).filter(
+      (checkbox) => checkbox.checked
+    );
+
     if (enabledCheckboxes.length / 2 >= checkedCheckboxes.length) {
       enabledCheckboxes.forEach((checkbox) => {
         checkbox.checked = true;
@@ -945,61 +974,73 @@ function BasicGridBox(props) {
     }
 
     checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    enabledCheckboxes = Array.from(checkboxes).filter((checkbox) => !checkbox.disabled);
-    checkedCheckboxes = Array.from(enabledCheckboxes).filter((checkbox) => checkbox.checked);
+    enabledCheckboxes = Array.from(checkboxes).filter(
+      (checkbox) => !checkbox.disabled
+    );
+    checkedCheckboxes = Array.from(enabledCheckboxes).filter(
+      (checkbox) => checkbox.checked
+    );
 
     // 체크된 체크박스와 체크되지 않은 체크박스들의 id 값 추출
     const checkedIds = checkedCheckboxes.map((checkbox) => checkbox.id);
-    const uncheckedIds = enabledCheckboxes.filter((checkbox) => !checkbox.checked).map((checkbox) => checkbox.id);
+    const uncheckedIds = enabledCheckboxes
+      .filter((checkbox) => !checkbox.checked)
+      .map((checkbox) => checkbox.id);
     // 추출한 id 값과 일치하는 user 객체 찾기
-    const checkedUsers = props.employeeList.filter((user) => checkedIds.includes(user.t_user_no.toString()));
-    const uncheckedUsers = props.employeeList.filter((user) => uncheckedIds.includes(user.t_user_no.toString()));
+    const checkedUsers = props.employeeList.filter((user) =>
+      checkedIds.includes(user.t_user_no.toString())
+    );
+    const uncheckedUsers = props.employeeList.filter((user) =>
+      uncheckedIds.includes(user.t_user_no.toString())
+    );
 
     // chosenOnes 함수 호출
     chosenTwos(checkedUsers, uncheckedUsers);
   };
-  
+
   // 체크박스 이벤트
-const chosenTwos = (checkedUsers, uncheckedUsers) => {
+  const chosenTwos = (checkedUsers, uncheckedUsers) => {
+    const checkedEmployee = Array.isArray(dataOfTheChosenOnes.checkedEmployee)
+      ? [...dataOfTheChosenOnes.checkedEmployee] // 새로운 배열 생성
+      : [];
 
-  const checkedEmployee = Array.isArray(dataOfTheChosenOnes.checkedEmployee)
-    ? [...dataOfTheChosenOnes.checkedEmployee] // 새로운 배열 생성
-    : [];
+    // checkedUsers 배열의 유저들을 checkedEmployee에 추가
+    checkedUsers.forEach((user) => {
+      const isAlreadyChecked = checkedEmployee.some(
+        (item) => item.t_user_no === user.t_user_no
+      );
+      if (!isAlreadyChecked) {
+        checkedEmployee.push({
+          t_user_no: user.t_user_no,
+          t_user_name: user.t_user_name,
+          t_user_email: user.t_user_email,
+          t_company_no: user.t_company_no,
+          t_company_name: user.t_company_name,
+          t_organization_name: user.t_organization_name,
+          t_employee_duty: user.t_employee_duty,
+          t_employee_position: user.t_employee_position,
+          t_employee_no: user.t_employee_no,
+        });
+      }
+    });
 
-  // checkedUsers 배열의 유저들을 checkedEmployee에 추가
-  checkedUsers.forEach((user) => {
-    const isAlreadyChecked = checkedEmployee.some((item) => item.t_user_no === user.t_user_no);
-    if (!isAlreadyChecked) {
-      checkedEmployee.push({
-        t_user_no: user.t_user_no,
-        t_user_name: user.t_user_name,
-        t_user_email: user.t_user_email,
-        t_company_no: user.t_company_no,
-        t_company_name: user.t_company_name,
-        t_organization_name: user.t_organization_name,
-        t_employee_duty: user.t_employee_duty,
-        t_employee_position: user.t_employee_position,
-        t_employee_no: user.t_employee_no,
-      });
-    }
-  });
+    // uncheckedUsers 배열의 유저들을 checkedEmployee에서 제거
+    uncheckedUsers.forEach((user) => {
+      const index = checkedEmployee.findIndex(
+        (item) => item.t_user_no === user.t_user_no
+      );
+      if (index !== -1) {
+        checkedEmployee.splice(index, 1);
+      }
+    });
 
-  // uncheckedUsers 배열의 유저들을 checkedEmployee에서 제거
-  uncheckedUsers.forEach((user) => {
-    const index = checkedEmployee.findIndex((item) => item.t_user_no === user.t_user_no);
-    if (index !== -1) {
-      checkedEmployee.splice(index, 1);
-    }
-  });
-
-  const updateDataOfTheChosenOnes = {
-    ...dataOfTheChosenOnes,
-    checkedEmployee: checkedEmployee,
+    const updateDataOfTheChosenOnes = {
+      ...dataOfTheChosenOnes,
+      checkedEmployee: checkedEmployee,
+    };
+    dispatch(beTheChosenOnes(updateDataOfTheChosenOnes));
   };
-  dispatch(beTheChosenOnes(updateDataOfTheChosenOnes));
-};
 
-  
   return (
     <WrappingGridBox $isexpanded={props.isExpanded}>
       <div className="realMovingTable">
@@ -1032,8 +1073,8 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                 </tr>
               </thead>
               <tbody>
-              {filteredEmployeeList && (filteredEmployeeList
-                ).map((user) => {
+                {filteredEmployeeList &&
+                  filteredEmployeeList.map((user) => {
                     return (
                       <BasicGridBoxItem
                         key={user.t_user_no} // 유니크한 key를 반드시 지정해줘야 합니다.
@@ -1046,14 +1087,15 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                         selectedListTab={props.selectedListTab}
                       />
                     );
-                })}
+                  })}
               </tbody>
             </table>
-            {filteredEmployeeList.length < 1 && 
-              (<div className="noEmpl">
-                      <img src="https://static.wehago.com/script/assets/cimgs/ico_nodata.png" />
-                      <span className="small-text text-muted">직원이 없습니다.</span>
-                    </div>)}
+            {filteredEmployeeList.length < 1 && (
+              <div className="noEmpl">
+                <img src="https://static.wehago.com/script/assets/cimgs/ico_nodata.png" />
+                <span className="small-text text-muted">직원이 없습니다.</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -1061,13 +1103,22 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
         <WrappingDetailBox ref={props.scrollRef}>
           <div className="detailBoxTit">
             <h2>직원정보</h2>
-            {(props.operateRegisMode || props.updateSelectedUser.t_employee_auth === 0) ||
+            {props.operateRegisMode ||
+              props.updateSelectedUser.t_employee_auth === 0 ||
               (props.updateSelectedUser.t_employee_state === 3 ? (
                 <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(2)}>
+                  <button
+                    type="button"
+                    className="detailBoxBB"
+                    onClick={() => handleUpdateEmployeeStateButton(2)}
+                  >
                     중지해제
                   </button>
-                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(-1)}>
+                  <button
+                    type="button"
+                    className="detailBoxBB"
+                    onClick={() => handleUpdateEmployeeStateButton(-1)}
+                  >
                     퇴사
                   </button>
                   <button
@@ -1081,10 +1132,18 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
               ) : props.operateRegisMode ||
                 props.updateSelectedUser.t_employee_state === 2 ? (
                 <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(3)}>
+                  <button
+                    type="button"
+                    className="detailBoxBB"
+                    onClick={() => handleUpdateEmployeeStateButton(3)}
+                  >
                     사용중지
                   </button>
-                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(-1)}>
+                  <button
+                    type="button"
+                    className="detailBoxBB"
+                    onClick={() => handleUpdateEmployeeStateButton(-1)}
+                  >
                     퇴사
                   </button>
                   <button
@@ -1097,10 +1156,18 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                 </div>
               ) : (
                 <div className="detailBoxButtonBox">
-                  <button type="button" className="detailBoxBB" onClick={handleSendMailButton}>
+                  <button
+                    type="button"
+                    className="detailBoxBB"
+                    onClick={handleSendMailButton}
+                  >
                     메일발송
                   </button>
-                  <button type="button" className="detailBoxBB" onClick={() => handleUpdateEmployeeStateButton(-1)}>
+                  <button
+                    type="button"
+                    className="detailBoxBB"
+                    onClick={() => handleUpdateEmployeeStateButton(-1)}
+                  >
                     직원삭제
                   </button>
                   <button
@@ -1112,8 +1179,9 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                   </button>
                 </div>
               ))}
-              {(props.operateRegisMode || props.updateSelectedUser.t_employee_auth === 0) ? (
-                <div className="detailBoxButtonBox">
+            {props.operateRegisMode ||
+            props.updateSelectedUser.t_employee_auth === 0 ? (
+              <div className="detailBoxButtonBox">
                 <button
                   type="button"
                   className="detailBoxBX"
@@ -1122,7 +1190,9 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
                   Ｘ
                 </button>
               </div>
-              ) : ('')}
+            ) : (
+              ""
+            )}
           </div>
           <div className="detailBoxInBox">
             <div className="detailBoxStaffInfo">
@@ -1402,7 +1472,7 @@ const chosenTwos = (checkedUsers, uncheckedUsers) => {
         open={snackOpen}
         autoHideDuration={3000}
         onClose={handleSnackClose}
-        anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         TransitionComponent={TransitionUp}
         message={snackText}
         // key={transition ? transition.name : ''}

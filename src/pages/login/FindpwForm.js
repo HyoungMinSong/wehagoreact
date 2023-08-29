@@ -150,7 +150,7 @@ const FindpwForm = () => {
             });
         })
         .catch((res) => {
-          setError("아이디 또는 이메일이 일치하지 않습니다.");
+          setError("아이디 또는 휴대폰 번호가 일치하지 않습니다.");
         });
     }
     setLoading(false);
