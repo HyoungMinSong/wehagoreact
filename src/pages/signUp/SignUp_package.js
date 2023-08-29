@@ -410,7 +410,7 @@ function SignUp_package() {
 
                       axiosApi.post("/signupinsert", finalTest).then((c) => {
                         console.log(c.data);
-                        navigate('/login');
+                        navigate('/signup/complete');
                       }).catch(() => {
                         console.log('실패함');
                         Swal.fire({
