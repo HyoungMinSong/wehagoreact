@@ -43,7 +43,6 @@ const SideWrapper = styled.div`
 const StyledCalendar = styled(Calendar)`
     width: 400px;
     height: 350px;
-    
     background-color: white;
     border: none;
     border-radius: 10px;
@@ -57,12 +56,27 @@ const StyledCalendar = styled(Calendar)`
     .react-calendar__month-view__weekdays__weekday abbr {
         text-decoration: none;
     }
-    .react-calendar__navigation__prev2-button:hover {
+
+    .react-calendar__navigation__prev2-button {
         border-radius: 10px 0px 0px 0px;
     }
     
-    .react-calendar__navigation__next2-button:hover {
+    .react-calendar__navigation__next2-button {
         border-radius: 0px 10px 0px 0px;
+    }
+
+    .react-calendar__navigation__prev-button:hover, .react-calendar__navigation__prev2-button:hover {
+        border-radius: 10px 0px 0px 0px;
+    }
+    
+    .react-calendar__navigation__next-button:hover, .react-calendar__navigation__next2-button:hover {
+        border-radius: 0px 10px 0px 0px;
+    }
+
+    .react-calendar__year-view .react-calendar__tile,
+    .react-calendar__decade-view .react-calendar__tile,
+    .react-calendar__century-view .react-calendar__tile{
+        padding: 1em 2em;
     }
 `;
 
